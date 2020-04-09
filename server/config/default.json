@@ -1,0 +1,9 @@
+{
+	"dbConfig": {
+		"user": "aaugmentum",
+		"password": "khn47$TvfmNW@H9",
+		"host": "localhost",
+		"database": "university db"
+	},
+	"port": 5000
+}
