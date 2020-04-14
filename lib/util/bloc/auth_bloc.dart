@@ -34,7 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         workType: 'dev',
       );
       if(event.uEmail == _user.uEmail && event.password == _user.password){
-        ExtendedNavigator.ofRouter<GlobalRouter>().pushNamed(Routes.wrapperPage);
+        ExtendedNavigator.ofRouter<GlobalRouter>().pushReplacementNamed(Routes.wrapperPage);
         yield Authenticated(user: _user);
       } else {
         //... error showing
