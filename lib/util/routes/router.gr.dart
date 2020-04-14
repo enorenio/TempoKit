@@ -15,7 +15,8 @@ import 'package:tempokit/view/my_tasks/my_tasks_page.dart';
 import 'package:tempokit/view/inbox/inbox_page.dart';
 import 'package:tempokit/view/search/search_page.dart';
 import 'package:tempokit/view/account/account_page.dart';
-import 'package:tempokit/view/widgets/debug_widget.dart';
+import 'package:tempokit/view/error_page.dart';
+import 'package:tempokit/view/debug_page.dart';
 
 abstract class Routes {
   static const initialPage = '/';
@@ -26,7 +27,8 @@ abstract class Routes {
   static const inboxPage = '/inbox-page';
   static const searchPage = '/search-page';
   static const accountPage = '/account-page';
-  static const debugWidget = '/debug-widget';
+  static const errorPage = '/error-page';
+  static const debugPage = '/debug-page';
 }
 
 class Router extends RouterBase {
@@ -120,14 +122,22 @@ class Router extends RouterBase {
           builder: (_) => AccountPage(key: typedArgs.key),
           settings: settings,
         );
-      case Routes.debugWidget:
-        if (hasInvalidArgs<DebugWidgetArguments>(args)) {
-          return misTypedArgsRoute<DebugWidgetArguments>(args);
+      case Routes.errorPage:
+        if (hasInvalidArgs<ErrorPageArguments>(args)) {
+          return misTypedArgsRoute<ErrorPageArguments>(args);
         }
-        final typedArgs =
-            args as DebugWidgetArguments ?? DebugWidgetArguments();
+        final typedArgs = args as ErrorPageArguments ?? ErrorPageArguments();
         return MaterialPageRoute<dynamic>(
-          builder: (_) => DebugWidget(key: typedArgs.key),
+          builder: (_) => ErrorPage(key: typedArgs.key),
+          settings: settings,
+        );
+      case Routes.debugPage:
+        if (hasInvalidArgs<DebugPageArguments>(args)) {
+          return misTypedArgsRoute<DebugPageArguments>(args);
+        }
+        final typedArgs = args as DebugPageArguments ?? DebugPageArguments();
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => DebugPage(key: typedArgs.key),
           settings: settings,
         );
       default:
@@ -188,8 +198,14 @@ class AccountPageArguments {
   AccountPageArguments({this.key});
 }
 
-//DebugWidget arguments holder class
-class DebugWidgetArguments {
+//ErrorPage arguments holder class
+class ErrorPageArguments {
   final Key key;
-  DebugWidgetArguments({this.key});
+  ErrorPageArguments({this.key});
+}
+
+//DebugPage arguments holder class
+class DebugPageArguments {
+  final Key key;
+  DebugPageArguments({this.key});
 }

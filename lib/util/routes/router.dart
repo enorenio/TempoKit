@@ -4,11 +4,12 @@ import 'package:tempokit/view/account/account_page.dart';
 import 'package:tempokit/view/auth/initial_page.dart';
 import 'package:tempokit/view/auth/sign_in_page.dart';
 import 'package:tempokit/view/auth/sign_up_page.dart';
+import 'package:tempokit/view/debug_page.dart';
+import 'package:tempokit/view/error_page.dart';
 import 'package:tempokit/view/home/home_page.dart';
 import 'package:tempokit/view/inbox/inbox_page.dart';
 import 'package:tempokit/view/my_tasks/my_tasks_page.dart';
 import 'package:tempokit/view/search/search_page.dart';
-import 'package:tempokit/view/widgets/debug_widget.dart';
 
 @MaterialAutoRouter()
 class $Router {
@@ -27,5 +28,6 @@ class $Router {
   InboxPage inboxPage;
   SearchPage searchPage;
   AccountPage accountPage;
-  DebugWidget debugWidget;
+  ErrorPage errorPage;
+  DebugPage debugPage;
 }

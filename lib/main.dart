@@ -25,7 +25,10 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'TempoKit',
         theme: themeData,
-        builder: ExtendedNavigator<Router>(router: Router()),
+        builder: ExtendedNavigator<Router>(
+          router: Router(),
+          initialRoute: DEBUG ? Routes.debugPage : Routes.initialPage
+        ),
       ),
     );
   }

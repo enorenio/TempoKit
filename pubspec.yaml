@@ -48,8 +48,19 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  fonts:
+    - family: Segoe UI
+      fonts:
+        - asset: assets/fonts/Segoe-UI.ttf
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-ExtraLight.ttf
+          weight: 200
+        
   assets:
     - assets/
+      
 
   # To add assets to your application, add an assets section, like this:
   # assets:

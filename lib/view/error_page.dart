@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class InitialPage extends StatelessWidget {
-  const InitialPage({Key key}) : super(key: key);
+class ErrorPage extends StatelessWidget {
+  const ErrorPage({Key key}) : super(key: key);
 
-  final Type className = InitialPage;
+  final Type className = ErrorPage;
 
   @override
   Widget build(BuildContext context) {
