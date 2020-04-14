@@ -14,13 +14,13 @@ import 'package:tempokit/model/user.dart';
 class ApiClient {
   final http.Client client;
 
-  ApiClient(this.client);
+  ApiClient({this.client});
 
-  final String baseUrl = 'someurl/';
+  final String baseUrl = 'api.someurl.org';
 
   Future<dynamic> _getJson(Uri uri) async {
     try {
-      final response = await client.get(uri);
+      final response = await http.get(uri);
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
@@ -32,7 +32,7 @@ class ApiClient {
   }
 
   Future<List<Project>> getAllProjects({String uEmail, int compId}) async {
-    final url = Uri.https(baseUrl, 'project', {});
+    Uri url = Uri.https(baseUrl, 'project', {});
 
     dynamic json = await _getJson(url);
     return json.map<Project>((item) => Project.fromJson(item)).toList();
