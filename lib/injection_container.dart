@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 import 'util/api_client.dart';
+import 'util/bloc/auth_bloc.dart';
 import 'util/network/network_info.dart';
 
 final sl = GetIt.instance;
@@ -20,7 +21,7 @@ Future<void> init() async {
 }
 
 void initBloc() {
-  //...
+  sl.registerFactory(() => AuthBloc());
 }
 
 void initCore() {

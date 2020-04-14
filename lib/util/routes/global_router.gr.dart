@@ -10,11 +10,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:tempokit/view/auth/initial_page.dart';
 import 'package:tempokit/view/auth/sign_in_page.dart';
 import 'package:tempokit/view/auth/sign_up_page.dart';
-import 'package:tempokit/view/home/home_page.dart';
-import 'package:tempokit/view/my_tasks/my_tasks_page.dart';
-import 'package:tempokit/view/inbox/inbox_page.dart';
-import 'package:tempokit/view/search/search_page.dart';
-import 'package:tempokit/view/account/account_page.dart';
+import 'package:tempokit/view/wrapper/wrapper_page.dart';
 import 'package:tempokit/view/error_page.dart';
 import 'package:tempokit/view/debug_page.dart';
 
@@ -22,20 +18,16 @@ abstract class Routes {
   static const initialPage = '/';
   static const signInPage = '/sign-in-page';
   static const signUpPage = '/sign-up-page';
-  static const homePage = '/home-page';
-  static const myTasksPage = '/my-tasks-page';
-  static const inboxPage = '/inbox-page';
-  static const searchPage = '/search-page';
-  static const accountPage = '/account-page';
+  static const wrapperPage = '/wrapper-page';
   static const errorPage = '/error-page';
   static const debugPage = '/debug-page';
 }
 
-class Router extends RouterBase {
+class GlobalRouter extends RouterBase {
   //This will probably be removed in future versions
   //you should call ExtendedNavigator.ofRouter<Router>() directly
   static ExtendedNavigatorState get navigator =>
-      ExtendedNavigator.ofRouter<Router>();
+      ExtendedNavigator.ofRouter<GlobalRouter>();
 
   @override
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -56,70 +48,27 @@ class Router extends RouterBase {
           return misTypedArgsRoute<SignInPageArguments>(args);
         }
         final typedArgs = args as SignInPageArguments ?? SignInPageArguments();
-        return PageRouteBuilder<dynamic>(
-          pageBuilder: (ctx, animation, secondaryAnimation) =>
-              SignInPage(key: typedArgs.key),
+        return MaterialPageRoute<dynamic>(
+          builder: (_) => SignInPage(key: typedArgs.key),
           settings: settings,
-          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
-          transitionDuration: const Duration(milliseconds: 300),
         );
       case Routes.signUpPage:
         if (hasInvalidArgs<SignUpPageArguments>(args)) {
           return misTypedArgsRoute<SignUpPageArguments>(args);
         }
         final typedArgs = args as SignUpPageArguments ?? SignUpPageArguments();
-        return PageRouteBuilder<dynamic>(
-          pageBuilder: (ctx, animation, secondaryAnimation) =>
-              SignUpPage(key: typedArgs.key),
-          settings: settings,
-          transitionsBuilder: TransitionsBuilders.slideLeftWithFade,
-          transitionDuration: const Duration(milliseconds: 300),
-        );
-      case Routes.homePage:
-        if (hasInvalidArgs<HomePageArguments>(args)) {
-          return misTypedArgsRoute<HomePageArguments>(args);
-        }
-        final typedArgs = args as HomePageArguments ?? HomePageArguments();
         return MaterialPageRoute<dynamic>(
-          builder: (_) => HomePage(key: typedArgs.key),
+          builder: (_) => SignUpPage(key: typedArgs.key),
           settings: settings,
         );
-      case Routes.myTasksPage:
-        if (hasInvalidArgs<MyTasksPageArguments>(args)) {
-          return misTypedArgsRoute<MyTasksPageArguments>(args);
+      case Routes.wrapperPage:
+        if (hasInvalidArgs<WrapperPageArguments>(args)) {
+          return misTypedArgsRoute<WrapperPageArguments>(args);
         }
         final typedArgs =
-            args as MyTasksPageArguments ?? MyTasksPageArguments();
+            args as WrapperPageArguments ?? WrapperPageArguments();
         return MaterialPageRoute<dynamic>(
-          builder: (_) => MyTasksPage(key: typedArgs.key),
-          settings: settings,
-        );
-      case Routes.inboxPage:
-        if (hasInvalidArgs<InboxPageArguments>(args)) {
-          return misTypedArgsRoute<InboxPageArguments>(args);
-        }
-        final typedArgs = args as InboxPageArguments ?? InboxPageArguments();
-        return MaterialPageRoute<dynamic>(
-          builder: (_) => InboxPage(key: typedArgs.key),
-          settings: settings,
-        );
-      case Routes.searchPage:
-        if (hasInvalidArgs<SearchPageArguments>(args)) {
-          return misTypedArgsRoute<SearchPageArguments>(args);
-        }
-        final typedArgs = args as SearchPageArguments ?? SearchPageArguments();
-        return MaterialPageRoute<dynamic>(
-          builder: (_) => SearchPage(key: typedArgs.key),
-          settings: settings,
-        );
-      case Routes.accountPage:
-        if (hasInvalidArgs<AccountPageArguments>(args)) {
-          return misTypedArgsRoute<AccountPageArguments>(args);
-        }
-        final typedArgs =
-            args as AccountPageArguments ?? AccountPageArguments();
-        return MaterialPageRoute<dynamic>(
-          builder: (_) => AccountPage(key: typedArgs.key),
+          builder: (_) => WrapperPage(key: typedArgs.key),
           settings: settings,
         );
       case Routes.errorPage:
@@ -168,34 +117,10 @@ class SignUpPageArguments {
   SignUpPageArguments({this.key});
 }
 
-//HomePage arguments holder class
-class HomePageArguments {
+//WrapperPage arguments holder class
+class WrapperPageArguments {
   final Key key;
-  HomePageArguments({this.key});
-}
-
-//MyTasksPage arguments holder class
-class MyTasksPageArguments {
-  final Key key;
-  MyTasksPageArguments({this.key});
-}
-
-//InboxPage arguments holder class
-class InboxPageArguments {
-  final Key key;
-  InboxPageArguments({this.key});
-}
-
-//SearchPage arguments holder class
-class SearchPageArguments {
-  final Key key;
-  SearchPageArguments({this.key});
-}
-
-//AccountPage arguments holder class
-class AccountPageArguments {
-  final Key key;
-  AccountPageArguments({this.key});
+  WrapperPageArguments({this.key});
 }
 
 //ErrorPage arguments holder class

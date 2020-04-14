@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const DEBUG = true;
+const DEBUG = false;
 
 ThemeData themeData = ThemeData(
   brightness: Brightness.dark,

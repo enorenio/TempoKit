@@ -5,6 +5,18 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '$this',
+              style: Theme.of(context).textTheme.title,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/util/routes/global_router.gr.dart';
 import 'injection_container.dart' as di;
 import 'injection_container.dart';
 import 'util/bloc/auth_bloc.dart';
 import 'util/consts.dart';
-import 'util/routes/router.gr.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +14,17 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  String _getDefaultRoute(AuthState state) {
+    if (DEBUG) {
+      return Routes.debugPage;
+    }
+    if (state is Authenticated) {
+      return Routes.wrapperPage;
+    } else {
+      return Routes.initialPage;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -25,9 +36,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'TempoKit',
         theme: themeData,
-        builder: ExtendedNavigator<Router>(
-          router: Router(),
-          initialRoute: DEBUG ? Routes.debugPage : Routes.initialPage
+        home: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) => ExtendedNavigator<GlobalRouter>(
+            router: GlobalRouter(),
+            initialRoute: _getDefaultRoute(state),
+          ),
         ),
       ),
     );

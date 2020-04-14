@@ -10,10 +10,10 @@ class AppStarted extends AuthEvent {
 }
 
 class LoginAttempt extends AuthEvent {
-  final String email;
+  final String uEmail;
   final String password;
 
-  LoginAttempt({this.email, this.password});
+  LoginAttempt({this.uEmail, this.password});
 
   @override
   String toString() => 'LoginAttempt event';
