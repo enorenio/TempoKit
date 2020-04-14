@@ -43,7 +43,7 @@ class _WrapperPageState extends State<WrapperPage> {
       _selectedIndex = index;
     });
     ExtendedNavigator.ofRouter<SubRouter>()
-        .pushNamed(_routes.elementAt(_selectedIndex));
+        .pushReplacementNamed(_routes.elementAt(_selectedIndex));
   }
 
   @override
