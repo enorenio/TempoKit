@@ -53,6 +53,12 @@ class _WrapperPageState extends State<WrapperPage> {
       body: ExtendedNavigator<SubRouter>(
           router: SubRouter(), initialRoute: Routes.homePage),
       bottomNavigationBar: BottomNavigationBar(
+        iconSize: 20.0,
+        selectedFontSize: 12.0,
+        unselectedFontSize: 10.0,
+        selectedLabelStyle: Theme.of(context).textTheme.caption,
+        unselectedLabelStyle: Theme.of(context).textTheme.overline,
+        type: BottomNavigationBarType.shifting,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

@@ -52,14 +52,17 @@ flutter:
     - family: Segoe UI
       fonts:
         - asset: assets/fonts/Segoe-UI.ttf
+        
     - family: Nunito
       fonts:
         - asset: assets/fonts/Nunito-Regular.ttf
         - asset: assets/fonts/Nunito-ExtraLight.ttf
           weight: 200
-        
+
   assets:
     - assets/
+    - assets/fonts/
+    - assets/images/
       
 
   # To add assets to your application, add an assets section, like this:
