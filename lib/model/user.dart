@@ -4,6 +4,13 @@ class User {
   String password;
   String workType;
 
+  User({
+    this.uEmail,
+    this.fullName,
+    this.password,
+    this.workType,
+  });
+
   User.fromJson(Map jsonMap)
       : uEmail = jsonMap['U_Email'],
         fullName = jsonMap['Full_Name'],

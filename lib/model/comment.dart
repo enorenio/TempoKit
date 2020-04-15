@@ -4,6 +4,13 @@ class Comment {
   String uEmail;
   int taskId;
 
+  Comment({
+    this.commId,
+    this.text,
+    this.uEmail,
+    this.taskId,
+  });
+
   Comment.fromJson(Map jsonMap)
       : commId = jsonMap['Comm_ID'],
         text = jsonMap['Text'],

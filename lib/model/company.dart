@@ -4,6 +4,13 @@ class Company {
   String uEmail;
   int pId;
 
+  Company({
+    this.compId,
+    this.name,
+    this.uEmail,
+    this.pId,
+  });
+
   Company.fromJson(Map jsonMap)
       : compId = jsonMap['Comp_ID'],
         name = jsonMap['Name'],

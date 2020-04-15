@@ -6,6 +6,15 @@ class Milestone {
   String uEmail;
   int pId;
 
+  Milestone({
+    this.mId,
+    this.name,
+    this.description,
+    this.dueDate,
+    this.uEmail,
+    this.pId,
+  });
+
   Milestone.fromJson(Map jsonMap)
       : mId = jsonMap['M_ID'],
         name = jsonMap['Name'],
