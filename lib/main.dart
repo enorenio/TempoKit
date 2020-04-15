@@ -2,14 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
-import 'injection_container.dart' as di;
 import 'injection_container.dart';
 import 'util/bloc/auth_bloc.dart';
 import 'util/consts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
+  await init();
   runApp(MyApp());
 }
 

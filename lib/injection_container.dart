@@ -13,22 +13,22 @@ Future<void> init() async {
   //! ApiClient
   sl.registerLazySingleton(() => ApiClient(client: sl()));
   //! Bloc
-  initBloc();
+  _initBloc();
   //! Core
-  initCore();
+  _initCore();
   //! External
-  await initExternal();
+  await _initExternal();
 }
 
-void initBloc() {
+void _initBloc() {
   sl.registerFactory(() => AuthBloc());
 }
 
-void initCore() {
+void _initCore() {
   sl.registerLazySingleton(() => NetworkInfo(sl()));
 }
 
-Future<void> initExternal() async {
+Future<void> _initExternal() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton(() => http.Client());

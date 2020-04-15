@@ -16,15 +16,11 @@ class _WrapperPageState extends State<WrapperPage> {
     AppBar(
       title: const Text('Home'),
     ),
-    AppBar(
-      title: const Text('asd1'),
-    ),
+    null,
     AppBar(
       title: const Text('Inbox'),
     ),
-    AppBar(
-      title: const Text('asd2'),
-    ),
+    null,
     AppBar(
       title: const Text('Account'),
     ),
@@ -53,11 +49,9 @@ class _WrapperPageState extends State<WrapperPage> {
       body: ExtendedNavigator<SubRouter>(
           router: SubRouter(), initialRoute: Routes.homePage),
       bottomNavigationBar: BottomNavigationBar(
-        iconSize: 20.0,
-        selectedFontSize: 12.0,
-        unselectedFontSize: 10.0,
-        selectedLabelStyle: Theme.of(context).textTheme.caption,
-        unselectedLabelStyle: Theme.of(context).textTheme.overline,
+        // iconSize: 20.0,
+        selectedLabelStyle: Theme.of(context).textTheme.overline,
+        unselectedLabelStyle: Theme.of(context).textTheme.caption,
         type: BottomNavigationBarType.shifting,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
