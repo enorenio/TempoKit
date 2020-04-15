@@ -74,7 +74,8 @@ class InitialPage extends StatelessWidget {
                     },
                     child: Text(
                       'Login',
-                      style: TextStyle(fontSize: 18.0),
+                      style: TextStyle(fontSize: 18.0,color: Colors.black87),
+                      
                     ),
                   ),
                 ),
