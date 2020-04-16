@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/util/bloc/auth_bloc.dart';
+import 'package:tempokit/view/auth/sign_in_page.dart';
+import 'package:tempokit/view/auth/sign_up_page.dart';
+import 'package:tempokit/util/routes/global_router.gr.dart';
+import 'package:auto_route/auto_route.dart';
 
 class InitialPage extends StatelessWidget {
   const InitialPage({Key key}) : super(key: key);
@@ -51,9 +55,9 @@ class InitialPage extends StatelessWidget {
                     onPressed: () {
                       //Navigator.push(
                         //context,
-                        //MaterialPageRoute(builder: (context) => Register()),);
-                        print('Hello');
-                    },
+                        //MaterialPageRoute(builder: (context) => SignUpPage()),);
+                        ExtendedNavigator.ofRouter<GlobalRouter>().pushNamed(Routes.signUpPage);
+                      },
                     child: Text(
                       'Create Account',
                       style: TextStyle(color: Colors.white, fontSize: 18.0),
@@ -70,8 +74,11 @@ class InitialPage extends StatelessWidget {
                         side: BorderSide(color: Color(0xFFC4C4C4), width: 1.2),
                         borderRadius: BorderRadius.circular(30.0)),
                     onPressed: () {
-                      print("Hello");
-                    },
+                      //Navigator.push(
+                        //context,
+                        //MaterialPageRoute(builder: (context) => SignInPage()),);
+                        ExtendedNavigator.ofRouter<GlobalRouter>().pushNamed(Routes.signInPage);
+                     },
                     child: Text(
                       'Login',
                       style: TextStyle(fontSize: 18.0,color: Colors.black87),
