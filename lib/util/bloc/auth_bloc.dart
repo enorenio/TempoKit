@@ -33,9 +33,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: '12345',
         workType: 'dev',
       );
+
       if (event.uEmail == _user.uEmail && event.password == _user.password) {
-        ExtendedNavigator.ofRouter<GlobalRouter>()
-            .pushNamedAndRemoveUntil(Routes.wrapperPage, (Route<dynamic> route) => false);
+        ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
+            Routes.wrapperPage, (Route<dynamic> route) => false);
         yield Authenticated(user: _user);
       } else {
         //... error showing
@@ -45,17 +46,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (event is LogoutAttempt) {
       print('LogoutAttempt');
-      ExtendedNavigator.ofRouter<GlobalRouter>()
-          .pushNamedAndRemoveUntil(Routes.initialPage, (Route<dynamic> route) => false);
+      ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
+          Routes.initialPage, (Route<dynamic> route) => false);
       yield Uninitialized();
     }
 
     if (event is RegistrationAttempt) {
       print('RegistrationAttempt');
+      // check with api call
+      // return either authenticated or error
+      bool noError = true;
+      User _user = User(
+        uEmail: 'morshnev.aleksey@gmail.com',
+        fullName: 'Aleksey Morshnev',
+        password: '12345',
+        workType: 'dev',
+      );
 
-      ExtendedNavigator.ofRouter<GlobalRouter>()
-          .pushNamedAndRemoveUntil(Routes.wrapperPage, (Route<dynamic> route) => false);
-      yield Authenticated();
+      if (noError) {
+        ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
+            Routes.wrapperPage, (Route<dynamic> route) => false);
+        yield Authenticated(user: _user);
+      } else {
+        //... error showing
+        // yield Error();
+      }
     }
   }
 }
