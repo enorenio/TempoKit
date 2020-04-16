@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'util/api_client.dart';
 import 'util/bloc/auth_bloc.dart';
 import 'util/network/network_info.dart';
+import 'util/repository.dart';
 
 final sl = GetIt.instance;
 
@@ -14,6 +15,11 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ApiClient(client: sl()));
   //! Bloc
   _initBloc();
+  //! Repository
+  sl.registerLazySingleton<Repository>(() => Repository(
+        apiClient: sl(),
+        networkInfo: sl(),
+      ));
   //! Core
   _initCore();
   //! External

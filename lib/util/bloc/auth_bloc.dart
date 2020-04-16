@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/material.dart';
 
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
@@ -33,8 +33,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         password: '12345',
         workType: 'dev',
       );
-      if(event.uEmail == _user.uEmail && event.password == _user.password){
-        ExtendedNavigator.ofRouter<GlobalRouter>().pushReplacementNamed(Routes.wrapperPage);
+      if (event.uEmail == _user.uEmail && event.password == _user.password) {
+        ExtendedNavigator.ofRouter<GlobalRouter>()
+            .pushNamedAndRemoveUntil(Routes.wrapperPage, (Route<dynamic> route) => false);
         yield Authenticated(user: _user);
       } else {
         //... error showing
@@ -43,12 +44,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
 
     if (event is LogoutAttempt) {
-      //...
+      print('LogoutAttempt');
+      ExtendedNavigator.ofRouter<GlobalRouter>()
+          .pushNamedAndRemoveUntil(Routes.initialPage, (Route<dynamic> route) => false);
       yield Uninitialized();
     }
 
     if (event is RegistrationAttempt) {
-      //...
+      print('RegistrationAttempt');
+
+      ExtendedNavigator.ofRouter<GlobalRouter>()
+          .pushNamedAndRemoveUntil(Routes.wrapperPage, (Route<dynamic> route) => false);
       yield Authenticated();
     }
   }

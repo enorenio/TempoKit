@@ -97,6 +97,14 @@ class _ChipRowState extends State<ChipRow> {
     TextStyle _labelStyle = Theme.of(context).textTheme.body2;
     Color _selectedColor = Theme.of(context).accentColor;
 
+    onSelected(index) {
+      return (bool selected) {
+        setState(() {
+          _value = selected ? index : null;
+        });
+      };
+    }
+
     return ListView(
       scrollDirection: Axis.horizontal,
       physics: BouncingScrollPhysics(),
@@ -109,11 +117,7 @@ class _ChipRowState extends State<ChipRow> {
           labelStyle: _labelStyle,
           selectedColor: _selectedColor,
           selected: _value == 0,
-          onSelected: (bool selected) {
-            setState(() {
-              _value = selected ? 0 : null;
-            });
-          },
+          onSelected: onSelected(0),
         ),
         SizedBox(width: 4.0),
         ChoiceChip(
@@ -123,11 +127,7 @@ class _ChipRowState extends State<ChipRow> {
           labelStyle: _labelStyle,
           selectedColor: _selectedColor,
           selected: _value == 1,
-          onSelected: (bool selected) {
-            setState(() {
-              _value = selected ? 1 : null;
-            });
-          },
+          onSelected: onSelected(1),
         ),
         SizedBox(width: 4.0),
         ChoiceChip(
@@ -137,11 +137,7 @@ class _ChipRowState extends State<ChipRow> {
           labelStyle: _labelStyle,
           selectedColor: _selectedColor,
           selected: _value == 2,
-          onSelected: (bool selected) {
-            setState(() {
-              _value = selected ? 2 : null;
-            });
-          },
+          onSelected: onSelected(2),
         ),
         SizedBox(width: 4.0),
         ChoiceChip(
@@ -151,11 +147,7 @@ class _ChipRowState extends State<ChipRow> {
           labelStyle: _labelStyle,
           selectedColor: _selectedColor,
           selected: _value == 3,
-          onSelected: (bool selected) {
-            setState(() {
-              _value = selected ? 3 : null;
-            });
-          },
+          onSelected: onSelected(3),
         ),
         SizedBox(width: 16.0),
       ],

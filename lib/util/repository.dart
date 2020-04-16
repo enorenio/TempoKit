@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:tempokit/model/column.dart';
 import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/company.dart';
@@ -10,41 +8,30 @@ import 'package:tempokit/model/report.dart';
 import 'package:tempokit/model/tag.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
+import 'package:tempokit/util/api_client.dart';
+import 'package:tempokit/util/network/network_info.dart';
 
-class ApiClient {
-  final http.Client client;
+class Repository {
+  final ApiClient apiClient;
+  final NetworkInfo networkInfo;
 
-  ApiClient({this.client});
-
-  final String baseUrl = 'api.someurl.org';
-
-  Future<dynamic> _getJson(Uri uri) async {
-    try {
-      final response = await http.get(uri);
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        //...
-      }
-    } catch (err) {
-      //...
-    }
-  }
+  Repository({this.apiClient, this.networkInfo});
 
   //! User
-
-  // dynamic 
 
   //! Project
 
   Future<List<Project>> getProjects(
-      {bool isFavorited = false, String uEmail, int compId}) async {
-    Uri url = isFavorited
-        ? Uri.https(baseUrl, 'project/favorited', {})
-        : Uri.https(baseUrl, 'project', {});
-
-    dynamic json = await _getJson(url);
-    return json.map<Project>((item) => Project.fromJson(item)).toList();
+      {bool isFavorited, String uEmail, int compId}) async {
+    if (await networkInfo.isConnected) {
+      final remoteProjects = await apiClient.getProjects(
+          isFavorited: isFavorited ?? false, uEmail: uEmail, compId: compId);
+      //.. save cache
+      return remoteProjects;
+    } else {
+      // get cache
+      return null;
+    }
   }
 
   dynamic createProject() async {}
