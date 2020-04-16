@@ -56,17 +56,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // check with api call
       // return either authenticated or error
       bool noError = true;
-      User _user = User(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        fullName: 'Aleksey Morshnev',
-        password: '12345',
-        workType: 'dev',
-      );
 
       if (noError) {
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
-        yield Authenticated(user: _user);
+        yield Authenticated(user: event.user);
       } else {
         //... error showing
         // yield Error();
