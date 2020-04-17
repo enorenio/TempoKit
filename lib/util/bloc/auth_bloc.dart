@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
+import 'package:loading/loading.dart' as loader;
 
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/errors.dart';
@@ -11,6 +14,36 @@ import '../repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
+
+Widget loadingWidget = Scaffold(
+  body: Center(
+    child: loader.Loading(
+      indicator: BallSpinFadeLoaderIndicator(),
+      size: 40.0,
+    ),
+  ),
+);
+
+showError(BuildContext context, AuthError state) {
+  SchedulerBinding.instance.addPostFrameCallback((_) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: state.error.title,
+        content: state.error.content,
+        actions: [
+          FlatButton(
+            child: Text('OK'),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+          ),
+        ],
+      ),
+      barrierDismissible: true,
+    );
+  });
+}
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Repository repository;
@@ -30,7 +63,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (event is LoginAttempt) {
       print('LoginAttempt');
-      User _user = await repository.logIn();
+      User _user = await repository.logIn(
+          uEmail: event.uEmail, password: event.password);
 
       if (_user == null) {
         yield NetworkError(
@@ -65,15 +99,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print('RegistrationAttempt');
       // check with api call
       // return either authenticated or error
-      bool noError = true;
-
-      if (noError) {
+      bool _result = await repository.register(user: event.user);
+      //TODO: Change Strings to consts
+      if (_result == null) {
+        yield NetworkError(
+          error: IError(
+            title: Text('Register Error'),
+            content: Text('The Internet connection appears to be offline.'),
+          ),
+        );
+      } else if (_result) {
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
         yield Authenticated(user: event.user);
       } else {
-        //... error showing
-        // yield Error();
+        yield WrongCredentialsError(
+          error: IError(
+            title: Text('Register Error'),
+            content: Text('User already exists'),
+          ),
+        );
       }
     }
   }

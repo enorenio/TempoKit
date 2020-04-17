@@ -49,6 +49,17 @@ class ApiClient {
     return _user;
   }
 
+  Future<bool> register({User user}) async {
+    // Uri url = Uri.https(baseUrl, 'user/register', {});
+
+    // dynamic json = await _getJson(url);
+    // return json['answer'];
+    bool _answer = await Future.delayed(Duration(seconds: 2), () {
+      return true;
+    });
+    return _answer;
+  }
+
   //! Project
 
   Future<List<Project>> getProjects(

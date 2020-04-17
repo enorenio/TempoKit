@@ -1,34 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:tempokit/view/auth/sign_up_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../util/bloc/auth_bloc.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:loading/loading.dart' as loader;
-/*class SignInPage extends StatelessWidget {
-  const SignInPage({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '$this',
-              style: Theme.of(context).textTheme.title,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-*/
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key key}) : super(key: key);
@@ -66,6 +42,7 @@ class _SignInState extends State<SignInPage> {
     return exp.hasMatch(email.trim());
     // we trim to remove trailing white spaces
   }
+
 /*bool isPasswordValid(String password) {
     RegExp exp = new RegExp (
         "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})",  на всякий случай, но сейчас пароль хотя бы в 4 символа
@@ -80,33 +57,9 @@ class _SignInState extends State<SignInPage> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is Loading) {
         print('$this loading');
-        return Scaffold(
-          body: Center(
-            child: loader.Loading(
-              indicator: BallSpinFadeLoaderIndicator(),
-              size: 40.0,
-            ),
-          ),
-        );
-      }else if (state is AuthError) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-              title: state.error.title,
-              content: state.error.content,
-              actions: [
-                FlatButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                  },
-                ),
-              ],
-            ),
-            barrierDismissible: true,
-          );
-        });
+        return loadingWidget;
+      } else if (state is AuthError) {
+        showError(context, state);
       }
       return Scaffold(
         //backgroundColor: Colors.black12,

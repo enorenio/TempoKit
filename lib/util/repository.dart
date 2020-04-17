@@ -12,8 +12,6 @@ import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/api_client.dart';
 import 'package:tempokit/util/network/network_info.dart';
 
-import 'bloc/utility_bloc.dart';
-
 class Repository {
   final ApiClient apiClient;
   final NetworkInfo networkInfo;
@@ -24,7 +22,16 @@ class Repository {
 
   Future<User> logIn({String uEmail, String password}) async {
     if (await networkInfo.isConnected) {
-      final answer = await apiClient.logIn();
+      final answer = await apiClient.logIn(uEmail: uEmail, password: password);
+      return answer;
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> register({User user}) async {
+    if (await networkInfo.isConnected) {
+      final answer = await apiClient.register(user: user);
       return answer;
     } else {
       return null;
