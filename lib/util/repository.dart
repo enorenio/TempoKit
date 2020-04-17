@@ -1,3 +1,4 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/column.dart';
 import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/company.dart';
@@ -11,6 +12,8 @@ import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/api_client.dart';
 import 'package:tempokit/util/network/network_info.dart';
 
+import 'bloc/utility_bloc.dart';
+
 class Repository {
   final ApiClient apiClient;
   final NetworkInfo networkInfo;
@@ -18,6 +21,15 @@ class Repository {
   Repository({this.apiClient, this.networkInfo});
 
   //! User
+
+  Future<User> logIn({String uEmail, String password}) async {
+    if (await networkInfo.isConnected) {
+      final answer = await apiClient.logIn();
+      return answer;
+    } else {
+      return null;
+    }
+  }
 
   //! Project
 

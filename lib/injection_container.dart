@@ -17,7 +17,7 @@ Future<void> init() async {
   //! Bloc
   _initBloc();
   //! Repository
-  sl.registerLazySingleton<Repository>(() => Repository(
+  sl.registerLazySingleton(() => Repository(
         apiClient: sl(),
         networkInfo: sl(),
       ));
@@ -28,7 +28,7 @@ Future<void> init() async {
 }
 
 void _initBloc() {
-  sl.registerFactory(() => AuthBloc());
+  sl.registerFactory(() => AuthBloc(repository: sl()));
   sl.registerFactory(() => UtilityBloc());
 }
 

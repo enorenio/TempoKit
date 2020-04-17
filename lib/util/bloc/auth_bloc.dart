@@ -4,13 +4,18 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tempokit/model/user.dart';
+import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
+
+import '../repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  // data and constructor
+  final Repository repository;
+
+  AuthBloc({this.repository}) : assert(repository != null);
 
   @override
   AuthState get initialState => Uninitialized();
@@ -19,28 +24,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
     if (event is AppStarted) {
       yield Uninitialized();
-    } else {
-      yield Loading();
     }
+
+    yield Loading();
 
     if (event is LoginAttempt) {
       print('LoginAttempt');
-      // check with api call
-      // return either authenticated or error
-      User _user = User(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        fullName: 'Aleksey Morshnev',
-        password: '12345',
-        workType: 'dev',
-      );
+      User _user = await repository.logIn();
 
-      if (event.uEmail == _user.uEmail && event.password == _user.password) {
+      if (_user == null) {
+        yield NetworkError(
+          error: IError(
+            title: Text('Login Error'),
+            content: Text('The Internet connection appears to be offline.'),
+          ),
+        );
+      } else if (event.uEmail == _user.uEmail &&
+          event.password == _user.password) {
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
         yield Authenticated(user: _user);
       } else {
-        //... error showing
-        // yield Error();
+        yield WrongCredentialsError(
+          error: IError(
+            title: Text('Login Error'),
+            content: Text('User does not exist'),
+          ),
+        );
       }
     }
 

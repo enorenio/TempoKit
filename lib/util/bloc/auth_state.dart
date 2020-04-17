@@ -14,8 +14,18 @@ class Authenticated extends AuthState {
 
 class Loading extends AuthState {}
 
-class Error extends AuthState {
-  final String message;
+class AuthError extends AuthState {
+  IError error;
+}
 
-  Error({this.message});
+class NetworkError extends AuthError {
+  IError error;
+
+  NetworkError({this.error});
+}
+
+class WrongCredentialsError extends AuthError {
+  IError error;
+
+  WrongCredentialsError({this.error});
 }

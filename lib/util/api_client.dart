@@ -33,7 +33,21 @@ class ApiClient {
 
   //! User
 
-  // dynamic 
+  Future<User> logIn({String uEmail, String password}) async {
+    // Uri url = Uri.https(baseUrl, 'user/login', {});
+
+    // dynamic json = await _getJson(url);
+    // return json['answer'];
+    User _user = await Future.delayed(Duration(seconds: 2), () {
+      return User(
+        uEmail: 'morshnev.aleksey@gmail.com',
+        fullName: 'Aleksey Morshnev',
+        password: '12345',
+        workType: 'dev',
+      );
+    });
+    return _user;
+  }
 
   //! Project
 

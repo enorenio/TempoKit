@@ -27,7 +27,6 @@ class UtilityBloc extends Bloc<UtilityEvent, UtilityState> {
             onPressed: () {
               print('Retry pressed');
             },
-
           ),
           content: Text(
             state.message,
