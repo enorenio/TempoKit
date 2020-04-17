@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/util/bloc/utility_bloc.dart';
 import 'package:tempokit/util/routes/sub_router.gr.dart';
 
 class WrapperPage extends StatefulWidget {
@@ -46,8 +48,11 @@ class _WrapperPageState extends State<WrapperPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBarOptions.elementAt(_selectedIndex),
-      body: ExtendedNavigator<SubRouter>(
-          router: SubRouter(), initialRoute: Routes.homePage),
+      body: BlocListener<UtilityBloc, UtilityState>(
+        listener: UtilityBloc.listener,
+        child: ExtendedNavigator<SubRouter>(
+            router: SubRouter(), initialRoute: Routes.homePage),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         // iconSize: 20.0,
         selectedLabelStyle: Theme.of(context).textTheme.overline,

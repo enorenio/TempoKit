@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'util/api_client.dart';
 import 'util/bloc/auth_bloc.dart';
+import 'util/bloc/utility_bloc.dart';
 import 'util/network/network_info.dart';
 import 'util/repository.dart';
 
@@ -28,6 +29,7 @@ Future<void> init() async {
 
 void _initBloc() {
   sl.registerFactory(() => AuthBloc());
+  sl.registerFactory(() => UtilityBloc());
 }
 
 void _initCore() {
