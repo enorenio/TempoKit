@@ -20,7 +20,7 @@ class ApiClient {
   ApiClient({this.client});
 
   final String baseUrl = 'tempokit.azurewebsites.net';
-
+  //TODO: transform error handling from if-else to try-catch-finally statements
   Future<dynamic> _getJson(Uri uri, {Map<String, String> headers}) async {
     try {
       headers ??= {

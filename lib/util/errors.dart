@@ -20,4 +20,10 @@ class AnyServerError {
   });
 }
 
-class InternalNetworkError {}
+class InternalNetworkError {
+  String title;
+
+  InternalNetworkError({
+    this.title,
+  });
+}

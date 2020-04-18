@@ -42,7 +42,7 @@ class Repository {
         return false;
       }
     } else {
-      return InternalNetworkError();
+      return InternalNetworkError(title: 'Login Error');
     }
   }
 
@@ -61,7 +61,7 @@ class Repository {
         return false;
       }
     } else {
-      return InternalNetworkError();
+      return InternalNetworkError(title: 'Register Error');
     }
   }
 

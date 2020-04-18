@@ -21,13 +21,24 @@ class AuthError extends AuthState {
 class NetworkError extends AuthError {
   IError error;
 
-  NetworkError({this.error});
+  NetworkError({InternalNetworkError internalError}) {
+    error = IError(
+      title: Text(internalError.title),
+      content: Text('The Internet connection appears to be offline.'),
+    );
+  }
 }
 
 class ServerError extends AuthError {
   IError error;
 
-  ServerError({this.error});
+  ServerError({AnyServerError internalError}) {
+    error = IError(
+      title: Text(internalError.reasonPhrase),
+      content: Text(
+          'Code: ${internalError.statusCode}: ${internalError.reasonPhrase}'),
+    );
+  }
 }
 
 class WrongCredentialsError extends AuthError {

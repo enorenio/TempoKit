@@ -70,21 +70,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           uEmail: event.uEmail, password: event.password);
 
       if (_result is InternalNetworkError) {
-        yield NetworkError(
-          error: IError(
-            title: Text('Login Error'),
-            content: Text('The Internet connection appears to be offline.'),
-          ),
-        );
+        yield NetworkError(internalError: _result);
       } else if (_result is AnyServerError) {
-        int _statusCode = _result.statusCode;
-        String _reasonPhrase = _result.reasonPhrase;
-        yield ServerError(
-          error: IError(
-            title: Text(_reasonPhrase),
-            content: Text('Code: $_statusCode: $_reasonPhrase'),
-          ),
-        );
+        yield ServerError(internalError: _result);
       } else if (_result is User) {
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
@@ -111,21 +99,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       dynamic _result = await repository.register(user: event.user);
       //TODO: Change Strings to consts
       if (_result is InternalNetworkError) {
-        yield NetworkError(
-          error: IError(
-            title: Text('Register Error'),
-            content: Text('The Internet connection appears to be offline.'),
-          ),
-        );
+        yield NetworkError(internalError: _result);
       } else if (_result is AnyServerError) {
-        int _statusCode = _result.statusCode;
-        String _reasonPhrase = _result.reasonPhrase;
-        yield ServerError(
-          error: IError(
-            title: Text(_reasonPhrase),
-            content: Text('Code: $_statusCode: $_reasonPhrase'),
-          ),
-        );
+        yield ServerError(internalError: _result);
       } else if (_result) {
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
