@@ -11,12 +11,15 @@ import 'package:tempokit/model/tag.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
 
+import 'errors.dart';
+
 class ApiClient {
   final http.Client client;
+  final JsonEncoder jsonEncoder = JsonEncoder();
 
   ApiClient({this.client});
 
-  final String baseUrl = 'api.someurl.org';
+  final String baseUrl = 'tempokit.azurewebsites.net';
 
   Future<dynamic> _getJson(Uri uri) async {
     try {
@@ -24,7 +27,34 @@ class ApiClient {
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
-        //...
+        return AnyServerError(
+          statusCode: response.statusCode,
+          reasonPhrase: response.reasonPhrase,
+        );
+      }
+    } catch (err) {
+      //...
+    }
+  }
+
+  Future<dynamic> _postJson(Uri uri,
+      {Map<String, String> headers, body}) async {
+    try {
+      headers ??= {
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+      };
+      final response = await http.post(uri, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        return AnyServerError(
+          statusCode: response.statusCode,
+          reasonPhrase: response.reasonPhrase,
+        );
       }
     } catch (err) {
       //...
@@ -49,14 +79,17 @@ class ApiClient {
     return _user;
   }
 
-  Future<bool> register({User user}) async {
-    // Uri url = Uri.https(baseUrl, 'user/register', {});
+  Future<dynamic> register({User user}) async {
+    Uri url = Uri.https(baseUrl, 'signup');
 
-    // dynamic json = await _getJson(url);
-    // return json['answer'];
-    bool _answer = await Future.delayed(Duration(seconds: 2), () {
-      return true;
-    });
+    Map _bodyMap = user.toJson();
+    String _body = jsonEncoder.convert(_bodyMap);
+
+    dynamic _answer = await _postJson(
+      url,
+      body: _body,
+    );
+
     return _answer;
   }
 

@@ -9,3 +9,15 @@ class IError {
     this.content,
   });
 }
+
+class AnyServerError {
+  int statusCode;
+  String reasonPhrase;
+
+  AnyServerError({
+    this.statusCode,
+    this.reasonPhrase,
+  });
+}
+
+class InternalNetworkError {}

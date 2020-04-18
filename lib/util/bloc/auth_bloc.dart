@@ -99,13 +99,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print('RegistrationAttempt');
       // check with api call
       // return either authenticated or error
-      bool _result = await repository.register(user: event.user);
+      dynamic _result = await repository.register(user: event.user);
       //TODO: Change Strings to consts
-      if (_result == null) {
+      if (_result is InternalNetworkError) {
         yield NetworkError(
           error: IError(
             title: Text('Register Error'),
             content: Text('The Internet connection appears to be offline.'),
+          ),
+        );
+      } else if (_result is AnyServerError) {
+        int _statusCode = _result.statusCode;
+        String _reasonPhrase = _result.reasonPhrase;
+        yield ServerError(
+          error: IError(
+            title: Text(_reasonPhrase),
+            content: Text('Code: $_statusCode: $_reasonPhrase'),
           ),
         );
       } else if (_result) {

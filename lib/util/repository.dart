@@ -1,4 +1,3 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/column.dart';
 import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/company.dart';
@@ -11,6 +10,8 @@ import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/api_client.dart';
 import 'package:tempokit/util/network/network_info.dart';
+
+import 'errors.dart';
 
 class Repository {
   final ApiClient apiClient;
@@ -29,12 +30,21 @@ class Repository {
     }
   }
 
-  Future<bool> register({User user}) async {
+  Future<dynamic> register({User user}) async {
     if (await networkInfo.isConnected) {
-      final answer = await apiClient.register(user: user);
-      return answer;
+      final _apiAnswer = await apiClient.register(user: user);
+      String _token;
+      if (_apiAnswer is AnyServerError) {
+        return _apiAnswer;
+      } else if (_apiAnswer['message'] == null && _apiAnswer['auth']) {
+        _token = _apiAnswer['token'];
+        // store token somewhere
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return null;
+      return InternalNetworkError();
     }
   }
 

@@ -24,6 +24,12 @@ class NetworkError extends AuthError {
   NetworkError({this.error});
 }
 
+class ServerError extends AuthError {
+  IError error;
+
+  ServerError({this.error});
+}
+
 class WrongCredentialsError extends AuthError {
   IError error;
 
