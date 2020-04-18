@@ -21,12 +21,28 @@ class Repository {
 
   //! User
 
-  Future<User> logIn({String uEmail, String password}) async {
+  Future<dynamic> logIn({String uEmail, String password}) async {
     if (await networkInfo.isConnected) {
-      final answer = await apiClient.logIn(uEmail: uEmail, password: password);
-      return answer;
+      final _apiAnswer =
+          await apiClient.logIn(uEmail: uEmail, password: password);
+      String _token;
+      if (_apiAnswer is AnyServerError) {
+        return _apiAnswer;
+      } else if (_apiAnswer['auth']) {
+        _token = _apiAnswer['token'];
+        // store token somewhere
+        User _user = User(
+          uEmail: 'morshnev.aleksey@gmail.com',
+          fullName: 'Aleksey Morshnev',
+          password: '12345',
+          workType: 'dev',
+        );
+        return _user;
+      } else {
+        return false;
+      }
     } else {
-      return null;
+      return InternalNetworkError();
     }
   }
 

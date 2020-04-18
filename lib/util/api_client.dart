@@ -21,9 +21,16 @@ class ApiClient {
 
   final String baseUrl = 'tempokit.azurewebsites.net';
 
-  Future<dynamic> _getJson(Uri uri) async {
+  Future<dynamic> _getJson(Uri uri, {Map<String, String> headers}) async {
     try {
-      final response = await http.get(uri);
+      headers ??= {
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'application/json',
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+      };
+      final response = await http.get(uri, headers: headers);
       if (response.statusCode == 200) {
         return json.decode(response.body);
       } else {
@@ -63,20 +70,21 @@ class ApiClient {
 
   //! User
 
-  Future<User> logIn({String uEmail, String password}) async {
-    // Uri url = Uri.https(baseUrl, 'user/login', {});
+  Future<dynamic> logIn({String uEmail, String password}) async {
+    Uri url = Uri.https(baseUrl, 'auth');
 
-    // dynamic json = await _getJson(url);
-    // return json['answer'];
-    User _user = await Future.delayed(Duration(seconds: 2), () {
-      return User(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        fullName: 'Aleksey Morshnev',
-        password: '12345',
-        workType: 'dev',
-      );
-    });
-    return _user;
+    Map _bodyMap = {
+      'email': uEmail,
+      'password': password,
+    };
+    String _body = jsonEncoder.convert(_bodyMap);
+
+    dynamic _answer = await _postJson(
+      url,
+      body: _body,
+    );
+
+    return _answer;
   }
 
   Future<dynamic> register({User user}) async {

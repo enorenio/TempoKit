@@ -63,21 +63,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (event is LoginAttempt) {
       print('LoginAttempt');
-      User _user = await repository.logIn(
+      dynamic _result = await repository.logIn(
           uEmail: event.uEmail, password: event.password);
 
-      if (_user == null) {
+      if (_result == null) {
         yield NetworkError(
           error: IError(
             title: Text('Login Error'),
             content: Text('The Internet connection appears to be offline.'),
           ),
         );
-      } else if (event.uEmail == _user.uEmail &&
-          event.password == _user.password) {
+      } else if (_result is User) {
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
-        yield Authenticated(user: _user);
+        yield Authenticated(user: _result);
       } else {
         yield WrongCredentialsError(
           error: IError(
