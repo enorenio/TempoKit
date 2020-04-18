@@ -25,7 +25,7 @@ class ApiClient {
     try {
       headers ??= {
         'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': '*/*',
         'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
@@ -49,7 +49,7 @@ class ApiClient {
     try {
       headers ??= {
         'Cache-Control': 'no-cache',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
         'Accept': '*/*',
         'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
@@ -77,11 +77,11 @@ class ApiClient {
       'u_email': uEmail,
       'password': password,
     };
-    String _body = jsonEncoder.convert(_bodyMap);
+    // String _body = jsonEncoder.convert(_bodyMap);
 
     dynamic _answer = await _postJson(
       url,
-      body: _body,
+      body: _bodyMap,
     );
 
     return _answer;
@@ -91,11 +91,11 @@ class ApiClient {
     Uri url = Uri.https(baseUrl, 'signup');
 
     Map _bodyMap = user.toJson();
-    String _body = jsonEncoder.convert(_bodyMap);
+    // String _body = jsonEncoder.convert(_bodyMap);
 
     dynamic _answer = await _postJson(
       url,
-      body: _body,
+      body: _bodyMap,
     );
 
     return _answer;
