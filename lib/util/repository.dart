@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:tempokit/model/column.dart';
 import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/company.dart';
@@ -9,6 +11,8 @@ import 'package:tempokit/model/tag.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/api_client.dart';
+import 'package:tempokit/util/cache_controller.dart';
+import 'package:tempokit/util/consts.dart';
 import 'package:tempokit/util/network/network_info.dart';
 import 'package:encrypt/encrypt.dart';
 
@@ -17,11 +21,13 @@ import 'errors.dart';
 class Repository {
   final ApiClient apiClient;
   final NetworkInfo networkInfo;
+  final CacheController cacheController;
   static final Key _key = Key.fromUtf8('moy_modniy_klu4ik_dlinoy_32_bita');
   static final IV _iv = IV.fromLength(16);
   static final Encrypter _encrypter = Encrypter(AES(_key));
+  final JsonEncoder jsonEncoder = JsonEncoder();
 
-  Repository({this.apiClient, this.networkInfo});
+  Repository({this.apiClient, this.networkInfo, this.cacheController});
 
   //! User
 
@@ -35,7 +41,11 @@ class Repository {
         return _apiAnswer;
       } else if (_apiAnswer['auth']) {
         _token = _apiAnswer['token'];
-        // store token somewhere
+
+        cacheController.writeKey(AUTH_CACHE_KEY, _token);
+        String _userCacheString = jsonEncoder.convert(_apiAnswer['user']);
+        cacheController.writeKey(USER_CACHE_KEY, _userCacheString);
+
         User _user = User.fromJson(_apiAnswer['user']);
         return _user;
       } else {
@@ -55,7 +65,13 @@ class Repository {
         return _apiAnswer;
       } else if (_apiAnswer['message'] == null && _apiAnswer['auth']) {
         _token = _apiAnswer['token'];
-        // store token somewhere
+
+        cacheController.writeKey(AUTH_CACHE_KEY, _token);
+        user..password='';
+        Map _userMap = user.toJson();
+        String _userCacheString = jsonEncoder.convert(_userMap);
+        cacheController.writeKey(USER_CACHE_KEY, _userCacheString);
+
         return true;
       } else {
         return false;

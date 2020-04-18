@@ -27,3 +27,5 @@ class InternalNetworkError {
     this.title,
   });
 }
+
+class CacheError {}

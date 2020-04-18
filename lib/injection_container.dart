@@ -2,6 +2,7 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:tempokit/util/cache_controller.dart';
 
 import 'util/api_client.dart';
 import 'util/bloc/auth_bloc.dart';
@@ -17,10 +18,10 @@ Future<void> init() async {
   //! Bloc
   _initBloc();
   //! Repository
-  sl.registerLazySingleton(() => Repository(
-        apiClient: sl(),
-        networkInfo: sl(),
-      ));
+  sl.registerLazySingleton(() =>
+      Repository(apiClient: sl(), networkInfo: sl(), cacheController: sl()));
+  //! Cache
+  sl.registerLazySingleton(() => CacheController(sharedPreferences: sl()));
   //! Core
   _initCore();
   //! External
@@ -28,7 +29,7 @@ Future<void> init() async {
 }
 
 void _initBloc() {
-  sl.registerFactory(() => AuthBloc(repository: sl()));
+  sl.registerFactory(() => AuthBloc(repository: sl(), cacheController: sl()));
   sl.registerFactory(() => UtilityBloc());
 }
 
