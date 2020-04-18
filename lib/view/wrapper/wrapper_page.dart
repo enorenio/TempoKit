@@ -54,6 +54,7 @@ class _WrapperPageState extends State<WrapperPage> {
             router: SubRouter(), initialRoute: Routes.homePage),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Color.fromRGBO(60, 60, 60, 1),
         // iconSize: 20.0,
         selectedLabelStyle: Theme.of(context).textTheme.overline,
         unselectedLabelStyle: Theme.of(context).textTheme.caption,
@@ -81,8 +82,9 @@ class _WrapperPageState extends State<WrapperPage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).accentColor,
+        //selectedItemColor: Theme.of(context).accentColor,
         onTap: _onItemTapped,
+        selectedItemColor: Colors.amber[800],
       ),
     );
   }
