@@ -24,6 +24,9 @@ Widget loadingWidget = Scaffold(
   ),
 );
 
+//TODO: this is bad solution, find another one
+Widget tempWidget = Scaffold();
+
 showError(BuildContext context, AuthError state) {
   SchedulerBinding.instance.addPostFrameCallback((_) {
     showDialog(
@@ -66,11 +69,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       dynamic _result = await repository.logIn(
           uEmail: event.uEmail, password: event.password);
 
-      if (_result == null) {
+      if (_result is InternalNetworkError) {
         yield NetworkError(
           error: IError(
             title: Text('Login Error'),
             content: Text('The Internet connection appears to be offline.'),
+          ),
+        );
+      } else if (_result is AnyServerError) {
+        int _statusCode = _result.statusCode;
+        String _reasonPhrase = _result.reasonPhrase;
+        yield ServerError(
+          error: IError(
+            title: Text(_reasonPhrase),
+            content: Text('Code: $_statusCode: $_reasonPhrase'),
           ),
         );
       } else if (_result is User) {
@@ -96,8 +108,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (event is RegistrationAttempt) {
       print('RegistrationAttempt');
-      // check with api call
-      // return either authenticated or error
       dynamic _result = await repository.register(user: event.user);
       //TODO: Change Strings to consts
       if (_result is InternalNetworkError) {

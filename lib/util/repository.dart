@@ -10,12 +10,16 @@ import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/api_client.dart';
 import 'package:tempokit/util/network/network_info.dart';
+import 'package:encrypt/encrypt.dart';
 
 import 'errors.dart';
 
 class Repository {
   final ApiClient apiClient;
   final NetworkInfo networkInfo;
+  static final Key _key = Key.fromUtf8('moy_modniy_klu4ik_dlinoy_32_bita');
+  static final IV _iv = IV.fromLength(16);
+  static final Encrypter _encrypter = Encrypter(AES(_key));
 
   Repository({this.apiClient, this.networkInfo});
 
@@ -23,6 +27,7 @@ class Repository {
 
   Future<dynamic> logIn({String uEmail, String password}) async {
     if (await networkInfo.isConnected) {
+      password = _encrypter.encrypt(password, iv: _iv).base64;
       final _apiAnswer =
           await apiClient.logIn(uEmail: uEmail, password: password);
       String _token;
@@ -31,12 +36,7 @@ class Repository {
       } else if (_apiAnswer['auth']) {
         _token = _apiAnswer['token'];
         // store token somewhere
-        User _user = User(
-          uEmail: 'morshnev.aleksey@gmail.com',
-          fullName: 'Aleksey Morshnev',
-          password: '12345',
-          workType: 'dev',
-        );
+        User _user = User.fromJson(_apiAnswer['user']);
         return _user;
       } else {
         return false;
@@ -48,6 +48,7 @@ class Repository {
 
   Future<dynamic> register({User user}) async {
     if (await networkInfo.isConnected) {
+      user..password = _encrypter.encrypt(user.password, iv: _iv).base64;
       final _apiAnswer = await apiClient.register(user: user);
       String _token;
       if (_apiAnswer is AnyServerError) {

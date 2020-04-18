@@ -74,7 +74,7 @@ class ApiClient {
     Uri url = Uri.https(baseUrl, 'auth');
 
     Map _bodyMap = {
-      'email': uEmail,
+      'u_email': uEmail,
       'password': password,
     };
     String _body = jsonEncoder.convert(_bodyMap);

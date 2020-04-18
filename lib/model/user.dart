@@ -13,14 +13,14 @@ class User {
 
   //TODO: make it factory instead of this thing
   User.fromJson(Map jsonMap)
-      : uEmail = jsonMap['email'],
+      : uEmail = jsonMap['u_email'],
         fullName = jsonMap['full_name'],
-        password = jsonMap['password'],
-        workType = jsonMap['work_type'];
+        password = jsonMap['password']??'',
+        workType = jsonMap['work_type']??'';
 
   Map toJson() {
     return {
-      'email': uEmail,
+      'u_email': uEmail,
       'full_name': fullName,
       'password': password,
       'work_type': workType,
