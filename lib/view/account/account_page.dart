@@ -2,38 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:tempokit/model/user.dart';
 import '../../util/bloc/auth_bloc.dart';
-
-import '../auth/sign_up_page.dart';
-import '../auth/sign_in_page.dart';
-import 'package:tempokit/model/user.dart';
-import 'package:tempokit/util/routes/global_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
-
-import 'package:loading/loading.dart' as loader;
-/*class AccountPage extends StatelessWidget {
-  const AccountPage({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '$this',
-              style: Theme.of(context).textTheme.title,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-*/
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key key}) : super(key: key);

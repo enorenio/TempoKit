@@ -15,8 +15,11 @@ class _DebugPageState extends State<DebugPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<AuthBloc>(context).add(
-        LoginAttempt(uEmail: 'morshnev.aleksey@gmail.com', password: '12345'));
+
+    BlocProvider.of<AuthBloc>(context).add(LoginAttempt(
+      uEmail: 'morshnev.aleksey@gmail.com',
+      password: '12345',
+    ));
   }
 
   @override
