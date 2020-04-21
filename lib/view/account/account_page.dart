@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:tempokit/model/user.dart';
@@ -13,22 +14,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountState extends State<AccountPage> {
-  bool switchControl = false;
-  var textHolder = 'OFF';
 
-  void toggleSwitch(bool value) {
-    if (switchControl == false) {
-      setState(() {
-        switchControl = true;
-        textHolder = 'ON';
-      });
-    } else {
-      setState(() {
-        switchControl = false;
-        textHolder = 'OFF';
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,46 +47,44 @@ class _AccountState extends State<AccountPage> {
       if (state is Authenticated) {
         return Scaffold(
           body: SafeArea(
-              child: //_state.user.fullName!='\0' ?
+              child:
                   SingleChildScrollView(
                       child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 25.0),
-            child: Column(
-              children: <Widget>[
-                Center(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        alignment: Alignment.center,
-                        height: 100,
-                        width: 100,
-                        margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50.0),
-                          gradient: LinearGradient(
-                            colors: [Colors.deepOrange, Colors.yellow],
-                            begin: Alignment.bottomRight,
-                            end: Alignment.topLeft,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(13, 51, 32, 0.1),
-                              offset: Offset(0.0, 6.0),
-                              blurRadius: 10.0,
-                            ),
-                          ],
-                        ),
-                        child: Text(
-                          state.user.fullName[0],
-                          //'?',
-                          style: TextStyle(color: Colors.white, fontSize: 32.0),
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 25.0),
+                        child: Column(
+                          children: <Widget>[
+                            Center(
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: 100,
+                                    width: 100,
+                                    margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50.0),
+                                      gradient: LinearGradient(
+                                        colors: [Colors.deepOrange, Colors.yellow],
+                                        begin: Alignment.bottomRight,
+                                        end: Alignment.topLeft,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color.fromRGBO(13, 51, 32, 0.1),
+                                          offset: Offset(0.0, 6.0),
+                                          blurRadius: 10.0,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      state.user.fullName[0],
+                                      style: TextStyle(color: Colors.white, fontSize: 32.0),
+                                    ),
                       ),
                       Container(
                         margin: EdgeInsets.only(bottom: 30.0),
                         child: Text(
                           state.user.fullName,
-                          //'Full Name',
                           style: TextStyle(
                               fontSize: 18.0, fontWeight: FontWeight.w600),
                         ),
@@ -108,237 +92,25 @@ class _AccountState extends State<AccountPage> {
                     ],
                   ),
                 ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 20.0),
-                        margin: EdgeInsets.only(bottom: 20.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Color.fromRGBO(60, 60, 60, 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(13, 51, 32, 0.1),
-                              offset: Offset(0.0, 6.0),
-                              blurRadius: 10.0,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10.0),
-                              child: Text(
-                                'Organizations',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                              child: Text(
-                                state.user.workType,
-                                //'Org Name',
-
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                              child: Text(
-                                //'Email',
-                                state.user.uEmail,
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+               MyCont(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _myTitle('Organizations'),
+                      _myText(state.user.workType),
+                      _myText(state.user.uEmail),
+                    ],
+                  ),
+              ),
+            
+               MyCont(
+                 child: Notification(),
+               ),
+               MyCont(
+                   child: Contact(),
                 ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 20.0),
-                        margin: EdgeInsets.only(bottom: 20.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Color.fromRGBO(60, 60, 60, 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(13, 51, 32, 0.1),
-                              offset: Offset(0.0, 6.0),
-                              blurRadius: 10.0,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10.0),
-                              child: Text(
-                                'Notifications',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Container(
-                                child: Row(
-                              children: <Widget>[
-                                Container(
-                                  margin:
-                                      EdgeInsets.only(left: 10.0, bottom: 10.0),
-                                  child: Text(
-                                    //'Email',
-                                    '$textHolder',
-                                    style: TextStyle(
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(
-                                        left: 10.0, bottom: 10.0),
-                                    child: Switch(
-                                      onChanged: toggleSwitch,
-                                      value: switchControl,
-                                      activeColor: Colors.amberAccent,
-                                      activeTrackColor: Colors.deepOrangeAccent,
-                                      inactiveThumbColor: Colors.white,
-                                      inactiveTrackColor: Colors.grey,
-                                    )),
-                              ],
-                            ))
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 20.0),
-                        margin: EdgeInsets.only(bottom: 20.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Color.fromRGBO(60, 60, 60, 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(13, 51, 32, 0.1),
-                              offset: Offset(0.0, 6.0),
-                              blurRadius: 10.0,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10.0),
-                              child: Text(
-                                'Contact Support',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                              child: Text(
-                                '@https://t.me/tempokit_bot',
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 20.0),
-                        margin: EdgeInsets.only(bottom: 20.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Color.fromRGBO(60, 60, 60, 1),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(13, 51, 32, 0.1),
-                              offset: Offset(0.0, 6.0),
-                              blurRadius: 10.0,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10.0),
-                              child: Text(
-                                'More',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                              child: Text(
-                                'Rate the App',
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                              child: Text(
-                                'Privacy Policy',
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0, bottom: 10.0),
-                              child: Text(
-                                'Version 0.0.1',
-                                style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                MyCont(
+                   child: More(),
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: 5),
@@ -374,4 +146,142 @@ class LogoutButton extends StatelessWidget {
       ),
     );
   }
+}
+
+class MyCont extends StatelessWidget{
+  Widget child;
+
+  MyCont({this.child});
+  @override
+  Widget build(BuildContext context){
+     return Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 10.0, vertical: 20.0),
+                margin: EdgeInsets.only(bottom: 20.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Color.fromRGBO(60, 60, 60, 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color.fromRGBO(13, 51, 32, 0.1),
+                      offset: Offset(0.0, 6.0),
+                      blurRadius: 10.0,
+                    ),
+                  ],
+                ),
+                child: this.child,
+              ),
+            ),
+          ],
+        );
+  }
+}
+
+
+class Notification extends StatefulWidget{
+   @override
+  _NotificationState createState() => _NotificationState();
+  
+}
+class _NotificationState extends State<Notification>{
+  bool switchControl = false;
+  var textHolder = 'OFF';
+
+  void toggleSwitch(bool value) {
+    if (switchControl == false) {
+      setState(() {
+        switchControl = true;
+        textHolder = 'ON';
+      });
+    } else {
+      setState(() {
+        switchControl = false;
+        textHolder = 'OFF';
+      });
+    }
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _myTitle('Notifications'),
+              Container(
+               child: Row(
+                children: <Widget>[
+                _myText(textHolder),
+                  Container(
+                      margin: EdgeInsets.only(
+                          left: 10.0, bottom: 10.0),
+                      child: Switch(
+                        onChanged: toggleSwitch,
+                        value: switchControl,
+                        activeColor: Colors.amberAccent,
+                        activeTrackColor: Colors.deepOrangeAccent,
+                        inactiveThumbColor: Colors.white,
+                        inactiveTrackColor: Colors.grey,
+                      )),
+               ]
+              )
+             )
+            ]
+    );
+
+}
+}
+
+class Contact extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _myTitle('Contact Support'),
+            _myText('@https://t.me/tempokit_bot'),
+          ],
+        );
+  }
+}
+
+class More extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _myTitle('More'),
+            _myText('Rate Us'),
+            _myText('Privacy Security'),
+            _myText('Version 0.0.1')
+          ],
+        );
+  }
+}
+
+_myText(text){
+  return Container(
+              margin: EdgeInsets.only(left: 10.0, bottom: 10.0),
+              child: Text(
+                text,
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w600),
+              ),
+            );
+}
+
+_myTitle(title){
+  return Container(
+              margin: EdgeInsets.only(bottom: 10.0),
+              child: Text(
+                title,
+                style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w600),
+              ),
+            );
 }
