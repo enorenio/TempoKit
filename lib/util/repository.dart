@@ -31,6 +31,17 @@ class Repository {
 
   //! User
 
+  Future<dynamic> initial() async {
+    dynamic _answer = await cacheController.readKey(USER_CACHE_KEY);
+    if (_answer is String) {
+      Map _jsonMap = json.decode(_answer);
+      User _user = User.fromJson(_jsonMap);
+      return _user;
+    } else {
+      return _answer;
+    }
+  }
+
   Future<dynamic> logIn({String uEmail, String password}) async {
     if (await networkInfo.isConnected) {
       password = _encrypter.encrypt(password, iv: _iv).base64;
@@ -67,7 +78,7 @@ class Repository {
         _token = _apiAnswer['token'];
 
         cacheController.writeKey(AUTH_CACHE_KEY, _token);
-        user..password='';
+        user..password = '';
         Map _userMap = user.toJson();
         String _userCacheString = jsonEncoder.convert(_userMap);
         cacheController.writeKey(USER_CACHE_KEY, _userCacheString);
@@ -79,6 +90,11 @@ class Repository {
     } else {
       return InternalNetworkError(title: 'Register Error');
     }
+  }
+
+  void logout() {
+    cacheController.deleteKey(AUTH_CACHE_KEY);
+    cacheController.deleteKey(USER_CACHE_KEY);
   }
 
   //! Project

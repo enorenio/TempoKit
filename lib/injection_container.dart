@@ -29,7 +29,7 @@ Future<void> init() async {
 }
 
 void _initBloc() {
-  sl.registerFactory(() => AuthBloc(repository: sl(), cacheController: sl()));
+  sl.registerFactory(() => AuthBloc(repository: sl()));
   sl.registerFactory(() => UtilityBloc());
 }
 

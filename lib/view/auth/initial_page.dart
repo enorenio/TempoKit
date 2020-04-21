@@ -20,7 +20,7 @@ class _InitialPageState extends State<InitialPage> {
       BlocProvider.of<AuthBloc>(context).add(AppStarted());
     });
   }
-
+  //TODO: screen flashes when have cached user. this is bad
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {

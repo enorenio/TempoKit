@@ -8,7 +8,7 @@ const USER_CACHE_KEY = 'User_key';
 ThemeData themeData = ThemeData(
   brightness: Brightness.dark,
   primaryColor: Colors.grey[900],
-  accentColor: Colors.cyan[600],
+  accentColor: Colors.amber[800],
   fontFamily: 'Nunito',
   textTheme: TextTheme(
     display4: TextStyle(),

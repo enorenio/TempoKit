@@ -84,7 +84,7 @@ class _WrapperPageState extends State<WrapperPage> {
         currentIndex: _selectedIndex,
         //selectedItemColor: Theme.of(context).accentColor,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Theme.of(context).accentColor,
       ),
     );
   }
