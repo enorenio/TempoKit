@@ -80,17 +80,33 @@ class Repository {
   Future<List<Project>> getProjects(
       {bool isFavorited, String uEmail, int compId}) async {
     if (await networkInfo.isConnected) {
-      final remoteProjects = await apiClient.getProjects(
+      List<Project> _remoteProjects = await apiClient.getProjects(
           isFavorited: isFavorited ?? false, uEmail: uEmail, compId: compId);
-      //.. save cache
-      return remoteProjects;
+      
+      if (_remoteProjects != []) {
+        // cache project list ???
+      }
+      
+      return _remoteProjects;
     } else {
-      // get cache
-      return null;
+      throw NetworkException(title: 'Network Error');
     }
   }
 
-  dynamic createProject() async {}
+  Future<Project> createProject({String name, String description, int compId}) async {
+    if (await networkInfo.isConnected) {
+      Project _answer = await apiClient.createProject(
+          name: name, description: description, compId: compId);
+      
+      if (_answer != null) {
+        // cache to project list yes??
+      }
+
+      return _answer;
+    } else {
+      throw NetworkException(title: 'Network Error');
+    }
+  }
 
   dynamic editProject() async {}
 
@@ -98,7 +114,19 @@ class Repository {
 
   //! Task
 
-  dynamic getTasks() async {}
+  Future<List<Task>> getTasks() async {
+    if (await networkInfo.isConnected) {
+      List<Task> _remoteTasks = await apiClient.getTasks();
+      
+      if (_remoteTasks != []) {
+        // cache task list ???
+      }
+      
+      return _remoteTasks;
+    } else {
+      throw NetworkException(title: 'Network Error');
+    }
+  }
 
   dynamic createTask() async {}
 

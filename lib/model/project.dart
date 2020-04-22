@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 class Project {
   int pId;
   String name;
   String description;
-  int uEmail;
+  String uEmail;
+
+  final JsonEncoder jsonEncoder = JsonEncoder();
 
   Project({
     this.pId,
@@ -16,4 +20,17 @@ class Project {
         name = jsonMap['Name'],
         description = jsonMap['Description'],
         uEmail = jsonMap['U_Email'];
+
+  Map toJson() {
+    return {
+      'p_id': pId,
+      'name': name,
+      'description': description,
+      'u_email': uEmail,
+    };
+  }
+
+  String toString() {
+    return jsonEncoder.convert(this.toJson());
+  }
 }

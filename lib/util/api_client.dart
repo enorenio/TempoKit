@@ -23,6 +23,7 @@ class ApiClient {
   ApiClient({this.client, this.cacheController});
 
   final String baseUrl = 'tempokit.azurewebsites.net';
+  final String baseApiUrl = 'tempokit.azurewebsites.net/api';
   //TODO: transform error handling from if-else to try-catch-finally statements
   Future<Map> _getJson(Uri uri, {Map<String, String> headers}) async {
     headers ??= {
@@ -98,10 +99,10 @@ class ApiClient {
       body: _bodyMap,
     );
 
-    if (_answer['message'] == null && _answer['auth']) {
+    if (_answer['auth']) {
       String _token = _answer['token'];
       cacheController.writeKey(AUTH_CACHE_KEY, _token);
-      
+
       return true;
     } else {
       return false;
@@ -112,15 +113,69 @@ class ApiClient {
 
   Future<List<Project>> getProjects(
       {bool isFavorited = false, String uEmail, int compId}) async {
-    Uri url = isFavorited
-        ? Uri.https(baseUrl, 'project/favorited', {})
-        : Uri.https(baseUrl, 'project', {});
+    // Uri url = isFavorited
+    //     ? Uri.https(baseUrl, 'project/favorited', {})
+    //     : Uri.https(baseUrl, 'project', {});
 
-    dynamic json = await _getJson(url);
-    return json.map<Project>((item) => Project.fromJson(item)).toList();
+    // dynamic json = await _getJson(url);
+    // return json.map<Project>((item) => Project.fromJson(item)).toList();
+
+    final list1 = List.generate(
+        3,
+        (int index) => Project(
+            pId: index,
+            name: 'Name$index',
+            description: 'Description$index',
+            uEmail: 'uEmail$index@gmail.com'));
+    final list2 = List.generate(
+        9,
+        (int index) => Project(
+            pId: index,
+            name: 'Name$index',
+            description: 'Description$index',
+            uEmail: 'uEmail$index@gmail.com'));
+
+    return isFavorited
+        ? Future.delayed(
+            Duration(seconds: 2),
+            () => list1,
+          )
+        : Future.delayed(
+            Duration(seconds: 2),
+            () => list2,
+          );
   }
 
-  dynamic createProject() async {}
+  Future<Project> createProject(
+      {String name, String description, int compId}) async {
+    // Uri url = Uri.https(baseApiUrl, 'project');
+
+    // Map _bodyMap = {
+    //   'name': name,
+    //   'description': description,
+    //   'comp_id': compId,
+    // };
+
+    // dynamic _answer = await _postJson(
+    //   url,
+    //   body: _bodyMap,
+    // );
+
+    return await Future.delayed(
+      Duration(seconds: 2),
+      () => Project(
+          pId: 123,
+          name: name,
+          description: description,
+          uEmail: 'temporary@smth.net'),
+    );
+    // if (_answer['auth']) {
+    //   Project _project = Project.fromJson(_answer['project']);
+    //   return _project;
+    // } else {
+    //   return null;
+    // }
+  }
 
   dynamic editProject() async {}
 
@@ -128,7 +183,23 @@ class ApiClient {
 
   //! Task
 
-  dynamic getTasks() async {}
+  Future<List<Task>> getTasks() async {
+    final list = List.generate(
+        9,
+        (int index) => Task(
+            taskId: index,
+            name: 'Name$index',
+            description: 'Description$index',
+            dueDate: 'DueDate$index',
+            mId: index,
+            colId: index % 2,
+            uEmail: 'uEmail$index@gmail.com'));
+
+    return Future.delayed(
+      Duration(seconds: 2),
+      () => list,
+    );
+  }
 
   dynamic createTask() async {}
 

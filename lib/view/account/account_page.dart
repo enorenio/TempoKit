@@ -24,25 +24,6 @@ class _AccountState extends State<AccountPage> {
         return loadingWidget;
       } else if (state is AuthError) {
         showError(context, state);
-      } else if (state is AuthError) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-              title: state.error.title,
-              content: state.error.content,
-              actions: [
-                FlatButton(
-                  child: Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context, rootNavigator: true).pop();
-                  },
-                ),
-              ],
-            ),
-            barrierDismissible: true,
-          );
-        });
       }
       if (state is Authenticated) {
         return Scaffold(

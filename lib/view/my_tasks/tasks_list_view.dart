@@ -3,24 +3,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:tempokit/model/task.dart';
+import 'package:tempokit/util/repository.dart';
 
-class Task {
-  final String title;
-
-  Task({this.title});
-
-  factory Task.fromJson(Map<String, dynamic> json) {
-    return Task(
-      title: json['title'],
-    );
-  }
-}
+import '../../injection_container.dart';
 
 class TasksListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Task>>(
-      future: _fetchTasks(),
+    return FutureBuilder(
+      future: sl<Repository>().getTasks(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Task> data = snapshot.data;
@@ -34,7 +26,6 @@ class TasksListView extends StatelessWidget {
   }
 
   Future<List<Task>> _fetchTasks() async {
-
     // final jobsListAPIUrl = 'https://mock-json-service.glitch.me/';
     // final response = await http.get(jobsListAPIUrl);
 
@@ -50,12 +41,17 @@ class TasksListView extends StatelessWidget {
     return ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
-          return tile(data[index].title);
+          return tile(data[index].name, data[index].description);
         });
   }
 
-  ListTile tile(String title) => ListTile(
+  ListTile tile(String title, String subtitle) => ListTile(
         title: Text(title,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+            )),
+        subtitle: Text(subtitle,
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 20,
