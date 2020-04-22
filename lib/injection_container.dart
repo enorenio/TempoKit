@@ -13,15 +13,15 @@ import 'util/repository.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  //! Cache
+  sl.registerLazySingleton(() => CacheController(sharedPreferences: sl()));
   //! ApiClient
-  sl.registerLazySingleton(() => ApiClient(client: sl()));
+  sl.registerLazySingleton(() => ApiClient(client: sl(), cacheController: sl()));
   //! Bloc
   _initBloc();
   //! Repository
   sl.registerLazySingleton(() =>
       Repository(apiClient: sl(), networkInfo: sl(), cacheController: sl()));
-  //! Cache
-  sl.registerLazySingleton(() => CacheController(sharedPreferences: sl()));
   //! Core
   _initCore();
   //! External

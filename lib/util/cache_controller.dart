@@ -9,10 +9,10 @@ class CacheController {
 
   Future<dynamic> readKey(String key) async {
     final value = sharedPreferences.getString(key);
-    if (value != null) {
-      return Future.value(value);
+    if (value == null) {
+      throw CacheException();
     } else {
-      return CacheError();
+      return Future.value(value);
     }
   }
 

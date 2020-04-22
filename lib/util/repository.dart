@@ -32,63 +32,41 @@ class Repository {
   //! User
 
   Future<dynamic> initial() async {
-    dynamic _answer = await cacheController.readKey(USER_CACHE_KEY);
-    if (_answer is String) {
-      Map _jsonMap = json.decode(_answer);
-      User _user = User.fromJson(_jsonMap);
-      return _user;
-    } else {
-      return _answer;
-    }
+    String _answer = await cacheController.readKey(USER_CACHE_KEY);
+
+    Map _jsonMap = json.decode(_answer);
+    User _user = User.fromJson(_jsonMap);
+    return _user;
+    // return User.fromString(_answer);
   }
 
-  Future<dynamic> logIn({String uEmail, String password}) async {
+  Future<User> logIn({String uEmail, String password}) async {
     if (await networkInfo.isConnected) {
       password = _encrypter.encrypt(password, iv: _iv).base64;
-      final _apiAnswer =
-          await apiClient.logIn(uEmail: uEmail, password: password);
-      String _token;
-      if (_apiAnswer is AnyServerError) {
-        return _apiAnswer;
-      } else if (_apiAnswer['auth']) {
-        _token = _apiAnswer['token'];
 
-        cacheController.writeKey(AUTH_CACHE_KEY, _token);
-        String _userCacheString = jsonEncoder.convert(_apiAnswer['user']);
-        cacheController.writeKey(USER_CACHE_KEY, _userCacheString);
+      User _user = await apiClient.logIn(uEmail: uEmail, password: password);
 
-        User _user = User.fromJson(_apiAnswer['user']);
-        return _user;
-      } else {
-        return false;
-      }
+      cacheController.writeKey(USER_CACHE_KEY, _user.toString());
+
+      return _user;
     } else {
-      return InternalNetworkError(title: 'Login Error');
+      throw NetworkException(title: 'Login Error');
     }
   }
 
-  Future<dynamic> register({User user}) async {
+  Future<bool> register({User user}) async {
     if (await networkInfo.isConnected) {
       user..password = _encrypter.encrypt(user.password, iv: _iv).base64;
-      final _apiAnswer = await apiClient.register(user: user);
-      String _token;
-      if (_apiAnswer is AnyServerError) {
-        return _apiAnswer;
-      } else if (_apiAnswer['message'] == null && _apiAnswer['auth']) {
-        _token = _apiAnswer['token'];
+      bool _answer = await apiClient.register(user: user);
 
-        cacheController.writeKey(AUTH_CACHE_KEY, _token);
+      if (_answer) {
         user..password = '';
-        Map _userMap = user.toJson();
-        String _userCacheString = jsonEncoder.convert(_userMap);
-        cacheController.writeKey(USER_CACHE_KEY, _userCacheString);
-
-        return true;
-      } else {
-        return false;
+        cacheController.writeKey(USER_CACHE_KEY, user.toString());
       }
+
+      return _answer;
     } else {
-      return InternalNetworkError(title: 'Register Error');
+      throw NetworkException(title: 'Register Error');
     }
   }
 

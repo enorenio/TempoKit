@@ -10,22 +10,24 @@ class IError {
   });
 }
 
-class AnyServerError {
+class ServerException implements Exception{
   int statusCode;
   String reasonPhrase;
 
-  AnyServerError({
+  ServerException({
     this.statusCode,
     this.reasonPhrase,
   });
 }
 
-class InternalNetworkError {
+class NetworkException implements Exception {
   String title;
 
-  InternalNetworkError({
+  NetworkException({
     this.title,
   });
 }
 
-class CacheError {}
+class CacheException implements Exception {}
+
+class WrongCredentialsException implements Exception {}

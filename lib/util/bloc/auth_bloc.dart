@@ -51,8 +51,7 @@ showError(BuildContext context, AuthError state) {
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Repository repository;
 
-  AuthBloc({this.repository})
-      : assert(repository != null);
+  AuthBloc({this.repository}) : assert(repository != null);
 
   @override
   AuthState get initialState => Uninitialized();
@@ -61,29 +60,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
     if (event is AppStarted) {
       print('AppStarted');
-      dynamic _answer = await repository.initial();
-      if (_answer is User) {
+      try {
+        User _user = await repository.initial();
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
-        yield Authenticated(user: _answer);
+        yield Authenticated(user: _user);
+      } on CacheException {
+        // we should not do that at all
+        // yield CacheError();
       }
     }
 
     if (event is LoginAttempt) {
       print('LoginAttempt');
       yield Loading();
-      dynamic _result = await repository.logIn(
-          uEmail: event.uEmail, password: event.password);
+      try {
+        User _user = await repository.logIn(
+            uEmail: event.uEmail, password: event.password);
 
-      if (_result is InternalNetworkError) {
-        yield NetworkError(internalError: _result);
-      } else if (_result is AnyServerError) {
-        yield ServerError(internalError: _result);
-      } else if (_result is User) {
+        // _user ?? () => throw WrongCredentialsException();
+        if (_user == null) {
+          throw WrongCredentialsException();
+        }
+
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
-        yield Authenticated(user: _result);
-      } else {
+
+        yield Authenticated(user: _user);
+      } on NetworkException catch (exception) {
+        yield NetworkError(internalError: exception);
+      } on ServerException catch (exception) {
+        yield ServerError(internalError: exception);
+      } on WrongCredentialsException {
         yield WrongCredentialsError(
           error: IError(
             title: Text('Login Error'),
@@ -108,17 +116,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print('RegistrationAttempt');
       yield Loading();
 
-      dynamic _result = await repository.register(user: event.user);
-      //TODO: Change Strings to consts
-      if (_result is InternalNetworkError) {
-        yield NetworkError(internalError: _result);
-      } else if (_result is AnyServerError) {
-        yield ServerError(internalError: _result);
-      } else if (_result) {
-        ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
-            Routes.wrapperPage, (Route<dynamic> route) => false);
-        yield Authenticated(user: event.user);
-      } else {
+      try {
+        bool _result = await repository.register(user: event.user);
+
+        if (_result) {
+          ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
+              Routes.wrapperPage, (Route<dynamic> route) => false);
+          yield Authenticated(user: event.user);
+        } else {
+          throw WrongCredentialsException();
+        }
+      } on NetworkException catch (exception) {
+        yield NetworkError(internalError: exception);
+      } on ServerException catch (exception) {
+        yield ServerError(internalError: exception);
+      } on WrongCredentialsException {
         yield WrongCredentialsError(
           error: IError(
             title: Text('Register Error'),

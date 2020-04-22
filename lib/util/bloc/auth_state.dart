@@ -18,10 +18,22 @@ class AuthError extends AuthState {
   IError error;
 }
 
+class ServerError extends AuthError {
+  IError error;
+
+  ServerError({ServerException internalError}) {
+    error = IError(
+      title: Text(internalError.reasonPhrase),
+      content: Text(
+          'Code: ${internalError.statusCode}: ${internalError.reasonPhrase}'),
+    );
+  }
+}
+
 class NetworkError extends AuthError {
   IError error;
 
-  NetworkError({InternalNetworkError internalError}) {
+  NetworkError({NetworkException internalError}) {
     error = IError(
       title: Text(internalError.title),
       content: Text('The Internet connection appears to be offline.'),
@@ -29,16 +41,17 @@ class NetworkError extends AuthError {
   }
 }
 
-class ServerError extends AuthError {
+class CacheError extends AuthError {
   IError error;
-
-  ServerError({AnyServerError internalError}) {
+  
+  CacheError() {
     error = IError(
-      title: Text(internalError.reasonPhrase),
-      content: Text(
-          'Code: ${internalError.statusCode}: ${internalError.reasonPhrase}'),
+      title: Text('Cache Error'),
+      content: Text('Your cache is corrupted.'),
     );
   }
+
+
 }
 
 class WrongCredentialsError extends AuthError {
