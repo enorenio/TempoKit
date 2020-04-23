@@ -41,20 +41,18 @@ class TasksListView extends StatelessWidget {
     return ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
-          return tile(data[index].name, data[index].description);
+          return tile(data[index].name);
         });
   }
 
-  ListTile tile(String title, String subtitle) => ListTile(
+  ListTile tile(String title) => ListTile(
         title: Text(title,
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 20,
             )),
-        subtitle: Text(subtitle,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 20,
-            )),
+            onTap: () {
+              print("You pressed task tile!");
+            },
       );
 }
