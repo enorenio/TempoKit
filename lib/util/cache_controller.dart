@@ -7,7 +7,7 @@ class CacheController {
 
   CacheController({this.sharedPreferences});
 
-  Future<dynamic> readKey(String key) async {
+  Future<String> readKey(String key) async {
     final value = sharedPreferences.getString(key);
     if (value == null) {
       throw CacheException();

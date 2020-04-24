@@ -77,11 +77,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         User _user = await repository.logIn(
             uEmail: event.uEmail, password: event.password);
-
-        // _user ?? () => throw WrongCredentialsException();
-        if (_user == null) {
-          throw WrongCredentialsException();
-        }
+        
+        _user ?? (() => throw WrongCredentialsException())();
 
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
@@ -92,12 +89,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } on ServerException catch (exception) {
         yield ServerError(internalError: exception);
       } on WrongCredentialsException {
-        yield WrongCredentialsError(
-          error: IError(
-            title: Text('Login Error'),
-            content: Text('User does not exist'),
-          ),
-        );
+        yield WrongCredentialsError();
       }
     }
 
@@ -131,12 +123,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } on ServerException catch (exception) {
         yield ServerError(internalError: exception);
       } on WrongCredentialsException {
-        yield WrongCredentialsError(
-          error: IError(
-            title: Text('Register Error'),
-            content: Text('User already exists'),
-          ),
-        );
+        yield WrongCredentialsError();
       }
     }
   }

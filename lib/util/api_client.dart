@@ -19,37 +19,40 @@ class ApiClient {
   final http.Client client;
   final CacheController cacheController;
   final JsonEncoder jsonEncoder = JsonEncoder();
+  String token;
 
   ApiClient({this.client, this.cacheController});
 
   final String baseUrl = 'tempokit.azurewebsites.net';
-  final String baseApiUrl = 'tempokit.azurewebsites.net/api';
-  //TODO: transform error handling from if-else to try-catch-finally statements
-  Future<Map> _getJson(Uri uri, {Map<String, String> headers}) async {
-    headers ??= {
-      'Cache-Control': 'no-cache',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': '*/*',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Connection': 'keep-alive',
-    };
+
+  Future<dynamic> _getJson(Uri uri, {Map<String, String> headers}) async {
+    headers ??= {};
+    headers['Cache-Control'] ??= 'no-cache';
+    headers['Content-Type'] ??= 'application/x-www-form-urlencoded';
+    headers['Accept'] ??= '*/*';
+    headers['Accept-Encoding'] ??= 'gzip, deflate, br';
+    headers['Connection'] ??= 'keep-alive';
+
     final response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
       throw ServerException(
-          statusCode: response.statusCode, reasonPhrase: response.reasonPhrase);
+        statusCode: response.statusCode,
+        reasonPhrase: response.reasonPhrase,
+      );
     }
   }
 
-  Future<Map> _postJson(Uri uri, {Map<String, String> headers, body}) async {
-    headers ??= {
-      'Cache-Control': 'no-cache',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Accept': '*/*',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Connection': 'keep-alive',
-    };
+  Future<dynamic> _postJson(Uri uri,
+      {Map<String, String> headers, body}) async {
+    headers ??= {};
+    headers['Cache-Control'] ??= 'no-cache';
+    headers['Content-Type'] ??= 'application/x-www-form-urlencoded';
+    headers['Accept'] ??= '*/*';
+    headers['Accept-Encoding'] ??= 'gzip, deflate, br';
+    headers['Connection'] ??= 'keep-alive';
+
     final response = await http.post(uri, headers: headers, body: body);
     if (response.statusCode == 200) {
       return json.decode(response.body);
@@ -79,6 +82,7 @@ class ApiClient {
 
     if (_answer['auth']) {
       String _token = _answer['token'];
+      token = _token;
       cacheController.writeKey(AUTH_CACHE_KEY, _token);
 
       User _user = User.fromJson(_answer['user']);
@@ -91,7 +95,7 @@ class ApiClient {
   Future<bool> register({User user}) async {
     Uri url = Uri.https(baseUrl, 'signup');
 
-    Map _bodyMap = user.toJson();
+    Map _bodyMap = User.toJson(user);
     // String _body = jsonEncoder.convert(_bodyMap);
 
     dynamic _answer = await _postJson(
@@ -101,6 +105,7 @@ class ApiClient {
 
     if (_answer['auth']) {
       String _token = _answer['token'];
+      token = _token;
       cacheController.writeKey(AUTH_CACHE_KEY, _token);
 
       return true;
@@ -119,6 +124,7 @@ class ApiClient {
 
     // dynamic json = await _getJson(url);
     // return json.map<Project>((item) => Project.fromJson(item)).toList();
+    print('token: $token');
 
     final list1 = List.generate(
         3,
@@ -217,9 +223,43 @@ class ApiClient {
 
   //! Company
 
-  dynamic getAllCompanies() async {}
+  Future<List<Company>> getAllCompanies() async {
+    Uri url = Uri.https(baseUrl, 'api/company');
 
-  dynamic createCompany() async {}
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    List<dynamic> _answer = await _getJson(
+      url,
+      headers: headers,
+    );
+    return _answer.map((item) => Company.fromJson(item)).toList();
+  }
+
+  Future<bool> createCompany(String name) async {
+    Uri url = Uri.https(baseUrl, 'api/company');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    Map _bodyMap = {
+      'name': name
+    };
+
+    dynamic _answer = await _postJson(
+      url,
+      headers: headers,
+      body: _bodyMap,
+    );
+    
+    if (_answer['message'] == 'success') {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   //! Tag
 

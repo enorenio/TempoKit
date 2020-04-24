@@ -6,8 +6,6 @@ class Project {
   String description;
   String uEmail;
 
-  final JsonEncoder jsonEncoder = JsonEncoder();
-
   Project({
     this.pId,
     this.name,
@@ -31,6 +29,6 @@ class Project {
   }
 
   String toString() {
-    return jsonEncoder.convert(this.toJson());
+    return JsonEncoder().convert(this.toJson());
   }
 }

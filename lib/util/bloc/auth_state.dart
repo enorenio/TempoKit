@@ -43,19 +43,22 @@ class NetworkError extends AuthError {
 
 class CacheError extends AuthError {
   IError error;
-  
+
   CacheError() {
     error = IError(
       title: Text('Cache Error'),
       content: Text('Your cache is corrupted.'),
     );
   }
-
-
 }
 
 class WrongCredentialsError extends AuthError {
   IError error;
 
-  WrongCredentialsError({this.error});
+  WrongCredentialsError() {
+    error = IError(
+      title: Text('Auth Error'),
+      content: Text('User does not exist or password is wrong.'),
+    );
+  }
 }

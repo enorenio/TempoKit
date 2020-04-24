@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Task {
   int taskId;
   String name;
@@ -18,11 +20,27 @@ class Task {
   });
 
   Task.fromJson(Map jsonMap)
-      : taskId = jsonMap['Task_ID'],
-        name = jsonMap['Name'],
-        description = jsonMap['Description'],
-        dueDate = jsonMap['Due_Date'],
-        mId = jsonMap['M_ID'],
-        colId = jsonMap['Col_ID'],
-        uEmail = jsonMap['U_Email'];
+      : taskId = jsonMap['task_id'],
+        name = jsonMap['name'],
+        description = jsonMap['description'],
+        dueDate = jsonMap['due_date'],
+        mId = jsonMap['m_id'],
+        colId = jsonMap['col_id'],
+        uEmail = jsonMap['u_email'];
+
+  Map toJson() {
+    return {
+      'task_id': taskId,
+      'name': name,
+      'description': description,
+      'due_date': dueDate,
+      'm_id': mId,
+      'col_id': colId,
+      'u_email': uEmail,
+    };
+  }
+
+  String toString() {
+    return JsonEncoder().convert(this.toJson());
+  }
 }

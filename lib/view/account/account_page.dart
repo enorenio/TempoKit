@@ -130,7 +130,7 @@ class LogoutButton extends StatelessWidget {
 }
 
 class MyCont extends StatelessWidget{
-  Widget child;
+  final Widget child;
 
   MyCont({this.child});
   @override
