@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tempokit/util/repository.dart';
+import 'package:tempokit/view/home/project_page.dart';
 
 import '../../injection_container.dart';
 
@@ -9,9 +10,9 @@ class AllTab extends StatefulWidget {
   @override
   _AllTabState createState() => _AllTabState();
 }
-
 class _AllTabState extends State<AllTab> {
   @override
+  int _itemCount=5;
   Widget build(BuildContext context) {
     return Container(
       // this is temporary, just to test, you can delete it if you want to
@@ -34,7 +35,7 @@ class _AllTabState extends State<AllTab> {
                 itemBuilder: (BuildContext context, int index) => ListTile(
                   title: Text(snapshot.data[index].name),
                   subtitle: Text(snapshot.data[index].description),
-                  onTap: () => print(snapshot.data[index].uEmail),
+                  onTap: ()=>_navigateToProject(context,index),
                 ),
               );
           }
@@ -43,3 +44,14 @@ class _AllTabState extends State<AllTab> {
     );
   }
 }
+
+void _navigateToProject(BuildContext context, index) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProjectPage(index: index),
+      ));
+}
+
+
+ 

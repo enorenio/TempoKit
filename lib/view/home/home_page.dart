@@ -11,6 +11,7 @@ import '../../injection_container.dart';
 import '../../util/bloc/auth_bloc.dart';
 import 'all_tab.dart';
 
+
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
 
@@ -26,6 +27,8 @@ void _navigateToSecondScreen(BuildContext context) {
       ));
 }
 
+
+
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
@@ -39,9 +42,9 @@ class _HomePageState extends State<HomePage> {
               height: 50.0,
               child: new TabBar(
                 tabs: [
-                  Tab(text: 'Favourites'),
-                  Tab(text: 'Recents'),
                   Tab(text: 'All'),
+                  Tab(text: 'Recents'),
+                  Tab(text: 'Favourites'),
                 ],
                 labelColor: Colors.grey,
                 indicatorColor: Colors.amber[800],
@@ -50,9 +53,9 @@ class _HomePageState extends State<HomePage> {
           ),
           body: TabBarView(
             children: [
-              FavouritesTab(),
-              RecentsTab(),
               AllTab(),
+              RecentsTab(),
+              FavouritesTab(),
             ],
           ),
         ),
