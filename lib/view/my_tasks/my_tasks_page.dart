@@ -9,14 +9,6 @@ class MyTasksPage extends StatefulWidget {
   _MyTasksPageState createState() => _MyTasksPageState();
 }
 
-void createNewTask(BuildContext context) {
-  Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => NewTaskView(),
-      ));
-}
-
 class _MyTasksPageState extends State<MyTasksPage> {
   @override
   Widget build(BuildContext context) {
