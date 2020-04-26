@@ -2,6 +2,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'errors.dart';
 
+const AUTH_CACHE_KEY = 'Auth_key';
+const USER_CACHE_KEY = 'User_key';
+const CUR_COMP_CACHE_KEY = 'Current_company_key';
+
 class CacheController {
   final SharedPreferences sharedPreferences;
 

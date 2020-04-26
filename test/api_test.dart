@@ -58,7 +58,7 @@ void main() {
       print(result);
       expect(result, result);
     });
-    test('should perform [POST] /auth', () async {
+    test('should perform [POST] /signin', () async {
       // act
       final result = await apiClient.logIn(
         uEmail: 'morshnev.aleksey@gmail.com',
@@ -88,8 +88,8 @@ void main() {
         uEmail: 'morshnev.aleksey@gmail.com',
         password: _encrypter.encrypt('12345', iv: _iv).base64,
       );
-      final result =
-          await apiClient.createCompany('Test${Random().nextInt(1 << 16)}');
+      final result = await apiClient.createCompany(
+          name: 'Test${Random().nextInt(1 << 16)}');
       //assert
       print(result);
       expect(result, result);
@@ -97,8 +97,29 @@ void main() {
   });
 
   group('project', () {
-    test('should perform [GET]', () {});
-    test('should perform [POST]', () {});
+    test('should perform [GET]', () async {
+      // act
+      await apiClient.logIn(
+        uEmail: 'morshnev.aleksey@gmail.com',
+        password: _encrypter.encrypt('12345', iv: _iv).base64,
+      );
+      final result = await apiClient.getProjects(compId: 2);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+    test('should perform [POST]', () async {
+      // act
+      await apiClient.logIn(
+        uEmail: 'morshnev.aleksey@gmail.com',
+        password: _encrypter.encrypt('12345', iv: _iv).base64,
+      );
+      final result = await apiClient.createProject(
+          compId: 2, description: 'Test', name: 'Testing Project');
+      // assert
+      print(result);
+      expect(result, result);
+    });
     test('should perform [PUT]', () {});
     test('should perform [DELETE]', () {});
   });

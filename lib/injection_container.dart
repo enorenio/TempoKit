@@ -2,11 +2,11 @@ import 'package:data_connection_checker/data_connection_checker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:tempokit/util/bloc/account/account_bloc.dart';
 import 'package:tempokit/util/cache_controller.dart';
 
 import 'util/api_client.dart';
-import 'util/bloc/auth_bloc.dart';
-import 'util/bloc/utility_bloc.dart';
+import 'util/bloc/auth/auth_bloc.dart';
 import 'util/network/network_info.dart';
 import 'util/repository.dart';
 
@@ -30,7 +30,7 @@ Future<void> init() async {
 
 void _initBloc() {
   sl.registerFactory(() => AuthBloc(repository: sl()));
-  sl.registerFactory(() => UtilityBloc());
+  sl.registerFactory(() => AccountBloc(repository: sl()));
 }
 
 void _initCore() {

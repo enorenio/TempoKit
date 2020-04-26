@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:loading/loading.dart' as loader;
+import 'package:tempokit/model/company.dart';
 
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
 
-import '../repository.dart';
+import 'package:tempokit/util/repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -112,6 +113,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         bool _result = await repository.register(user: event.user);
 
         if (_result) {
+          Company company = await repository.createCompany(name: 'My Workspace');
+          repository.selectCompany(company: company);
           ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
               Routes.wrapperPage, (Route<dynamic> route) => false);
           yield Authenticated(user: event.user);

@@ -24,7 +24,7 @@ class NetworkException implements Exception {
   String title;
 
   NetworkException({
-    this.title,
+    this.title = 'Network Error',
   });
 }
 
