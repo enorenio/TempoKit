@@ -13,6 +13,8 @@ import 'package:tempokit/model/user.dart';
 
 import 'errors.dart';
 
+enum method { get, post, put, delete }
+
 class ApiClient {
   final http.Client client;
   final JsonEncoder jsonEncoder = JsonEncoder();
@@ -22,26 +24,7 @@ class ApiClient {
 
   final String baseUrl = 'tempokit.azurewebsites.net';
 
-  Future<dynamic> _getJson(Uri uri, {Map<String, String> headers}) async {
-    headers ??= {};
-    headers['Cache-Control'] ??= 'no-cache';
-    headers['Content-Type'] ??= 'application/x-www-form-urlencoded';
-    headers['Accept'] ??= '*/*';
-    headers['Accept-Encoding'] ??= 'gzip, deflate, br';
-    headers['Connection'] ??= 'keep-alive';
-
-    final response = await http.get(uri, headers: headers);
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw ServerException(
-        statusCode: response.statusCode,
-        reasonPhrase: response.reasonPhrase,
-      );
-    }
-  }
-
-  Future<dynamic> _postJson(Uri uri,
+  Future<dynamic> _send(method m, Uri uri,
       {Map<String, String> headers, body}) async {
     headers ??= {};
     headers['Cache-Control'] ??= 'no-cache';
@@ -50,7 +33,22 @@ class ApiClient {
     headers['Accept-Encoding'] ??= 'gzip, deflate, br';
     headers['Connection'] ??= 'keep-alive';
 
-    final response = await http.post(uri, headers: headers, body: body);
+    http.Response response;
+    switch (m) {
+      case method.get:
+        response = await http.get(uri, headers: headers);
+        break;
+      case method.post:
+        response = await http.post(uri, headers: headers, body: body);
+        break;
+      case method.put:
+        response = await http.put(uri, headers: headers, body: body);
+        break;
+      case method.delete:
+        response = await http.delete(uri, headers: headers);
+        break;
+    }
+
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
@@ -71,7 +69,8 @@ class ApiClient {
       'password': password,
     };
 
-    dynamic _answer = await _postJson(
+    dynamic _answer = await _send(
+      method.post,
       url,
       body: _bodyMap,
     );
@@ -80,7 +79,7 @@ class ApiClient {
       String _token = _answer['token'];
 
       User _user = User.fromJson(_answer['user']);
-      return {'token': _token,'user': _user};
+      return {'token': _token, 'user': _user};
     } else {
       return null;
     }
@@ -91,7 +90,8 @@ class ApiClient {
 
     Map _bodyMap = User.toJson(user);
 
-    dynamic _answer = await _postJson(
+    dynamic _answer = await _send(
+      method.post,
       url,
       body: _bodyMap,
     );
@@ -123,7 +123,8 @@ class ApiClient {
       'x-api-key': token,
     };
 
-    List<dynamic> _answer = await _getJson(
+    List<dynamic> _answer = await _send(
+      method.get,
       url,
       headers: headers,
     );
@@ -144,7 +145,8 @@ class ApiClient {
       'comp_id': compId.toString(), //TODO: delete this cast
     };
 
-    dynamic _answer = await _postJson(
+    dynamic _answer = await _send(
+      method.post,
       url,
       headers: headers,
       body: _bodyMap,
@@ -202,7 +204,8 @@ class ApiClient {
       'x-api-key': token,
     };
 
-    List<dynamic> _answer = await _getJson(
+    List<dynamic> _answer = await _send(
+      method.get,
       url,
       headers: headers,
     );
@@ -218,7 +221,8 @@ class ApiClient {
 
     Map _bodyMap = {'name': name};
 
-    dynamic _answer = await _postJson(
+    dynamic _answer = await _send(
+      method.post,
       url,
       headers: headers,
       body: _bodyMap,

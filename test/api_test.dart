@@ -55,7 +55,7 @@ void main() {
       final randomUser = User(
         uEmail: 'test${Random().nextInt(1 << 16)}@gmail.com',
         fullName: 'Test Test',
-        password: _encrypter.encrypt('12345', iv: _iv).base64,
+        password: '12345',
         workType: 'Tester',
       );
       // act

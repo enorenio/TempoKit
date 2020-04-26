@@ -28,19 +28,17 @@ class Task {
         colId = jsonMap['col_id'],
         uEmail = jsonMap['u_email'];
 
-  Map toJson() {
-    return {
-      'task_id': taskId,
-      'name': name,
-      'description': description,
-      'due_date': dueDate,
-      'm_id': mId,
-      'col_id': colId,
-      'u_email': uEmail,
-    };
-  }
+  static Map toJson(Task task) => {
+        'task_id': task.taskId,
+        'name': task.name,
+        'description': task.description,
+        'due_date': task.dueDate,
+        'm_id': task.mId,
+        'col_id': task.colId,
+        'u_email': task.uEmail,
+      };
 
-  String toString() {
-    return JsonEncoder().convert(this.toJson());
-  }
+  static Task fromString(String string) => Task.fromJson(json.decode(string));
+
+  String toString() => JsonEncoder().convert(toJson(this));
 }

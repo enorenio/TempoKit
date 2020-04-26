@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Report {
   int rId;
   String name;
@@ -10,7 +12,18 @@ class Report {
   });
 
   Report.fromJson(Map jsonMap)
-      : rId = jsonMap['R_ID'],
-        name = jsonMap['Name'],
-        submitDate = jsonMap['Submit_Date'];
+      : rId = jsonMap['r_id'],
+        name = jsonMap['name'],
+        submitDate = jsonMap['submit_date'];
+
+  static Map toJson(Report report) => {
+        'r_id': report.rId,
+        'name': report.name,
+        'submit_date': report.submitDate,
+      };
+
+  static Report fromString(String string) =>
+      Report.fromJson(json.decode(string));
+
+  String toString() => JsonEncoder().convert(toJson(this));
 }

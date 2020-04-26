@@ -19,8 +19,8 @@ class Project {
       : pId = jsonMap['p_id'],
         name = jsonMap['name'],
         description = jsonMap['description'],
-        uEmail = jsonMap['u_email']??null,
-        compId = jsonMap['comp_id']??null;
+        uEmail = jsonMap['u_email'] ?? null,
+        compId = jsonMap['comp_id'] ?? null;
 
   static Map toJson(Project project) => {
         'p_id': project.pId,
@@ -29,6 +29,9 @@ class Project {
         'u_email': project.uEmail,
         'comp_id': project.compId,
       };
+
+  static Project fromString(String string) =>
+      Project.fromJson(json.decode(string));
 
   String toString() => JsonEncoder().convert(toJson(this));
 }

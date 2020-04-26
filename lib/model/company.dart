@@ -22,5 +22,7 @@ class Company {
         'u_email': company.uEmail,
       };
   
+  static Company fromString(String string) => Company.fromJson(json.decode(string));
+
   String toString() => JsonEncoder().convert(toJson(this));
 }

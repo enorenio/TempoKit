@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Milestone {
   int mId;
   String name;
@@ -16,10 +18,24 @@ class Milestone {
   });
 
   Milestone.fromJson(Map jsonMap)
-      : mId = jsonMap['M_ID'],
-        name = jsonMap['Name'],
-        description = jsonMap['Description'],
-        dueDate = jsonMap['Due_Date'],
-        uEmail = jsonMap['U_Email'],
-        pId = jsonMap['P_ID'];
+      : mId = jsonMap['m_id'],
+        name = jsonMap['name'],
+        description = jsonMap['description'],
+        dueDate = jsonMap['due_date'],
+        uEmail = jsonMap['u_email'],
+        pId = jsonMap['p_id'];
+
+  static Map toJson(Milestone milestone) => {
+        'm_id': milestone.mId,
+        'name': milestone.name,
+        'description': milestone.description,
+        'due_date': milestone.dueDate,
+        'u_email': milestone.uEmail,
+        'p_id': milestone.pId,
+      };
+
+  static Milestone fromString(String string) =>
+      Milestone.fromJson(json.decode(string));
+
+  String toString() => JsonEncoder().convert(toJson(this));
 }

@@ -37,18 +37,19 @@ class Repository {
     String _token = await cacheController.readKey(AUTH_CACHE_KEY);
     apiClient.saveToken(token: _token);
 
-    Map _jsonMap = json.decode(_answer);
-    User _user = User.fromJson(_jsonMap);
+    // Map _jsonMap = json.decode(_answer);
+    // User _user = User.fromJson(_jsonMap);
 
-    return _user;
-    // return User.fromString(_answer);
+    // return _user;
+    return User.fromString(_answer);
   }
 
   Future<User> logIn({String uEmail, String password}) async {
     if (await networkInfo.isConnected) {
       password = _encrypter.encrypt(password, iv: _iv).base64;
 
-      dynamic _answer = await apiClient.logIn(uEmail: uEmail, password: password);
+      dynamic _answer =
+          await apiClient.logIn(uEmail: uEmail, password: password);
       User _user = _answer['user'];
       String _token = _answer['token'];
 
@@ -92,9 +93,8 @@ class Repository {
 
   Future<List<Project>> getProjects({bool isFavorited, int compId}) async {
     if (await networkInfo.isConnected) {
-      // Company _company = await getCurrentCompany();
-      List<Project> _remoteProjects = await apiClient.getProjects(
-          isFavorited: isFavorited, compId: compId);
+      List<Project> _remoteProjects =
+          await apiClient.getProjects(isFavorited: isFavorited, compId: compId);
 
       if (_remoteProjects != []) {
         // cache project list ???
@@ -181,10 +181,7 @@ class Repository {
 
   Future<Company> getCurrentCompany() async {
     String _string = await cacheController.readKey(CUR_COMP_CACHE_KEY);
-    Map _jsonMap = json.decode(_string);
-    Company _company = Company.fromJson(_jsonMap);
-    return _company;
-    // return Company.fromString(_company);
+    return Company.fromString(_string);
   }
 
   //! Tag ------------------------------------------------------------------------------------------------------------
