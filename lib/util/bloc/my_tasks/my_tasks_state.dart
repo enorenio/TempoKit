@@ -1,28 +1,23 @@
-part of 'home_bloc.dart';
+part of 'my_tasks_bloc.dart';
 
-abstract class HomeState {
-  HomeState([List props = const <dynamic>[]]);
+abstract class MyTasksState {
+  MyTasksState([List props = const <dynamic>[]]);
 }
 
-class ProjectsState extends HomeState {
-  final List<Project> projects;
+class TasksState extends MyTasksState {
+  final List<Task> tasks;
 
-  ProjectsState({this.projects});
+  TasksState({this.tasks});
 }
 
-class TasksState extends HomeState {
-  final dynamic tasks;
 
-  TasksState(this.tasks);
-}
+class Loading extends MyTasksState {}
 
-class Loading extends HomeState {}
-
-class HomeError extends HomeState implements GeneralState {
+class MyTasksError extends MyTasksState implements GeneralState {
   IError error;
 }
 
-class ServerError extends HomeError {
+class ServerError extends MyTasksError {
   IError error;
 
   ServerError({ServerException internalError}) {
@@ -34,7 +29,7 @@ class ServerError extends HomeError {
   }
 }
 
-class NetworkError extends HomeError {
+class NetworkError extends MyTasksError {
   IError error;
 
   NetworkError({NetworkException internalError}) {
@@ -45,7 +40,7 @@ class NetworkError extends HomeError {
   }
 }
 
-class CacheError extends HomeError {
+class CacheError extends MyTasksError {
   IError error;
 
   CacheError() {

@@ -12,3 +12,5 @@ class GetProjectsEvent extends HomeEvent {
   @override
   String toString() => 'GetProjects event';
 }
+
+class GetTasksEvent extends HomeEvent {}

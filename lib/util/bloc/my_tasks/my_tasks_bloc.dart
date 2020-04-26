@@ -1,0 +1,36 @@
+import 'dart:async';
+import 'package:auto_route/auto_route.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:tempokit/model/task.dart';
+
+import 'package:tempokit/util/errors.dart';
+import 'package:tempokit/util/routes/global_router.gr.dart';
+
+import 'package:tempokit/util/repository.dart';
+
+part 'my_tasks_event.dart';
+part 'my_tasks_state.dart';
+
+class MyTasksBloc extends Bloc<MyTasksEvent, MyTasksState> {
+  final Repository repository;
+
+  MyTasksBloc({this.repository}) : assert(repository != null);
+
+  @override
+  MyTasksState get initialState => Loading();
+
+  @override
+  Stream<MyTasksState> mapEventToState(MyTasksEvent event) async* {
+    if (event is GetMyTasksEvent) {
+      try {
+        List<Task> myTasks = await repository.getMyTasks();
+        yield TasksState(tasks: myTasks);
+      } on NetworkException catch (exception) {
+        yield NetworkError(internalError: exception);
+      } on ServerException catch (exception) {
+        yield ServerError(internalError: exception);
+      }
+    }
+  }
+}

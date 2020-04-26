@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:tempokit/util/bloc/account/account_bloc.dart';
+import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
 import 'package:tempokit/util/cache_controller.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
 
@@ -32,6 +33,7 @@ Future<void> init() async {
 void _initBloc() {
   sl.registerFactory(() => AuthBloc(repository: sl()));
   sl.registerFactory(() => HomeBloc(repository: sl()));
+  sl.registerFactory(() => MyTasksBloc(repository: sl()));
   sl.registerFactory(() => AccountBloc(repository: sl()));
 }
 

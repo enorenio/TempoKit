@@ -165,5 +165,17 @@ void main() {
     });
     test('should perform [PUT]', () {});
     test('should perform [DELETE]', () {});
+
+    test('should perform [GET] mytasks', () async {
+      // act
+      await repository.logIn(
+        uEmail: 'robbob@gmail.com',
+        password: '12345',
+      );
+      final result = await repository.getMyTasks();
+      // assert
+      print(result);
+      expect(result, result);
+    });
   });
 }

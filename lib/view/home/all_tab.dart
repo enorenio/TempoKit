@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/home/project_page.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
-import 'package:tempokit/view/widgets/loading_widget.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 
 class AllTab extends StatefulWidget {
@@ -26,11 +25,10 @@ class _AllTabState extends State<AllTab> {
       if (state is Loading) {
         print('$this loading');
         // BlocProvider.of<HomeBloc>(context).add(GetProjectsEvent());
-        return loadingWidget;
+        return Center(child: CircularProgressIndicator());
       } else if (state is HomeError) {
-        print('HomeError here');
         showError(context, state);
-      } else if (state is DefaultHomeState) {
+      } else if (state is ProjectsState) {
         if (state.projects.length > 0) {
           return ListView.builder(
             itemCount: state.projects.length,

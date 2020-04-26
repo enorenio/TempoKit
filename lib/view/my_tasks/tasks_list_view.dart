@@ -1,41 +1,41 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:tempokit/model/task.dart';
-import 'package:tempokit/util/repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
+import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/my_tasks/task_view.dart';
+import 'package:tempokit/view/widgets/temp_widget.dart';
 
-import '../../injection_container.dart';
-
-class TasksListView extends StatelessWidget {
+class TasksListView extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: sl<Repository>().getTasks(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<Task> data = snapshot.data;
-          return tasksListView(context,data);
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
-        return CircularProgressIndicator();
-      },
-    );
+  _TasksListViewState createState() => _TasksListViewState();
+}
+
+class _TasksListViewState extends State<TasksListView> {
+  @override
+  initState() {
+    super.initState();
+    BlocProvider.of<MyTasksBloc>(context).add(GetMyTasksEvent());
   }
 
-  Future<List<Task>> _fetchTasks() async {
-    // final jobsListAPIUrl = 'https://mock-json-service.glitch.me/';
-    // final response = await http.get(jobsListAPIUrl);
-
-    // if (response.statusCode == 200) {
-    //   List jsonResponse = json.decode(response.body);
-    //   return jsonResponse.map((job) => new Task.fromJson(job)).toList();
-    // } else {
-    //   throw Exception('Failed to load jobs from API');
-    // }
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MyTasksBloc, MyTasksState>(builder: (context, state) {
+      if (state is Loading) {
+        print('$this loading');
+        return Center(child: CircularProgressIndicator());
+      } else if (state is MyTasksError) {
+        showError(context, state);
+      } else if (state is TasksState) {
+        if (state.tasks.length > 0) {
+          return tasksListView(context, state.tasks);
+        } else {
+          return Center(
+            child: Text('No tasks created yet'),
+          );
+        }
+      }
+      return tempWidget;
+    });
   }
 
   ListView tasksListView(context, data) {
@@ -46,7 +46,7 @@ class TasksListView extends StatelessWidget {
         });
   }
 
-  ListTile tile(BuildContext context,String title) => ListTile(
+  ListTile tile(BuildContext context, String title) => ListTile(
         title: Text(title,
             style: TextStyle(
               fontWeight: FontWeight.w500,
@@ -57,11 +57,12 @@ class TasksListView extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TaskView(taskName: title,),
+                builder: (context) => TaskView(
+                  taskName: title,
+                ),
               ));
         },
       );
 }
 
-class Context {
-}
+class Context {}

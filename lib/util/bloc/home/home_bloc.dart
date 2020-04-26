@@ -24,15 +24,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is GetProjectsEvent) {
+      Company _company;
       try {
-        Company _company = await repository.getCurrentCompany();
-        List<Project> _projects =
-            await repository.getProjects(compId: _company.compId);
-        yield DefaultHomeState(projects: _projects);
+        _company = await repository.getCurrentCompany();
+      } on CacheException {
+        _company = (await repository.getAllCompanies())[0];
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {
         yield ServerError(internalError: exception);
+      } finally {
+        List<Project> _projects =
+            await repository.getProjects(compId: _company.compId);
+        yield ProjectsState(projects: _projects);
       }
     }
   }

@@ -87,6 +87,7 @@ class Repository {
   void logout() {
     cacheController.deleteKey(AUTH_CACHE_KEY);
     cacheController.deleteKey(USER_CACHE_KEY);
+    cacheController.deleteKey(CUR_COMP_CACHE_KEY);
   }
 
   //! Project ------------------------------------------------------------------------------------------------------------
@@ -156,6 +157,17 @@ class Repository {
   dynamic editTask() async {}
 
   dynamic deleteTask() async {}
+
+  Future<List<Task>> getMyTasks() async {
+    if (await networkInfo.isConnected) {
+      List<Task> _answer = await apiClient.getMyTasks();
+      return _answer;
+    } else {
+      throw NetworkException(title: 'Network Error');
+    }
+  }
+
+  dynamic assignTask() async {}
 
   //! Column ------------------------------------------------------------------------------------------------------------
 

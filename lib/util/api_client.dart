@@ -180,7 +180,7 @@ class ApiClient {
     );
 
     List<dynamic> _ret;
-    
+
     _ret = _answer.map((item) {
       int colId = item['col_id'];
       String col_name = item['col_name'];
@@ -231,6 +231,24 @@ class ApiClient {
   dynamic editTask() async {}
 
   dynamic deleteTask() async {}
+
+  Future<List<Task>> getMyTasks() async {
+    Uri url = Uri.https(baseUrl, 'api/task/my');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    dynamic _answer = await _send(
+      method.get,
+      url,
+      headers: headers,
+    );
+
+    return _answer.map<Task>((item) => Task.fromJson(item)).toList();
+  }
+
+  dynamic assignTask() async {}
 
   //! Column ------------------------------------------------------------------------------------------------------------
 

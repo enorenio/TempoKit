@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'injection_container.dart';
@@ -34,6 +35,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<HomeBloc>(
           create: (_) => sl<HomeBloc>(),
+        ),
+        BlocProvider<MyTasksBloc>(
+          create: (_) => sl<MyTasksBloc>(),
         ),
       ],
       child: MaterialApp(
