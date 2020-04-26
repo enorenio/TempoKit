@@ -128,9 +128,9 @@ class Repository {
 
   //! Task ------------------------------------------------------------------------------------------------------------
 
-  Future<List<Task>> getTasks() async {
+  Future<dynamic> getTasks({int pId}) async {
     if (await networkInfo.isConnected) {
-      List<Task> _remoteTasks = await apiClient.getTasks();
+      dynamic _remoteTasks = await apiClient.getTasks(pId: pId);
 
       if (_remoteTasks != []) {
         // cache task list ???
@@ -142,7 +142,16 @@ class Repository {
     }
   }
 
-  dynamic createTask() async {}
+  Future<bool> createTask({Task task, List<User> assignees}) async {
+    if (await networkInfo.isConnected) {
+      bool _answer =
+          await apiClient.createTask(task: task, assignees: assignees);
+
+      return _answer;
+    } else {
+      throw NetworkException(title: 'Network Error');
+    }
+  }
 
   dynamic editTask() async {}
 

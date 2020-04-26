@@ -128,7 +128,8 @@ class ApiClient {
       url,
       headers: headers,
     );
-    return _answer.map((item) => Project.fromJson(item)).toList();
+
+    return _answer.map<Project>((item) => Project.fromJson(item)).toList();
   }
 
   Future<Project> createProject(
@@ -163,25 +164,69 @@ class ApiClient {
 
   //! Task ------------------------------------------------------------------------------------------------------------
 
-  Future<List<Task>> getTasks() async {
-    final list = List.generate(
-        9,
-        (int index) => Task(
-            taskId: index,
-            name: 'Name$index',
-            description: 'Description$index',
-            dueDate: 'DueDate$index',
-            mId: index,
-            colId: index % 2,
-            uEmail: 'uEmail$index@gmail.com'));
+  Future<dynamic> getTasks({int pId}) async {
+    Map<String, String> queryParams = {'p_id': pId.toString()};
 
-    return Future.delayed(
-      Duration(seconds: 2),
-      () => list,
+    Uri url = Uri.https(baseUrl, 'api/task', queryParams);
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    List<dynamic> _answer = await _send(
+      method.get,
+      url,
+      headers: headers,
     );
+
+    List<dynamic> _ret;
+    
+    _ret = _answer.map((item) {
+      int colId = item['col_id'];
+      String col_name = item['col_name'];
+      List<Task> tasks =
+          item['tasks'].map<Task>((item) => Task.fromJson(item)).toList();
+      return {
+        'col_id': colId,
+        'col_name': col_name,
+        'tasks': tasks,
+      };
+    }).toList();
+
+    return _ret;
   }
 
-  dynamic createTask() async {}
+  Future<bool> createTask({Task task, List<User> assignees}) async {
+    Uri url = Uri.https(baseUrl, 'api/task');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+      'Content-Type': 'application/json',
+    };
+
+    Map _bodyMap = {
+      'name': task.name,
+      'description': task.description,
+      'due_date': task.dueDate,
+      'col_id': task.colId,
+      'assignees': assignees.map<String>((item) => item.uEmail).toList(),
+    };
+
+    String _json = JsonEncoder().convert(_bodyMap);
+
+    dynamic _answer = await _send(
+      method.post,
+      url,
+      headers: headers,
+      body: _json,
+    );
+
+    //TODO: come up with solution eventually
+    // Task _task = Task.fromJson(_answer);
+    // List<User> _assignees =
+    //     _answer['assignees'].map((item) => User.fromJson(item)).toList();
+    return true;
+  }
 
   dynamic editTask() async {}
 
@@ -209,7 +254,7 @@ class ApiClient {
       url,
       headers: headers,
     );
-    return _answer.map((item) => Company.fromJson(item)).toList();
+    return _answer.map<Company>((item) => Company.fromJson(item)).toList();
   }
 
   Future<Company> createCompany({String name}) async {

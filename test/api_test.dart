@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
+import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
 
 import 'package:tempokit/util/api_client.dart';
@@ -133,8 +134,35 @@ void main() {
   });
 
   group('task', () {
-    test('should perform [GET]', () {});
-    test('should perform [POST]', () {});
+    test('should perform [GET]', () async {
+      // act
+      await repository.logIn(
+        uEmail: 'robbob@gmail.com',
+        password: '12345',
+      );
+      final result = await repository.getTasks(pId: 6);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+    test('should perform [POST]', () async {
+      // act
+      await repository.logIn(
+        uEmail: 'robbob@gmail.com',
+        password: '12345',
+      );
+      final result = await repository.createTask(
+          task: Task(
+            name: 'Task${Random().nextInt(1 << 16)}',
+            description: 'Description',
+            dueDate: '2020-05-05',
+            colId: 1,
+          ),
+          assignees: [User(uEmail: 'robbob@gmail.com')]);
+      // assert
+      print(result);
+      expect(result, result);
+    });
     test('should perform [PUT]', () {});
     test('should perform [DELETE]', () {});
   });
