@@ -11,17 +11,14 @@ import 'package:tempokit/model/tag.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
 
-import 'cache_controller.dart';
-import 'consts.dart';
 import 'errors.dart';
 
 class ApiClient {
   final http.Client client;
-  final CacheController cacheController;
   final JsonEncoder jsonEncoder = JsonEncoder();
   String token;
 
-  ApiClient({this.client, this.cacheController});
+  ApiClient({this.client});
 
   final String baseUrl = 'tempokit.azurewebsites.net';
 
@@ -66,11 +63,7 @@ class ApiClient {
 
   //! User ------------------------------------------------------------------------------------------------------------
 
-  void initial({String token}) {
-    this.token = token;
-  }
-
-  Future<User> logIn({String uEmail, String password}) async {
+  Future<dynamic> logIn({String uEmail, String password}) async {
     Uri url = Uri.https(baseUrl, 'auth');
 
     Map _bodyMap = {
@@ -85,16 +78,15 @@ class ApiClient {
 
     if (_answer['auth']) {
       String _token = _answer['token'];
-      saveUser(token: _token);
 
       User _user = User.fromJson(_answer['user']);
-      return _user;
+      return {'token': _token,'user': _user};
     } else {
       return null;
     }
   }
 
-  Future<bool> register({User user}) async {
+  Future<String> register({User user}) async {
     Uri url = Uri.https(baseUrl, 'signup');
 
     Map _bodyMap = User.toJson(user);
@@ -106,17 +98,14 @@ class ApiClient {
 
     if (_answer['auth']) {
       String _token = _answer['token'];
-      saveUser(token: _token);
-
-      return true;
+      return _token;
     } else {
-      return false;
+      return null;
     }
   }
 
-  void saveUser({String token}) {
+  void saveToken({String token}) {
     this.token = token;
-    cacheController.writeKey(AUTH_CACHE_KEY, token);
   }
 
   //! Project ------------------------------------------------------------------------------------------------------------

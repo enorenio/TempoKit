@@ -8,27 +8,35 @@ import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/api_client.dart';
 import 'package:tempokit/util/cache_controller.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:tempokit/util/network/network_info.dart';
+import 'package:tempokit/util/repository.dart';
 
-// class MockApi extends Mock implements ApiClient {}
-class MockHttpClient extends Mock implements Client {}
+class MockApiClient extends Mock implements ApiClient {}
+
+class MockNetworkInfo extends Mock implements NetworkInfo {}
 
 class MockCacheController extends Mock implements CacheController {}
 
 void main() {
-  ApiClient apiClient;
-  MockHttpClient mockHttpClient;
+  Repository repository;
+  MockNetworkInfo mockNetworkInfo;
+  ApiClient mockApiClient;
   MockCacheController mockCacheController;
+
   final Key _key = Key.fromUtf8('moy_modniy_klu4ik_dlinoy_32_bita');
   final IV _iv = IV.fromLength(16);
   final Encrypter _encrypter = Encrypter(AES(_key));
 
   setUp(() {
-    mockHttpClient = MockHttpClient();
+    mockApiClient = ApiClient();
+    mockNetworkInfo = MockNetworkInfo();
     mockCacheController = MockCacheController();
-    apiClient = ApiClient(
-      client: mockHttpClient,
+    repository = Repository(
+      apiClient: mockApiClient,
+      networkInfo: mockNetworkInfo,
       cacheController: mockCacheController,
     );
+    when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
   });
 
   group('encrypt', () {
@@ -51,7 +59,7 @@ void main() {
         workType: 'Tester',
       );
       // act
-      final result = await apiClient.register(
+      final result = await repository.register(
         user: randomUser,
       );
       // assert
@@ -60,9 +68,9 @@ void main() {
     });
     test('should perform [POST] /signin', () async {
       // act
-      final result = await apiClient.logIn(
+      final result = await repository.logIn(
         uEmail: 'morshnev.aleksey@gmail.com',
-        password: _encrypter.encrypt('12345', iv: _iv).base64,
+        password: '12345',
       );
       // assert
       print(result);
@@ -73,22 +81,22 @@ void main() {
   group('company', () {
     test('should perform [GET]', () async {
       // act
-      await apiClient.logIn(
+      await repository.logIn(
         uEmail: 'morshnev.aleksey@gmail.com',
-        password: _encrypter.encrypt('12345', iv: _iv).base64,
+        password: '12345',
       );
-      final result = await apiClient.getAllCompanies();
+      final result = await repository.getAllCompanies();
       // assert
       print(result);
       expect(result, result);
     });
     test('should perform [POST]', () async {
       // act
-      await apiClient.logIn(
+      await repository.logIn(
         uEmail: 'morshnev.aleksey@gmail.com',
-        password: _encrypter.encrypt('12345', iv: _iv).base64,
+        password: '12345',
       );
-      final result = await apiClient.createCompany(
+      final result = await repository.createCompany(
           name: 'Test${Random().nextInt(1 << 16)}');
       //assert
       print(result);
@@ -99,22 +107,22 @@ void main() {
   group('project', () {
     test('should perform [GET]', () async {
       // act
-      await apiClient.logIn(
+      await repository.logIn(
         uEmail: 'morshnev.aleksey@gmail.com',
-        password: _encrypter.encrypt('12345', iv: _iv).base64,
+        password: '12345',
       );
-      final result = await apiClient.getProjects(compId: 2);
+      final result = await repository.getProjects(compId: 2);
       // assert
       print(result);
       expect(result, result);
     });
     test('should perform [POST]', () async {
       // act
-      await apiClient.logIn(
+      await repository.logIn(
         uEmail: 'morshnev.aleksey@gmail.com',
-        password: _encrypter.encrypt('12345', iv: _iv).base64,
+        password: '12345',
       );
-      final result = await apiClient.createProject(
+      final result = await repository.createProject(
           compId: 2, description: 'Test', name: 'Testing Project');
       // assert
       print(result);

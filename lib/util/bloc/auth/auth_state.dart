@@ -1,6 +1,6 @@
 part of 'auth_bloc.dart';
 
-abstract class AuthState {
+abstract class AuthState extends GeneralState {
   AuthState([List props = const <dynamic>[]]);
 }
 
@@ -14,7 +14,7 @@ class Authenticated extends AuthState {
 
 class Loading extends AuthState {}
 
-class AuthError extends AuthState {
+class AuthError extends AuthState implements GeneralState{
   IError error;
 }
 

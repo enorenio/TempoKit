@@ -3,8 +3,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart' as loader;
 import 'package:tempokit/model/company.dart';
 
 import 'package:tempokit/model/user.dart';
@@ -15,39 +13,6 @@ import 'package:tempokit/util/repository.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
-
-Widget loadingWidget = Scaffold(
-  body: Center(
-    child: loader.Loading(
-      indicator: BallSpinFadeLoaderIndicator(),
-      size: 40.0,
-    ),
-  ),
-);
-
-//TODO: this is bad solution, find another one
-Widget tempWidget = Scaffold();
-
-showError(BuildContext context, AuthError state) {
-  SchedulerBinding.instance.addPostFrameCallback((_) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: state.error.title,
-        content: state.error.content,
-        actions: [
-          FlatButton(
-            child: Text('OK'),
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop();
-            },
-          ),
-        ],
-      ),
-      barrierDismissible: true,
-    );
-  });
-}
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Repository repository;

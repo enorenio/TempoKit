@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
+import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'injection_container.dart';
 import 'util/bloc/auth/auth_bloc.dart';
 import 'util/consts.dart';
@@ -30,6 +31,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>(
           create: (_) => sl<AuthBloc>(),
+        ),
+        BlocProvider<HomeBloc>(
+          create: (_) => sl<HomeBloc>(),
         ),
       ],
       child: MaterialApp(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tempokit/util/repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/home/project_page.dart';
-
-import '../../injection_container.dart';
+import 'package:tempokit/util/bloc/home/home_bloc.dart';
+import 'package:tempokit/view/widgets/loading_widget.dart';
+import 'package:tempokit/view/widgets/temp_widget.dart';
 
 class AllTab extends StatefulWidget {
   const AllTab({Key key}) : super(key: key);
@@ -10,38 +12,42 @@ class AllTab extends StatefulWidget {
   @override
   _AllTabState createState() => _AllTabState();
 }
+
 class _AllTabState extends State<AllTab> {
   @override
-  int _itemCount=5;
+  initState() {
+    super.initState();
+    BlocProvider.of<HomeBloc>(context).add(GetProjectsEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      // this is temporary, just to test, you can delete it if you want to
-      // i wrote it so you now see how to get data
-      // i dont know but we will probably change FutureBuilder to StreamBuilder
-      // so that newly created project could be reactively updated to list
-      child: FutureBuilder(
-        future: sl<Repository>().getProjects(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-            case ConnectionState.none:
-            case ConnectionState.active:
-              return Wrap(
-                children: <Widget>[LinearProgressIndicator()],
-              );
-            case ConnectionState.done:
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) => ListTile(
-                  title: Text(snapshot.data[index].name),
-                  subtitle: Text(snapshot.data[index].description),
-                  onTap: ()=>_navigateToProject(context,index),
-                ),
-              );
-          }
-        },
-      ),
-    );
+    return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+      if (state is Loading) {
+        print('$this loading');
+        // BlocProvider.of<HomeBloc>(context).add(GetProjectsEvent());
+        return loadingWidget;
+      } else if (state is HomeError) {
+        print('HomeError here');
+        showError(context, state);
+      } else if (state is DefaultHomeState) {
+        if (state.projects.length > 0) {
+          return ListView.builder(
+            itemCount: state.projects.length,
+            itemBuilder: (BuildContext context, int index) => ListTile(
+              title: Text(state.projects[index].name),
+              subtitle: Text(state.projects[index].description),
+              onTap: () => _navigateToProject(context, index),
+            ),
+          );
+        } else {
+          return Center(
+            child: Text('No projects created yet'),
+          );
+        }
+      }
+      return tempWidget;
+    });
   }
 }
 
@@ -52,6 +58,3 @@ void _navigateToProject(BuildContext context, index) {
         builder: (context) => ProjectPage(index: index),
       ));
 }
-
-
- 

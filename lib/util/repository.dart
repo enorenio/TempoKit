@@ -35,7 +35,7 @@ class Repository {
     String _answer = await cacheController.readKey(USER_CACHE_KEY);
 
     String _token = await cacheController.readKey(AUTH_CACHE_KEY);
-    apiClient.initial(token: _token);
+    apiClient.saveToken(token: _token);
 
     Map _jsonMap = json.decode(_answer);
     User _user = User.fromJson(_jsonMap);
@@ -48,9 +48,13 @@ class Repository {
     if (await networkInfo.isConnected) {
       password = _encrypter.encrypt(password, iv: _iv).base64;
 
-      User _user = await apiClient.logIn(uEmail: uEmail, password: password);
+      dynamic _answer = await apiClient.logIn(uEmail: uEmail, password: password);
+      User _user = _answer['user'];
+      String _token = _answer['token'];
 
       cacheController.writeKey(USER_CACHE_KEY, _user.toString());
+      cacheController.writeKey(AUTH_CACHE_KEY, _token);
+      apiClient.saveToken(token: _token);
 
       return _user;
     } else {
@@ -61,14 +65,19 @@ class Repository {
   Future<bool> register({User user}) async {
     if (await networkInfo.isConnected) {
       user..password = _encrypter.encrypt(user.password, iv: _iv).base64;
-      bool _answer = await apiClient.register(user: user);
+      String _answer = await apiClient.register(user: user);
 
-      if (_answer) {
+      if (_answer != null) {
         user..password = '';
+
         cacheController.writeKey(USER_CACHE_KEY, user.toString());
+        cacheController.writeKey(AUTH_CACHE_KEY, _answer);
+        apiClient.saveToken(token: _answer);
+
+        return true;
       }
 
-      return _answer;
+      return false;
     } else {
       throw NetworkException(title: 'Register Error');
     }
@@ -83,9 +92,9 @@ class Repository {
 
   Future<List<Project>> getProjects({bool isFavorited, int compId}) async {
     if (await networkInfo.isConnected) {
-      Company _company = await getCurrentCompany();
+      // Company _company = await getCurrentCompany();
       List<Project> _remoteProjects = await apiClient.getProjects(
-          isFavorited: isFavorited, compId: _company.compId);
+          isFavorited: isFavorited, compId: compId);
 
       if (_remoteProjects != []) {
         // cache project list ???

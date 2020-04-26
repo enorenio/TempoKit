@@ -27,10 +27,16 @@ class User {
         'work_type': user.workType,
       };
 
+  // String -> Map -> user
   // wrong, do that correctly some day
   // User.fromString(String string) {
   //   Map _jsonMap = json.decode(string);
   //   User.fromJson(_jsonMap);
+  // }
+  // User.fromString(String string) {
+  //   Map _jsonMap = json.decode(string);
+  //   User.fromJson(_jsonMap);
+
   // }
 
   String toString() => JsonEncoder().convert(toJson(this));

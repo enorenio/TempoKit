@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:tempokit/util/bloc/account/account_bloc.dart';
 import 'package:tempokit/util/cache_controller.dart';
+import 'package:tempokit/util/bloc/home/home_bloc.dart';
 
 import 'util/api_client.dart';
 import 'util/bloc/auth/auth_bloc.dart';
@@ -16,7 +17,7 @@ Future<void> init() async {
   //! Cache
   sl.registerLazySingleton(() => CacheController(sharedPreferences: sl()));
   //! ApiClient
-  sl.registerLazySingleton(() => ApiClient(client: sl(), cacheController: sl()));
+  sl.registerLazySingleton(() => ApiClient(client: sl()));
   //! Bloc
   _initBloc();
   //! Repository
@@ -30,6 +31,7 @@ Future<void> init() async {
 
 void _initBloc() {
   sl.registerFactory(() => AuthBloc(repository: sl()));
+  sl.registerFactory(() => HomeBloc(repository: sl()));
   sl.registerFactory(() => AccountBloc(repository: sl()));
 }
 
