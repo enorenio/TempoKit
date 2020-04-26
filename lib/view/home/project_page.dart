@@ -8,7 +8,7 @@ import 'package:tempokit/util/repository.dart';
 import 'package:tempokit/view/home/favourites_tab.dart';
 import 'package:tempokit/view/home/recents_tab.dart';
 import '../../injection_container.dart';
-import '../../util/bloc/auth_bloc.dart';
+import '../../util/bloc/auth/auth_bloc.dart';
 import '../wrapper/wrapper_page.dart';
 
 int _itemCount=5;

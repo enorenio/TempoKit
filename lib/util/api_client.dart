@@ -64,7 +64,11 @@ class ApiClient {
     }
   }
 
-  //! User
+  //! User ------------------------------------------------------------------------------------------------------------
+
+  void initial({String token}) {
+    this.token = token;
+  }
 
   Future<User> logIn({String uEmail, String password}) async {
     Uri url = Uri.https(baseUrl, 'auth');
@@ -73,7 +77,6 @@ class ApiClient {
       'u_email': uEmail,
       'password': password,
     };
-    // String _body = jsonEncoder.convert(_bodyMap);
 
     dynamic _answer = await _postJson(
       url,
@@ -82,8 +85,7 @@ class ApiClient {
 
     if (_answer['auth']) {
       String _token = _answer['token'];
-      token = _token;
-      cacheController.writeKey(AUTH_CACHE_KEY, _token);
+      saveUser(token: _token);
 
       User _user = User.fromJson(_answer['user']);
       return _user;
@@ -96,7 +98,6 @@ class ApiClient {
     Uri url = Uri.https(baseUrl, 'signup');
 
     Map _bodyMap = User.toJson(user);
-    // String _body = jsonEncoder.convert(_bodyMap);
 
     dynamic _answer = await _postJson(
       url,
@@ -105,8 +106,7 @@ class ApiClient {
 
     if (_answer['auth']) {
       String _token = _answer['token'];
-      token = _token;
-      cacheController.writeKey(AUTH_CACHE_KEY, _token);
+      saveUser(token: _token);
 
       return true;
     } else {
@@ -114,80 +114,63 @@ class ApiClient {
     }
   }
 
-  //! Project
+  void saveUser({String token}) {
+    this.token = token;
+    cacheController.writeKey(AUTH_CACHE_KEY, token);
+  }
 
-  Future<List<Project>> getProjects(
-      {bool isFavorited = false, String uEmail, int compId}) async {
-    // Uri url = isFavorited
-    //     ? Uri.https(baseUrl, 'project/favorited', {})
-    //     : Uri.https(baseUrl, 'project', {});
+  //! Project ------------------------------------------------------------------------------------------------------------
 
-    // dynamic json = await _getJson(url);
-    // return json.map<Project>((item) => Project.fromJson(item)).toList();
-    print('token: $token');
+  Future<List<Project>> getProjects({bool isFavorited, int compId}) async {
+    Map<String, String> queryParams = {'comp_id': compId.toString()};
 
-    final list1 = List.generate(
-        3,
-        (int index) => Project(
-            pId: index,
-            name: 'Name$index',
-            description: 'Description$index',
-            uEmail: 'uEmail$index@gmail.com'));
-    final list2 = List.generate(
-        9,
-        (int index) => Project(
-            pId: index,
-            name: 'Name$index',
-            description: 'Description$index',
-            uEmail: 'uEmail$index@gmail.com'));
+    if (isFavorited != null) {
+      queryParams['favorite'] = isFavorited ? '1' : '0';
+    }
 
-    return isFavorited
-        ? Future.delayed(
-            Duration(seconds: 2),
-            () => list1,
-          )
-        : Future.delayed(
-            Duration(seconds: 2),
-            () => list2,
-          );
+    Uri url = Uri.https(baseUrl, 'api/project', queryParams);
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    List<dynamic> _answer = await _getJson(
+      url,
+      headers: headers,
+    );
+    return _answer.map((item) => Project.fromJson(item)).toList();
   }
 
   Future<Project> createProject(
       {String name, String description, int compId}) async {
-    // Uri url = Uri.https(baseApiUrl, 'project');
+    Uri url = Uri.https(baseUrl, 'api/project');
 
-    // Map _bodyMap = {
-    //   'name': name,
-    //   'description': description,
-    //   'comp_id': compId,
-    // };
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
 
-    // dynamic _answer = await _postJson(
-    //   url,
-    //   body: _bodyMap,
-    // );
+    Map _bodyMap = {
+      'name': name,
+      'description': description,
+      'comp_id': compId.toString(), //TODO: delete this cast
+    };
 
-    return await Future.delayed(
-      Duration(seconds: 2),
-      () => Project(
-          pId: 123,
-          name: name,
-          description: description,
-          uEmail: 'temporary@smth.net'),
+    dynamic _answer = await _postJson(
+      url,
+      headers: headers,
+      body: _bodyMap,
     );
-    // if (_answer['auth']) {
-    //   Project _project = Project.fromJson(_answer['project']);
-    //   return _project;
-    // } else {
-    //   return null;
-    // }
+    //TODO: delete next line
+    _answer['comp_id'] = int.parse(_answer['comp_id']);
+    Project _project = Project.fromJson(_answer);
+    return _project;
   }
 
   dynamic editProject() async {}
 
   dynamic deleteProject() async {}
 
-  //! Task
+  //! Task ------------------------------------------------------------------------------------------------------------
 
   Future<List<Task>> getTasks() async {
     final list = List.generate(
@@ -213,7 +196,7 @@ class ApiClient {
 
   dynamic deleteTask() async {}
 
-  //! Column
+  //! Column ------------------------------------------------------------------------------------------------------------
 
   dynamic createColumn() async {}
 
@@ -221,7 +204,7 @@ class ApiClient {
 
   dynamic deleteColumn() async {}
 
-  //! Company
+  //! Company ------------------------------------------------------------------------------------------------------------
 
   Future<List<Company>> getAllCompanies() async {
     Uri url = Uri.https(baseUrl, 'api/company');
@@ -237,31 +220,26 @@ class ApiClient {
     return _answer.map((item) => Company.fromJson(item)).toList();
   }
 
-  Future<bool> createCompany(String name) async {
+  Future<Company> createCompany({String name}) async {
     Uri url = Uri.https(baseUrl, 'api/company');
 
     Map<String, String> headers = {
       'x-api-key': token,
     };
 
-    Map _bodyMap = {
-      'name': name
-    };
+    Map _bodyMap = {'name': name};
 
     dynamic _answer = await _postJson(
       url,
       headers: headers,
       body: _bodyMap,
     );
-    
-    if (_answer['message'] == 'success') {
-      return true;
-    } else {
-      return false;
-    }
+
+    Company _company = Company.fromJson(_answer);
+    return _company;
   }
 
-  //! Tag
+  //! Tag ------------------------------------------------------------------------------------------------------------
 
   dynamic getAllTags() async {}
 
@@ -271,7 +249,7 @@ class ApiClient {
 
   dynamic deleteTag() async {}
 
-  //! Comment
+  //! Comment ------------------------------------------------------------------------------------------------------------
 
   dynamic getAllComments() async {}
 
@@ -281,7 +259,7 @@ class ApiClient {
 
   dynamic deleteComment() async {}
 
-  //! File
+  //! File ------------------------------------------------------------------------------------------------------------
 
   dynamic getAllFiles() async {}
 
@@ -289,7 +267,7 @@ class ApiClient {
 
   dynamic deleteFile() async {}
 
-  //! Milestone
+  //! Milestone ------------------------------------------------------------------------------------------------------------
 
   dynamic getAllMilestones() async {}
 
@@ -299,13 +277,13 @@ class ApiClient {
 
   dynamic deleteMilestone() async {}
 
-  //! Report
+  //! Report ------------------------------------------------------------------------------------------------------------
 
   dynamic getReports() async {}
 
   dynamic createReport() async {}
 
-  //! Search
+  //! Search ------------------------------------------------------------------------------------------------------------
 
   dynamic search() async {}
 }

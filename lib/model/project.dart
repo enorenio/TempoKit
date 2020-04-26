@@ -5,30 +5,30 @@ class Project {
   String name;
   String description;
   String uEmail;
+  int compId;
 
   Project({
     this.pId,
     this.name,
     this.description,
     this.uEmail,
+    this.compId,
   });
 
   Project.fromJson(Map jsonMap)
-      : pId = jsonMap['P_ID'],
-        name = jsonMap['Name'],
-        description = jsonMap['Description'],
-        uEmail = jsonMap['U_Email'];
+      : pId = jsonMap['p_id'],
+        name = jsonMap['name'],
+        description = jsonMap['description'],
+        uEmail = jsonMap['u_email']??null,
+        compId = jsonMap['comp_id']??null;
 
-  Map toJson() {
-    return {
-      'p_id': pId,
-      'name': name,
-      'description': description,
-      'u_email': uEmail,
-    };
-  }
+  static Map toJson(Project project) => {
+        'p_id': project.pId,
+        'name': project.name,
+        'description': project.description,
+        'u_email': project.uEmail,
+        'comp_id': project.compId,
+      };
 
-  String toString() {
-    return JsonEncoder().convert(this.toJson());
-  }
+  String toString() => JsonEncoder().convert(toJson(this));
 }

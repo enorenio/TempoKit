@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 const DEBUG = false;
 
-const AUTH_CACHE_KEY = 'Auth_key';
-const USER_CACHE_KEY = 'User_key';
-
 ThemeData themeData = ThemeData(
   brightness: Brightness.dark,
   primaryColor: Colors.grey[900],

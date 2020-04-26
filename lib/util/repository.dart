@@ -29,13 +29,17 @@ class Repository {
 
   Repository({this.apiClient, this.networkInfo, this.cacheController});
 
-  //! User
+  //! User ------------------------------------------------------------------------------------------------------------
 
   Future<dynamic> initial() async {
     String _answer = await cacheController.readKey(USER_CACHE_KEY);
 
+    String _token = await cacheController.readKey(AUTH_CACHE_KEY);
+    apiClient.initial(token: _token);
+
     Map _jsonMap = json.decode(_answer);
     User _user = User.fromJson(_jsonMap);
+
     return _user;
     // return User.fromString(_answer);
   }
@@ -75,29 +79,30 @@ class Repository {
     cacheController.deleteKey(USER_CACHE_KEY);
   }
 
-  //! Project
+  //! Project ------------------------------------------------------------------------------------------------------------
 
-  Future<List<Project>> getProjects(
-      {bool isFavorited, String uEmail, int compId}) async {
+  Future<List<Project>> getProjects({bool isFavorited, int compId}) async {
     if (await networkInfo.isConnected) {
+      Company _company = await getCurrentCompany();
       List<Project> _remoteProjects = await apiClient.getProjects(
-          isFavorited: isFavorited ?? false, uEmail: uEmail, compId: compId);
-      
+          isFavorited: isFavorited, compId: _company.compId);
+
       if (_remoteProjects != []) {
         // cache project list ???
       }
-      
+
       return _remoteProjects;
     } else {
       throw NetworkException(title: 'Network Error');
     }
   }
 
-  Future<Project> createProject({String name, String description, int compId}) async {
+  Future<Project> createProject(
+      {String name, String description, int compId}) async {
     if (await networkInfo.isConnected) {
       Project _answer = await apiClient.createProject(
           name: name, description: description, compId: compId);
-      
+
       if (_answer != null) {
         // cache to project list yes??
       }
@@ -112,16 +117,16 @@ class Repository {
 
   dynamic deleteProject() async {}
 
-  //! Task
+  //! Task ------------------------------------------------------------------------------------------------------------
 
   Future<List<Task>> getTasks() async {
     if (await networkInfo.isConnected) {
       List<Task> _remoteTasks = await apiClient.getTasks();
-      
+
       if (_remoteTasks != []) {
         // cache task list ???
       }
-      
+
       return _remoteTasks;
     } else {
       throw NetworkException(title: 'Network Error');
@@ -134,7 +139,7 @@ class Repository {
 
   dynamic deleteTask() async {}
 
-  //! Column
+  //! Column ------------------------------------------------------------------------------------------------------------
 
   dynamic createColumn() async {}
 
@@ -142,13 +147,38 @@ class Repository {
 
   dynamic deleteColumn() async {}
 
-  //! Company
+  //! Company ------------------------------------------------------------------------------------------------------------
 
-  dynamic getAllCompanies() async {}
+  Future<List<Company>> getAllCompanies() async {
+    if (await networkInfo.isConnected) {
+      return await apiClient.getAllCompanies();
+    } else {
+      throw NetworkException();
+    }
+  }
 
-  dynamic createCompany() async {}
+  Future<Company> createCompany({String name}) async {
+    if (await networkInfo.isConnected) {
+      Company answer = await apiClient.createCompany(name: name);
+      return answer;
+    } else {
+      throw NetworkException();
+    }
+  }
 
-  //! Tag
+  void selectCompany({Company company}) {
+    cacheController.writeKey(CUR_COMP_CACHE_KEY, company.toString());
+  }
+
+  Future<Company> getCurrentCompany() async {
+    String _string = await cacheController.readKey(CUR_COMP_CACHE_KEY);
+    Map _jsonMap = json.decode(_string);
+    Company _company = Company.fromJson(_jsonMap);
+    return _company;
+    // return Company.fromString(_company);
+  }
+
+  //! Tag ------------------------------------------------------------------------------------------------------------
 
   dynamic getAllTags() async {}
 
@@ -158,7 +188,7 @@ class Repository {
 
   dynamic deleteTag() async {}
 
-  //! Comment
+  //! Comment ------------------------------------------------------------------------------------------------------------
 
   dynamic getAllComments() async {}
 
@@ -168,7 +198,7 @@ class Repository {
 
   dynamic deleteComment() async {}
 
-  //! File
+  //! File ------------------------------------------------------------------------------------------------------------
 
   dynamic getAllFiles() async {}
 
@@ -176,7 +206,7 @@ class Repository {
 
   dynamic deleteFile() async {}
 
-  //! Milestone
+  //! Milestone ------------------------------------------------------------------------------------------------------------
 
   dynamic getAllMilestones() async {}
 
@@ -186,13 +216,13 @@ class Repository {
 
   dynamic deleteMilestone() async {}
 
-  //! Report
+  //! Report ------------------------------------------------------------------------------------------------------------
 
   dynamic getReports() async {}
 
   dynamic createReport() async {}
 
-  //! Search
+  //! Search ------------------------------------------------------------------------------------------------------------
 
   dynamic search() async {}
 }
