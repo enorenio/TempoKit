@@ -10,6 +10,11 @@ class TasksState extends MyTasksState {
   TasksState({this.tasks});
 }
 
+class UsersState extends MyTasksState {
+  final List<User> users;
+
+  UsersState({this.users});
+}
 
 class Loading extends MyTasksState {}
 

@@ -59,7 +59,7 @@ class ApiClient {
     }
   }
 
-  //! User ------------------------------------------------------------------------------------------------------------
+  //! Auth ------------------------------------------------------------------------------------------------------------
 
   Future<dynamic> logIn({String uEmail, String password}) async {
     Uri url = Uri.https(baseUrl, 'auth');
@@ -106,6 +106,26 @@ class ApiClient {
 
   void saveToken({String token}) {
     this.token = token;
+  }
+
+  //! User ---------------------------------------------------------------------------------------------------------------
+
+  Future<List<User>> getUsers({int compId}) async {
+    Map<String, String> queryParams = {'comp_id': compId.toString()};
+
+    Uri url = Uri.https(baseUrl, 'api/user', queryParams);
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    List<dynamic> _answer = await _send(
+      method.get,
+      url,
+      headers: headers,
+    );
+
+    return _answer.map<User>((item) => User.fromJson(item)).toList();
   }
 
   //! Project ------------------------------------------------------------------------------------------------------------

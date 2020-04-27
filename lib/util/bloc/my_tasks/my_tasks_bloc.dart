@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/task.dart';
+import 'package:tempokit/model/user.dart';
 
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
@@ -30,6 +32,22 @@ class MyTasksBloc extends Bloc<MyTasksEvent, MyTasksState> {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {
         yield ServerError(internalError: exception);
+      }
+    }
+
+    if (event is GetUsersEvent) {
+      Company _company;
+      try {
+        _company = await repository.getCurrentCompany();
+      } on CacheException {
+        _company = (await repository.getAllCompanies())[0];
+      } on NetworkException catch (exception) {
+        yield NetworkError(internalError: exception);
+      } on ServerException catch (exception) {
+        yield ServerError(internalError: exception);
+      } finally {
+        List<User> users = await repository.getUsers(compId: _company.compId);
+        yield UsersState(users: users);
       }
     }
   }

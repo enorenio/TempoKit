@@ -29,7 +29,7 @@ class Repository {
 
   Repository({this.apiClient, this.networkInfo, this.cacheController});
 
-  //! User ------------------------------------------------------------------------------------------------------------
+  //! Auth ------------------------------------------------------------------------------------------------------------
 
   Future<dynamic> initial() async {
     String _answer = await cacheController.readKey(USER_CACHE_KEY);
@@ -88,6 +88,18 @@ class Repository {
     cacheController.deleteKey(AUTH_CACHE_KEY);
     cacheController.deleteKey(USER_CACHE_KEY);
     cacheController.deleteKey(CUR_COMP_CACHE_KEY);
+  }
+
+  //! User ------------------------------------------------------------------------------------------------------------
+
+  Future<List<User>> getUsers({int compId}) async {
+    if (await networkInfo.isConnected) {
+      List<User> _answer = await apiClient.getUsers(compId: compId);
+
+      return _answer;
+    } else {
+      throw NetworkException(title: 'Network Error');
+    }
   }
 
   //! Project ------------------------------------------------------------------------------------------------------------

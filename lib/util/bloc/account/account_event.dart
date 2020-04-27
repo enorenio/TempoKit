@@ -10,3 +10,5 @@ class SelectCompany extends AccountEvent {
   @override
   String toString() => 'SelectCompany event';
 }
+
+class GetCompanies extends AccountEvent {}

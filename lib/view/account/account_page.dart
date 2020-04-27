@@ -3,7 +3,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/user.dart';
+import 'package:tempokit/util/bloc/account/account_bloc.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 import '../../util/bloc/auth/auth_bloc.dart';
@@ -17,90 +19,123 @@ class AccountPage extends StatefulWidget {
 
 class _AccountState extends State<AccountPage> {
   @override
+  initState() {
+    super.initState();
+    BlocProvider.of<AccountBloc>(context).add(((GetCompanies())));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is Loading) {
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, userState) {
+      if (userState is Loading) {
         print('$this loading');
         return Center(child: CircularProgressIndicator());
-      } else if (state is AuthError) {
-        showError(context, state);
+      } else if (userState is AuthError) {
+        showError(context, userState);
       }
-      if (state is Authenticated) {
-        return Scaffold(
-          body: SafeArea(
-              child: SingleChildScrollView(
+      if (userState is Authenticated) {
+        return BlocBuilder<AccountBloc, AccountState>(
+            builder: (context, state) {
+          if (state is AccountError) {
+            showError(context, state);
+          }
+          if (state is CompaniesState) {
+            return Scaffold(
+              body: SafeArea(
+                child: SingleChildScrollView(
                   child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 25.0),
-            child: Column(
-              children: <Widget>[
-                Center(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        alignment: Alignment.center,
-                        height: 100,
-                        width: 100,
-                        margin: EdgeInsets.only(top: 10.0, bottom: 20.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50.0),
-                          gradient: LinearGradient(
-                            colors: [Colors.deepOrange, Colors.yellow],
-                            begin: Alignment.bottomRight,
-                            end: Alignment.topLeft,
+                    padding: EdgeInsets.symmetric(horizontal: 25.0),
+                    child: Column(
+                      children: <Widget>[
+                        Center(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.center,
+                                height: 100,
+                                width: 100,
+                                margin:
+                                    EdgeInsets.only(top: 10.0, bottom: 20.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50.0),
+                                  gradient: LinearGradient(
+                                    colors: [Colors.deepOrange, Colors.yellow],
+                                    begin: Alignment.bottomRight,
+                                    end: Alignment.topLeft,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromRGBO(13, 51, 32, 0.1),
+                                      offset: Offset(0.0, 6.0),
+                                      blurRadius: 10.0,
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  userState.user.fullName[0],
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 32.0),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(bottom: 30.0),
+                                child: Text(
+                                  userState.user.fullName,
+                                  style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color.fromRGBO(13, 51, 32, 0.1),
-                              offset: Offset(0.0, 6.0),
-                              blurRadius: 10.0,
-                            ),
-                          ],
                         ),
-                        child: Text(
-                          state.user.fullName[0],
-                          style: TextStyle(color: Colors.white, fontSize: 32.0),
+                        MyCont(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              _myTitle('Organizations'),
+                              // Center(
+                              //   child: ListView.builder(
+                              //       itemCount: state.companies.length,
+                              //       itemBuilder: (context, index) {
+                              //         Company _current = state.companies[index];
+                              //         return ListTile(
+                              //           title: _myText(
+                              //               state.companies[index].name),
+                              //           onTap: () {
+                              //             print(
+                              //                 '${_current.compId} - ${_current.name} - ${_current.uEmail}');
+                              //           },
+                              //         );
+                              //       }),
+                              // ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 30.0),
-                        child: Text(
-                          state.user.fullName,
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.w600),
+                        MyCont(
+                          child: Notification(),
                         ),
-                      ),
-                    ],
+                        MyCont(
+                          child: Contact(),
+                        ),
+                        MyCont(
+                          child: More(),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: 5),
+                          width: MediaQuery.of(context).size.width * .9,
+                          height: 50,
+                          child: LogoutButton(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                MyCont(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      _myTitle('Organizations'),
-                      _myText(state.user.workType),
-                      _myText(state.user.uEmail),
-                    ],
-                  ),
-                ),
-                MyCont(
-                  child: Notification(),
-                ),
-                MyCont(
-                  child: Contact(),
-                ),
-                MyCont(
-                  child: More(),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 5),
-                  width: MediaQuery.of(context).size.width * .9,
-                  height: 50,
-                  child: LogoutButton(),
-                ),
-              ],
-            ),
-          ))),
-        );
+              ),
+            );
+          }
+          return tempWidget;
+        });
       }
       return tempWidget;
     });

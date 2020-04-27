@@ -5,3 +5,5 @@ abstract class MyTasksEvent {
 }
 
 class GetMyTasksEvent extends MyTasksEvent {}
+
+class GetUsersEvent extends MyTasksEvent {}
