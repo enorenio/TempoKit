@@ -10,6 +10,10 @@ import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 import '../../util/bloc/auth/auth_bloc.dart';
 
+
+
+
+
 class AccountPage extends StatefulWidget {
   const AccountPage({Key key}) : super(key: key);
 
@@ -18,6 +22,9 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountState extends State<AccountPage> {
+  //var _addTapRecognizer = TapGestureRecognizer()..onTap;
+
+ 
   @override
   initState() {
     super.initState();
@@ -94,21 +101,42 @@ class _AccountState extends State<AccountPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               _myTitle('Organizations'),
-                              // Center(
-                              //   child: ListView.builder(
-                              //       itemCount: state.companies.length,
-                              //       itemBuilder: (context, index) {
-                              //         Company _current = state.companies[index];
-                              //         return ListTile(
-                              //           title: _myText(
-                              //               state.companies[index].name),
-                              //           onTap: () {
-                              //             print(
-                              //                 '${_current.compId} - ${_current.name} - ${_current.uEmail}');
-                              //           },
-                              //         );
-                              //       }),
-                              // ),
+                               ListView.builder(
+                                     scrollDirection: Axis.vertical,
+                                     shrinkWrap: true,
+                                     itemCount: state.companies.length,
+                                     itemBuilder: (context, index) {
+                                       Company _current = state.companies[index];
+                                      
+                                       return ListTile(
+                                         title: _myText(state.companies[index].name),
+                                         trailing: _current == state.companies[index]? Icon(Icons.check_box,color: Colors.greenAccent,):Icon(Icons.check_box_outline_blank,),
+                                         onTap: (){
+                                            setState(() {
+                                               _current = state.companies[index];
+                                            });
+                                          },
+                                        );  
+                                     }),
+                                  ButtonTheme(
+                                    minWidth: 150,
+                                    child: RaisedButton(
+                                      color: Color.fromRGBO(60, 60, 60, 1),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(30.0)),
+                                      onPressed: () {
+                                        showNewCompanyView();
+                                      },
+                                      child: Text(
+                                        'Add...',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+            
                             ],
                           ),
                         ),
@@ -139,6 +167,13 @@ class _AccountState extends State<AccountPage> {
       }
       return tempWidget;
     });
+  }
+ showNewCompanyView() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return NewCompanyView();
+        });
   }
 }
 
@@ -287,4 +322,81 @@ _myTitle(title) {
           color: Colors.grey, fontSize: 14.0, fontWeight: FontWeight.w600),
     ),
   );
+}
+
+class NewCompanyView extends StatelessWidget {
+  final companyNameController = TextEditingController();
+  final memberEmailController = TextEditingController();
+  final companyFormKey = GlobalKey<FormState>();
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 230,
+        child: SafeArea(
+          minimum: const EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Form(
+            key: companyFormKey,
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.drag_handle),
+                SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) return 'Please enter company name!';
+                  },
+                  controller: companyNameController,
+                  cursorColor: Color(0xFF3C4858),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  decoration: InputDecoration(
+                    hintText: 'Your company...',
+                  ),
+                ),
+               SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+
+                  controller: memberEmailController,
+                  cursorColor: Color(0xFF3C4858),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  decoration: InputDecoration(
+                    hintText: 'Invite members. Enter emails...',
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ButtonTheme(
+                  minWidth: 150,
+                  child: RaisedButton(
+                    color: Color.fromRGBO(60, 60, 60, 1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    onPressed: () {
+                      if (companyFormKey.currentState.validate()) {
+                        Navigator.pop(context);
+                        setAccountState();
+                      }
+                    },
+                    child: Text(
+                      'Add',
+                      style: TextStyle(
+                          color: Colors.amber[800],
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+  void setAccountState(){
+     print('set');
+  }
 }
