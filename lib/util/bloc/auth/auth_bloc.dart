@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:tempokit/model/company.dart';
+import 'package:tempokit/model/project.dart';
 
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/errors.dart';
@@ -43,7 +44,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         User _user = await repository.logIn(
             uEmail: event.uEmail, password: event.password);
-        
+
         _user ?? (() => throw WrongCredentialsException())();
 
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
@@ -78,8 +79,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         bool _result = await repository.register(user: event.user);
 
         if (_result) {
-          Company company = await repository.createCompany(name: 'My Workspace');
+          Company company =
+              await repository.createCompany(name: 'My Workspace');
           repository.selectCompany(company: company);
+
+          await repository.createProject(
+            name: 'Example Project',
+            description: 'This is your example project',
+            compId: company.compId,
+          );
+
           ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
               Routes.wrapperPage, (Route<dynamic> route) => false);
           yield Authenticated(user: event.user);
