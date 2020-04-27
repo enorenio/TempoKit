@@ -327,9 +327,45 @@ class ApiClient {
 
   //! Comment ------------------------------------------------------------------------------------------------------------
 
-  dynamic getAllComments() async {}
+  Future<List<Comment>> getAllComments({int taskId}) async {
+    Map<String, String> queryParams = {'task_id': taskId.toString()};
 
-  dynamic createComment() async {}
+    Uri url = Uri.https(baseUrl, 'api/comment', queryParams);
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    List<dynamic> _answer = await _send(
+      method.get,
+      url,
+      headers: headers,
+    );
+
+    return _answer.map<Comment>((item) => Comment.fromJson(item)).toList();
+  }
+
+  Future<Comment> createComment({String text, int taskId}) async {
+    Uri url = Uri.https(baseUrl, 'api/comment');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+      'Content-Type': 'application/json',
+    };
+
+    Map _bodyMap = {'text': text, 'task_id': taskId};
+
+    String _json = JsonEncoder().convert(_bodyMap);
+
+    dynamic _answer = await _send(
+      method.post,
+      url,
+      headers: headers,
+      body: _json,
+    );
+
+    return Comment.fromJson(_answer);
+  }
 
   dynamic editComment() async {}
 

@@ -16,6 +16,18 @@ class UsersState extends MyTasksState {
   UsersState({this.users});
 }
 
+class CommentsState extends MyTasksState {
+  final List<Comment> comments;
+
+  CommentsState({this.comments});
+}
+
+class CommentState extends MyTasksState {
+  final Comment comment;
+
+  CommentState({this.comment});
+}
+
 class Loading extends MyTasksState {}
 
 class MyTasksError extends MyTasksState implements GeneralState {

@@ -202,6 +202,7 @@ class Repository {
   Future<Company> createCompany({String name}) async {
     if (await networkInfo.isConnected) {
       Company answer = await apiClient.createCompany(name: name);
+
       return answer;
     } else {
       throw NetworkException();
@@ -229,9 +230,25 @@ class Repository {
 
   //! Comment ------------------------------------------------------------------------------------------------------------
 
-  dynamic getAllComments() async {}
+  Future<List<Comment>> getAllComments({int taskId}) async {
+    if (await networkInfo.isConnected) {
+      List<Comment> comments = await apiClient.getAllComments(taskId: taskId);
 
-  dynamic createComment() async {}
+      return comments;
+    } else {
+      throw NetworkException();
+    }
+  }
+
+  Future<Comment> createComment({String text, int taskId}) async {
+    if (await networkInfo.isConnected) {
+      Comment comment = await apiClient.createComment(text: text, taskId: taskId);
+
+      return comment;
+    }else {
+      throw NetworkException();
+    }
+  }
 
   dynamic editComment() async {}
 

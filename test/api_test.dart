@@ -178,4 +178,35 @@ void main() {
       expect(result, result);
     });
   });
+
+  group('comments', () {
+    test('should perform [GET]', () async {
+      // act
+      await repository.logIn(
+        uEmail: 'robbob@gmail.com',
+        password: '12345',
+      );
+      final result = await repository.getAllComments(taskId: 4);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+
+    test('should perform [POST]', () async {
+      // act
+      await repository.logIn(
+        uEmail: 'robbob@gmail.com',
+        password: '12345',
+      );
+      final result = await repository.createComment(
+          text: 'Comment${Random().nextInt(1 << 16)}', taskId: 4);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+
+    test('should perform [PUT]', () {});
+
+    test('should perform [DELETE]', () {});
+  });
 }
