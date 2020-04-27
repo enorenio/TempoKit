@@ -12,3 +12,12 @@ class SelectCompany extends AccountEvent {
 }
 
 class GetCompanies extends AccountEvent {}
+
+class CreateCompany extends AccountEvent {
+  final Company company;
+
+  CreateCompany({this.company});
+
+  @override
+  String toString() => 'CreateCompany event';
+}
