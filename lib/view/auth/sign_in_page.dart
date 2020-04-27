@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/util/consts.dart';
 import 'package:tempokit/util/errors.dart';
 import '../../util/bloc/auth/auth_bloc.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
@@ -191,11 +192,7 @@ class _SignInState extends State<SignInPage> {
                           child: Container(
                             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Colors.deepOrange, Colors.yellow],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
+                              gradient: orangeToYellow,
                               borderRadius: BorderRadius.circular(30.0),
                             ),
                             child: Row(
@@ -209,7 +206,9 @@ class _SignInState extends State<SignInPage> {
                                     child: Text(
                                       'Let\'s go',
                                       style: TextStyle(
-                                          color: Colors.white, fontSize: 18.0),
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
@@ -218,10 +217,10 @@ class _SignInState extends State<SignInPage> {
                                   width: 40.0,
                                   decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Colors.white),
+                                      color: Theme.of(context).primaryColor),
                                   child: Icon(
                                     Icons.arrow_forward,
-                                    color: Color(0xFF3C4858),
+                                    color: Theme.of(context).accentColor,
                                     size: 20.0,
                                   ),
                                 )
@@ -247,7 +246,7 @@ class _SignInState extends State<SignInPage> {
                               ),
                               TextSpan(
                                   text: 'Sign Up',
-                                  style: TextStyle(color: Color(0xC0C0C0C0)),
+                                  style: TextStyle(color: Theme.of(context).accentColor),
                                   recognizer: _signUpTapRecognizer),
                             ])),
                       ),
