@@ -12,7 +12,7 @@ import '../../util/bloc/auth/auth_bloc.dart';
 
 
 
-
+var companyIndex;
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key key}) : super(key: key);
@@ -22,7 +22,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountState extends State<AccountPage> {
-  //var _addTapRecognizer = TapGestureRecognizer()..onTap;
 
  
   @override
@@ -107,13 +106,15 @@ class _AccountState extends State<AccountPage> {
                                      itemCount: state.companies.length,
                                      itemBuilder: (context, index) {
                                        Company _current = state.companies[index];
-                                      
+                                       companyIndex=state.companies[index];
                                        return ListTile(
                                          title: _myText(state.companies[index].name),
                                          trailing: _current == state.companies[index]? Icon(Icons.check_box,color: Colors.greenAccent,):Icon(Icons.check_box_outline_blank,),
                                          onTap: (){
                                             setState(() {
                                                _current = state.companies[index];
+                                               companyIndex=state.companies[index];
+                                               print(state.companies[index].compId);
                                             });
                                           },
                                         );  
@@ -332,6 +333,9 @@ class NewCompanyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    setAccountState()async{
+       BlocProvider.of<AccountBloc>(context).add(SelectCompany(company: companyIndex));
+    }
     return Container(
         height: 230,
         child: SafeArea(
@@ -395,8 +399,7 @@ class NewCompanyView extends StatelessWidget {
             ),
           ),
         ));
+  
   }
-  void setAccountState(){
-     print('set');
-  }
+
 }
