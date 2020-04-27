@@ -14,3 +14,13 @@ class GetProjectsEvent extends HomeEvent {
 }
 
 class GetTasksEvent extends HomeEvent {}
+
+class CreateProjectEvent extends HomeEvent {
+  final Project project;
+
+  CreateProjectEvent({this.project});
+
+  @override
+  String toString() => 'Create project event';
+}
+
