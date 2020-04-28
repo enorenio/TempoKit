@@ -10,8 +10,6 @@ import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 import '../../util/bloc/auth/auth_bloc.dart';
 
-
-
 var companyIndex;
 
 class AccountPage extends StatefulWidget {
@@ -22,8 +20,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountState extends State<AccountPage> {
-
- 
   @override
   initState() {
     super.initState();
@@ -100,44 +96,55 @@ class _AccountState extends State<AccountPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               _myTitle('Organizations'),
-                               ListView.builder(
-                                     scrollDirection: Axis.vertical,
-                                     shrinkWrap: true,
-                                     itemCount: state.companies.length,
-                                     itemBuilder: (context, index) {
-                                       Company _current = state.companies[index];
-                                       companyIndex=state.companies[index];
-                                       return ListTile(
-                                         title: _myText(state.companies[index].name),
-                                         trailing: _current == state.companies[index]? Icon(Icons.check_box,color: Colors.greenAccent,):Icon(Icons.check_box_outline_blank,),
-                                         onTap: (){
-                                            setState(() {
-                                               _current = state.companies[index];
-                                               companyIndex=state.companies[index];
-                                               print(state.companies[index].compId);
-                                            });
-                                          },
-                                        );  
-                                     }),
-                                  ButtonTheme(
-                                    minWidth: 150,
-                                    child: RaisedButton(
-                                      color: Color.fromRGBO(60, 60, 60, 1),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30.0)),
-                                      onPressed: () {
-                                        showNewCompanyView();
-                                      },
-                                      child: Text(
-                                        'Add...',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxHeight: 190.0,
+                                ),
+                                child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    itemCount: state.companies.length,
+                                    itemBuilder: (context, index) {
+                                      Company _current = state.companies[index];
+                                      return ListTile(
+                                        title: _myText(_current.name),
+                                        trailing: _current == state.current
+                                            ? Icon(
+                                                Icons.radio_button_checked,
+                                                color: Theme.of(context)
+                                                    .accentColor,
+                                              )
+                                            : Icon(
+                                                Icons.radio_button_unchecked,
+                                              ),
+                                        onTap: () {
+                                          BlocProvider.of<AccountBloc>(context)
+                                              .add(SelectCompany(
+                                                  companies: state.companies,
+                                                  selected: _current));
+                                        },
+                                      );
+                                    }),
+                              ),
+                              ButtonTheme(
+                                minWidth: 150,
+                                child: RaisedButton(
+                                  color: Color.fromRGBO(60, 60, 60, 1),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0)),
+                                  onPressed: () {
+                                    showNewCompanyView();
+                                  },
+                                  child: Text(
+                                    'Add',
+                                    style: TextStyle(
+                                        color: Theme.of(context).accentColor,
+                                        fontSize: 14.0,
+                                        fontWeight: FontWeight.bold),
                                   ),
-            
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -169,7 +176,8 @@ class _AccountState extends State<AccountPage> {
       return tempWidget;
     });
   }
- showNewCompanyView() {
+
+  showNewCompanyView() {
     showModalBottomSheet(
         context: context,
         builder: (context) {
@@ -330,12 +338,8 @@ class NewCompanyView extends StatelessWidget {
   final memberEmailController = TextEditingController();
   final companyFormKey = GlobalKey<FormState>();
 
-
   @override
   Widget build(BuildContext context) {
-    setAccountState()async{
-       BlocProvider.of<AccountBloc>(context).add(SelectCompany(company: companyIndex));
-    }
     return Container(
         height: 230,
         child: SafeArea(
@@ -359,11 +363,10 @@ class NewCompanyView extends StatelessWidget {
                     hintText: 'Your company...',
                   ),
                 ),
-               SizedBox(
+                SizedBox(
                   height: 10,
                 ),
                 TextFormField(
-
                   controller: memberEmailController,
                   cursorColor: Color(0xFF3C4858),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -382,8 +385,10 @@ class NewCompanyView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30.0)),
                     onPressed: () {
                       if (companyFormKey.currentState.validate()) {
+                        BlocProvider.of<AccountBloc>(context).add(CreateCompany(
+                            company: Company(name: companyNameController.text),
+                            assignees: null)); // somehow pass list of users
                         Navigator.pop(context);
-                        setAccountState();
                       }
                     },
                     child: Text(
@@ -399,7 +404,5 @@ class NewCompanyView extends StatelessWidget {
             ),
           ),
         ));
-  
   }
-
 }

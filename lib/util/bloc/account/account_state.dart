@@ -2,17 +2,24 @@ part of 'account_bloc.dart';
 
 abstract class AccountState {}
 
-class CompanyState extends AccountState {
+class SelectedCompanyState extends AccountState {
   final Company company;
 
-  CompanyState({this.company});
+  SelectedCompanyState({this.company});
 }
 
 class CompaniesState extends AccountState {
   final List<Company> companies;
+  final Company current;
 
-  CompaniesState({this.companies});
+  CompaniesState({this.companies, this.current});
 }
+
+// class NewCompanyState extends AccountState {
+//   final Company company;
+
+//   NewCompanyState({this.company});
+// }
 
 // class Loading extends AccountState {}
 
