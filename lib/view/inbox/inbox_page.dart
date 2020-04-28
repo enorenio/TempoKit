@@ -1,99 +1,134 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
+import '../account/account_page.dart';
+import 'package:tempokit/util/errors.dart';
 
-class InboxPage extends StatelessWidget {
-  const InboxPage({Key key}) : super(key: key);
+
+class InboxPage extends StatefulWidget{
+
+ const InboxPage({Key key}) : super(key: key);
+
+ @override
+ InboxPageState createState()=>InboxPageState();
+}
+
+class InboxPageState extends State<InboxPage> {
+ @override
+  initState() {
+    super.initState();
+    BlocProvider.of<MyTasksBloc>(context).add(((GetMyTasksEvent())));
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-          child: Container(
-            height: 32.0,
-            child: ChipRow(),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-              physics: BouncingScrollPhysics(),
-              children: <Widget>[
-                Container(
-                  width: MediaQuery.of(context).size.width * .9,
-                  // padding:
-                  //     EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
-                  // margin: EdgeInsets.only(bottom: 20.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    color: Color.fromRGBO(60, 60, 60, 1),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color.fromRGBO(13, 51, 32, 0.1),
-                        offset: Offset(0.0, 6.0),
-                        blurRadius: 10.0,
-                      ),
-                    ],
+    return BlocBuilder<MyTasksBloc, MyTasksState>(builder: (context, taskState) {
+      if (taskState is Loading) {
+        print('$this loading');
+        return Center(child: CircularProgressIndicator());
+      } else if (taskState is MyTasksError) {
+        showError(context, taskState);
+      }
+      if (taskState is TasksState) {
+        return BlocBuilder<MyTasksBloc, MyTasksState>(
+         builder: (context, state) {
+          if (state is MyTasksError) {
+            showError(context, state);
+          }
+          if (state is TasksState) {
+            return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                    child: Container(
+                      height: 32.0,
+                      child: ChipRow(),
+                    ),
                   ),
-                  child: Placeholder(fallbackWidth: 50.0, fallbackHeight: 50.0,),
-                ),
-                SizedBox(height: 16.0),
-                Container(
-                  height: 50,
-                  color: Colors.amber[500],
-                  child: const Center(child: Text('Entry B')),
-                ),
-                SizedBox(height: 16.0),
-                Container(
-                  height: 50,
-                  color: Colors.amber[100],
-                  child: const Center(child: Text('Entry C')),
-                ),
-                SizedBox(height: 16.0),
-                Container(
-                  height: 50,
-                  color: Colors.amber[600],
-                  child: const Center(child: Text('Entry A')),
-                ),
-                SizedBox(height: 16.0),
-                Container(
-                  height: 50,
-                  color: Colors.amber[500],
-                  child: const Center(child: Text('Entry B')),
-                ),
-                SizedBox(height: 16.0),
-                Container(
-                  height: 50,
-                  color: Colors.amber[100],
-                  child: const Center(child: Text('Entry C')),
-                ),
-                SizedBox(height: 16.0),
-                Container(
-                  height: 50,
-                  color: Colors.amber[600],
-                  child: const Center(child: Text('Entry A')),
-                ),
-                SizedBox(height: 16.0),
-                Container(
-                  height: 50,
-                  color: Colors.amber[500],
-                  child: const Center(child: Text('Entry B')),
-                ),
-                SizedBox(height: 16.0),
-                Container(
-                  height: 50,
-                  color: Colors.amber[100],
-                  child: const Center(child: Text('Entry C')),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
-    );
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                      child: ListView.builder(
+                        
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                        physics: BouncingScrollPhysics(),
+                        itemCount: state.tasks.length,
+                        itemBuilder: (context, index) {
+                        return MyCont(child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  taskTitle(state.tasks[index].name),
+                                  Divider(),
+                                  taskText('You have task due '+state.tasks[index].dueDate),
+                                  Divider(),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      ButtonTheme(
+                                        minWidth: 110,
+                                        child: RaisedButton(
+                                          color: Color.fromRGBO(60, 60, 60, 1),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0)),
+                                          onPressed: () {
+                                            //showNewCompanyView();
+                                          },
+                                          child: Text(
+                                            'Leave',
+                                            style: TextStyle(
+                                                color: Theme.of(context).accentColor,
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                      ButtonTheme(
+                                        minWidth: 110,
+                                        child: RaisedButton(
+                                          color: Color.fromRGBO(60, 60, 60, 1),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(30.0)),
+                                          onPressed: () {
+                                            leaveCommentView(state.tasks[index].taskId);
+                                          },
+                                          child: Text(
+                                            'Comment',
+                                            style: TextStyle(
+                                                color: Theme.of(context).accentColor,
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ]
+                                  )
+                                  
+                                ]
+                              ));
+                       }
+                     ),
+                    ),
+                   )
+                ],
+            );
+          }
+         });
+      }
+    });
+    
+  }
+    leaveCommentView(taskId) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return NewCommentView();
+        });
+     BlocProvider.of<MyTasksBloc>(context).add(CreateCommentEvent(
+        text: comment, taskId: taskId
+       ));
   }
 }
 
@@ -167,3 +202,93 @@ class _ChipRowState extends State<ChipRow> {
     );
   }
 }
+
+
+taskTitle(title) {
+  return Container(
+    margin: EdgeInsets.only(left: 10.0, bottom: 10.0),
+    child: Text(
+      title,
+      style: TextStyle(
+          color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w600),
+    ),
+  );
+}
+
+taskText(text) {
+  return Container(
+    margin: EdgeInsets.only(left: 10.0, bottom: 10.0,top: 10.0),
+    child: Text(
+      text,
+      style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600),
+    ),
+  );
+}
+String comment;
+class NewCommentView extends StatelessWidget {
+  final commentController = TextEditingController();
+  final commentFormKey = GlobalKey<FormState>();
+  
+
+ 
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: 180,
+        child: SafeArea(
+          minimum: const EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Form(
+            key: commentFormKey,
+            child: Column(
+              children: <Widget>[
+                Icon(Icons.drag_handle),
+                SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) return 'Please enter column name!';
+                  },
+                  controller: commentController,
+                  cursorColor: Color(0xFF3C4858),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  decoration: InputDecoration(
+                    hintText: 'Column name...',
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ButtonTheme(
+                  minWidth: 150,
+                  child: RaisedButton(
+                    color: Color.fromRGBO(60, 60, 60, 1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)),
+                    onPressed: () {
+                      if (commentFormKey.currentState.validate()) {
+                        Navigator.pop(context);
+                        handleNewComment();
+                        
+                      }
+                    },
+                    child: Text(
+                      'Create',
+                      style: TextStyle(
+                          color: Colors.amber[800],
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
+  }
+  handleNewComment(){
+     comment=commentController.text;
+  }
+  
+}
+
