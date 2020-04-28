@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/project.dart';
+import 'package:tempokit/model/column.dart' as c;
+import 'package:tempokit/model/task.dart';
 
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/errors.dart';
@@ -20,6 +22,50 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({this.repository}) : assert(repository != null);
 
+  Future<void> generateStartupData({User user}) async {
+    Company company = await repository.createCompany(name: 'My Workspace');
+    repository.selectCompany(company: company);
+
+    Project project = await repository.createProject(
+      name: 'Example Project',
+      description: 'This is your example project',
+      compId: company.compId,
+    );
+
+    c.Column todo =
+        await repository.createColumn(name: 'To Do', pId: project.pId);
+
+    c.Column doing =
+        await repository.createColumn(name: 'Doing', pId: project.pId);
+
+    c.Column done =
+        await repository.createColumn(name: 'Done', pId: project.pId);
+
+    await repository.createTask(
+      task: Task(
+        name: 'Instagram promotions',
+        description: 'Buy ads in instagram',
+        colId: todo.colId,
+      ),
+    );
+
+    await repository.createTask(
+      task: Task(
+        name: 'Ads design',
+        description: 'Design a banner ad',
+        colId: doing.colId,
+      ),
+    );
+
+    await repository.createTask(
+      task: Task(
+        name: 'Pay money to designer',
+        description: 'Use visa card to pay designer',
+        colId: done.colId,
+      ),
+    );
+  }
+
   @override
   AuthState get initialState => Uninitialized();
 
@@ -27,14 +73,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
     if (event is AppStarted) {
       print('AppStarted');
+      User _user;
+      Company company;
+
       try {
-        User _user = await repository.initial();
+        _user = await repository.initial();
+
+        try {
+          company = await repository.getCurrentCompany();
+        } on CacheException {
+          company = (await repository.getAllCompanies())[0];
+        }
+
+        repository.selectCompany(company: company);
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
         yield Authenticated(user: _user);
       } on CacheException {
-        // we should not do that at all
-        // yield CacheError();
+        // nothing
       }
     }
 
@@ -46,6 +102,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             uEmail: event.uEmail, password: event.password);
 
         _user ?? (() => throw WrongCredentialsException())();
+
+        Company company = (await repository.getAllCompanies())[0];
+        repository.selectCompany(company: company);
 
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
@@ -79,15 +138,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         bool _result = await repository.register(user: event.user);
 
         if (_result) {
-          Company company =
-              await repository.createCompany(name: 'My Workspace');
-          repository.selectCompany(company: company);
-
-          await repository.createProject(
-            name: 'Example Project',
-            description: 'This is your example project',
-            compId: company.compId,
-          );
+          await generateStartupData(user: event.user);
 
           ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
               Routes.wrapperPage, (Route<dynamic> route) => false);

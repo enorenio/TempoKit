@@ -37,18 +37,14 @@ class MyTasksBloc extends Bloc<MyTasksEvent, MyTasksState> {
     }
 
     if (event is GetUsersEvent) {
-      Company _company;
       try {
-        _company = await repository.getCurrentCompany();
-      } on CacheException {
-        _company = (await repository.getAllCompanies())[0];
+        Company _company = await repository.getCurrentCompany();
+        List<User> users = await repository.getUsers(compId: _company.compId);
+        yield UsersState(users: users);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {
         yield ServerError(internalError: exception);
-      } finally {
-        List<User> users = await repository.getUsers(compId: _company.compId);
-        yield UsersState(users: users);
       }
     }
 

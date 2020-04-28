@@ -7,6 +7,7 @@ import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/bloc/account/account_bloc.dart';
 import 'package:tempokit/util/errors.dart';
+import 'package:tempokit/view/widgets/loading_widget.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 import '../../util/bloc/auth/auth_bloc.dart';
 
@@ -31,7 +32,7 @@ class _AccountState extends State<AccountPage> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, userState) {
       if (userState is Loading) {
         print('$this loading');
-        return Center(child: CircularProgressIndicator());
+        return loadingWidget;
       } else if (userState is AuthError) {
         showError(context, userState);
       }
@@ -385,9 +386,12 @@ class NewCompanyView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30.0)),
                     onPressed: () {
                       if (companyFormKey.currentState.validate()) {
-                        BlocProvider.of<AccountBloc>(context).add(CreateCompany(
+                        BlocProvider.of<AccountBloc>(context).add(
+                          CreateCompany(
                             company: Company(name: companyNameController.text),
-                            assignees: null)); // somehow pass list of users
+                            assignees: null,
+                          ),
+                        ); // somehow pass list of users
                         Navigator.pop(context);
                       }
                     },

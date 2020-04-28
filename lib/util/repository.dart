@@ -31,16 +31,12 @@ class Repository {
 
   //! Auth ------------------------------------------------------------------------------------------------------------
 
-  Future<dynamic> initial() async {
+  Future<User> initial() async {
     String _answer = await cacheController.readKey(USER_CACHE_KEY);
 
     String _token = await cacheController.readKey(AUTH_CACHE_KEY);
     apiClient.saveToken(token: _token);
 
-    // Map _jsonMap = json.decode(_answer);
-    // User _user = User.fromJson(_jsonMap);
-
-    // return _user;
     return User.fromString(_answer);
   }
 
@@ -90,6 +86,11 @@ class Repository {
     cacheController.deleteKey(CUR_COMP_CACHE_KEY);
   }
 
+  Future<User> getCurrentUser() async {
+    String _string = await cacheController.readKey(USER_CACHE_KEY);
+    return User.fromString(_string);
+  }
+
   //! User ------------------------------------------------------------------------------------------------------------
 
   Future<List<User>> getUsers({int compId}) async {
@@ -98,7 +99,7 @@ class Repository {
 
       return _answer;
     } else {
-      throw NetworkException(title: 'Network Error');
+      throw NetworkException();
     }
   }
 
@@ -115,7 +116,7 @@ class Repository {
 
       return _remoteProjects;
     } else {
-      throw NetworkException(title: 'Network Error');
+      throw NetworkException();
     }
   }
 
@@ -131,7 +132,7 @@ class Repository {
 
       return _answer;
     } else {
-      throw NetworkException(title: 'Network Error');
+      throw NetworkException();
     }
   }
 
@@ -141,9 +142,9 @@ class Repository {
 
   //! Task ------------------------------------------------------------------------------------------------------------
 
-  Future<dynamic> getTasks({int pId}) async {
+  Future<dynamic> getColumnsAndTasks({int pId}) async {
     if (await networkInfo.isConnected) {
-      dynamic _remoteTasks = await apiClient.getTasks(pId: pId);
+      dynamic _remoteTasks = await apiClient.getColumnsAndTasks(pId: pId);
 
       if (_remoteTasks != []) {
         // cache task list ???
@@ -151,18 +152,17 @@ class Repository {
 
       return _remoteTasks;
     } else {
-      throw NetworkException(title: 'Network Error');
+      throw NetworkException();
     }
   }
 
-  Future<bool> createTask({Task task, List<User> assignees}) async {
+  Future<Task> createTask({Task task}) async {
     if (await networkInfo.isConnected) {
-      bool _answer =
-          await apiClient.createTask(task: task, assignees: assignees);
+      dynamic _answer = await apiClient.createTask(task: task);
 
       return _answer;
     } else {
-      throw NetworkException(title: 'Network Error');
+      throw NetworkException();
     }
   }
 
@@ -175,7 +175,7 @@ class Repository {
       List<Task> _answer = await apiClient.getMyTasks();
       return _answer;
     } else {
-      throw NetworkException(title: 'Network Error');
+      throw NetworkException();
     }
   }
 
@@ -183,7 +183,22 @@ class Repository {
 
   //! Column ------------------------------------------------------------------------------------------------------------
 
-  dynamic createColumn() async {}
+  Future<List<Column>> getColumns({int pId}) async {
+    if (await networkInfo.isConnected) {
+      return await apiClient.getColumns(pId: pId);
+    } else {
+      throw NetworkException();
+    }
+  }
+
+  Future<Column> createColumn({String name, int pId}) async {
+    if (await networkInfo.isConnected) {
+      Column answer = await apiClient.createColumn(name: name, pId: pId);
+      return answer;
+    } else {
+      throw NetworkException();
+    }
+  }
 
   dynamic editColumn() async {}
 
@@ -242,10 +257,11 @@ class Repository {
 
   Future<Comment> createComment({String text, int taskId}) async {
     if (await networkInfo.isConnected) {
-      Comment comment = await apiClient.createComment(text: text, taskId: taskId);
+      Comment comment =
+          await apiClient.createComment(text: text, taskId: taskId);
 
       return comment;
-    }else {
+    } else {
       throw NetworkException();
     }
   }

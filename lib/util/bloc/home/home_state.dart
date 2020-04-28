@@ -10,10 +10,10 @@ class ProjectsState extends HomeState {
   ProjectsState({this.projects});
 }
 
-class TasksState extends HomeState {
-  final dynamic tasks;
+class ColumnsAndTasksState extends HomeState {
+  final dynamic columnsAndTasks;
 
-  TasksState(this.tasks);
+  ColumnsAndTasksState({this.columnsAndTasks});
 }
 
 class Loading extends HomeState {}

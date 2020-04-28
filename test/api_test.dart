@@ -79,6 +79,39 @@ void main() {
     });
   });
 
+  group('column', () {
+    test('should perform [GET]', () async {
+      // act
+      await repository.logIn(
+        uEmail: 'morshnev.aleksey@gmail.com',
+        password: '12345',
+      );
+      final result = await repository.getColumns(pId: 3);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+
+    test('should perform [POST]', () async {
+      // act
+      await repository.logIn(
+        uEmail: 'morshnev.aleksey@gmail.com',
+        password: '12345',
+      );
+      final result = await repository.createColumn(
+        name: 'Column${Random().nextInt(1 << 16)}',
+        pId: 3,
+      );
+      // assert
+      print(result);
+      expect(result, result);
+    });
+
+    test('should perform [PUT]', () async {});
+
+    test('should perform [DELETE]', () async {});
+  });
+
   group('company', () {
     test('should perform [GET]', () async {
       // act
@@ -124,7 +157,7 @@ void main() {
         password: '12345',
       );
       final result = await repository.createProject(
-          compId: 2, description: 'Test', name: 'Testing Project');
+          compId: 1, description: 'Test', name: 'Testing Project');
       // assert
       print(result);
       expect(result, result);
@@ -137,10 +170,10 @@ void main() {
     test('should perform [GET]', () async {
       // act
       await repository.logIn(
-        uEmail: 'robbob@gmail.com',
+        uEmail: 'morshnev.aleksey@gmail.com',
         password: '12345',
       );
-      final result = await repository.getTasks(pId: 6);
+      final result = await repository.getColumnsAndTasks(pId: 3);
       // assert
       print(result);
       expect(result, result);
@@ -148,17 +181,17 @@ void main() {
     test('should perform [POST]', () async {
       // act
       await repository.logIn(
-        uEmail: 'robbob@gmail.com',
+        uEmail: 'morshnev.aleksey@gmail.com',
         password: '12345',
       );
       final result = await repository.createTask(
-          task: Task(
-            name: 'Task${Random().nextInt(1 << 16)}',
-            description: 'Description',
-            dueDate: '2020-05-05',
-            colId: 1,
-          ),
-          assignees: [User(uEmail: 'robbob@gmail.com')]);
+        task: Task(
+          name: 'Task${Random().nextInt(1 << 16)}',
+          description: 'Description',
+          dueDate: '2020-05-05',
+          colId: 3,
+        ),
+      );
       // assert
       print(result);
       expect(result, result);
@@ -169,7 +202,7 @@ void main() {
     test('should perform [GET] mytasks', () async {
       // act
       await repository.logIn(
-        uEmail: 'robbob@gmail.com',
+        uEmail: 'morshnev.aleksey@gmail.com',
         password: '12345',
       );
       final result = await repository.getMyTasks();
@@ -183,7 +216,7 @@ void main() {
     test('should perform [GET]', () async {
       // act
       await repository.logIn(
-        uEmail: 'robbob@gmail.com',
+        uEmail: 'morshnev.aleksey@gmail.com',
         password: '12345',
       );
       final result = await repository.getAllComments(taskId: 4);
@@ -195,7 +228,7 @@ void main() {
     test('should perform [POST]', () async {
       // act
       await repository.logIn(
-        uEmail: 'robbob@gmail.com',
+        uEmail: 'morshnev.aleksey@gmail.com',
         password: '12345',
       );
       final result = await repository.createComment(

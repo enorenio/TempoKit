@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/util/consts.dart';
 import 'package:tempokit/util/errors.dart';
+import 'package:tempokit/view/widgets/loading_widget.dart';
 import '../../util/bloc/auth/auth_bloc.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
 import 'package:auto_route/auto_route.dart';
@@ -58,7 +59,7 @@ class _SignInState extends State<SignInPage> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is Loading) {
         print('$this loading');
-        return Center(child: CircularProgressIndicator());
+        return loadingWidget;
       } else if (state is AuthError) {
         showError(context, state);
       }

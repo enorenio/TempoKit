@@ -30,7 +30,7 @@ class _UsersListViewState extends State<UsersListView> {
               Container(
                 height: 325,
                 child: FutureBuilder(
-                  future: sl<Repository>().getTasks(),
+                  future: sl<Repository>().getColumnsAndTasks(), //TODO: delete this
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       List<Task> data = snapshot.data;

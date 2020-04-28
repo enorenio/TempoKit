@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/my_tasks/task_view.dart';
+import 'package:tempokit/view/widgets/loading_widget.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 
 class TasksListView extends StatefulWidget {
@@ -22,7 +23,7 @@ class _TasksListViewState extends State<TasksListView> {
     return BlocBuilder<MyTasksBloc, MyTasksState>(builder: (context, state) {
       if (state is Loading) {
         print('$this loading');
-        return Center(child: CircularProgressIndicator());
+        return loadingWidget;
       } else if (state is MyTasksError) {
         showError(context, state);
       } else if (state is TasksState) {

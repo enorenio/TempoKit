@@ -1,7 +1,7 @@
 part of 'home_bloc.dart';
 
 abstract class HomeEvent {
-  HomeEvent([List props = const[]]);
+  HomeEvent([List props = const []]);
 }
 
 class GetProjectsEvent extends HomeEvent {
@@ -13,7 +13,11 @@ class GetProjectsEvent extends HomeEvent {
   String toString() => 'GetProjects event';
 }
 
-class GetTasksEvent extends HomeEvent {}
+class GetColumnsAndTasksEvent extends HomeEvent {
+  final Project project;
+
+  GetColumnsAndTasksEvent({this.project});
+}
 
 class CreateProjectEvent extends HomeEvent {
   final Project project;
@@ -24,3 +28,16 @@ class CreateProjectEvent extends HomeEvent {
   String toString() => 'Create project event';
 }
 
+class CreateColumnEvent extends HomeEvent {
+  final Project project;
+  final c.Column column;
+
+  CreateColumnEvent({this.project, this.column});
+}
+
+class CreateTaskEvent extends HomeEvent {
+  final Project project;
+  final Task task;
+
+  CreateTaskEvent({this.project, this.task});
+}

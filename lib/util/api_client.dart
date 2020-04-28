@@ -184,7 +184,7 @@ class ApiClient {
 
   //! Task ------------------------------------------------------------------------------------------------------------
 
-  Future<dynamic> getTasks({int pId}) async {
+  Future<dynamic> getColumnsAndTasks({int pId}) async {
     Map<String, String> queryParams = {'p_id': pId.toString()};
 
     Uri url = Uri.https(baseUrl, 'api/task', queryParams);
@@ -201,22 +201,17 @@ class ApiClient {
 
     List<dynamic> _ret;
 
-    _ret = _answer.map((item) {
-      int colId = item['col_id'];
-      String col_name = item['col_name'];
+    _ret = _answer.map((column) {
+      Column _col = Column.fromJson(column);
       List<Task> tasks =
-          item['tasks'].map<Task>((item) => Task.fromJson(item)).toList();
-      return {
-        'col_id': colId,
-        'col_name': col_name,
-        'tasks': tasks,
-      };
+          column['tasks'].map<Task>((task) => Task.fromJson(task)).toList();
+      return {'column': _col, 'tasks': tasks};
     }).toList();
 
     return _ret;
   }
 
-  Future<bool> createTask({Task task, List<User> assignees}) async {
+  Future<Task> createTask({Task task, List<User> assignees}) async {
     Uri url = Uri.https(baseUrl, 'api/task');
 
     Map<String, String> headers = {
@@ -229,7 +224,7 @@ class ApiClient {
       'description': task.description,
       'due_date': task.dueDate,
       'col_id': task.colId,
-      'assignees': assignees.map<String>((item) => item.uEmail).toList(),
+      // 'assignees': assignees.map<String>((item) => item.uEmail).toList(),
     };
 
     String _json = JsonEncoder().convert(_bodyMap);
@@ -241,11 +236,10 @@ class ApiClient {
       body: _json,
     );
 
-    //TODO: come up with solution eventually
-    // Task _task = Task.fromJson(_answer);
     // List<User> _assignees =
-    //     _answer['assignees'].map((item) => User.fromJson(item)).toList();
-    return true;
+    //     _answer['assignees'].map<User>((item) => User(uEmail: item)).toList();
+    // _answer['assignees'] = _assignees;
+    return Task.fromJson(_answer);
   }
 
   dynamic editTask() async {}
@@ -272,7 +266,46 @@ class ApiClient {
 
   //! Column ------------------------------------------------------------------------------------------------------------
 
-  dynamic createColumn() async {}
+  Future<List<Column>> getColumns({int pId}) async {
+    Map<String, String> queryParams = {'p_id': pId.toString()};
+
+    Uri url = Uri.https(baseUrl, 'api/column', queryParams);
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    List<dynamic> _answer = await _send(
+      method.get,
+      url,
+      headers: headers,
+    );
+
+    return _answer.map<Column>((item) => Column.fromJson(item)).toList();
+  }
+
+  Future<Column> createColumn({String name, int pId}) async {
+    Uri url = Uri.https(baseUrl, 'api/column');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+      'Content-Type': 'application/json',
+    };
+
+    Map _bodyMap = {'name': name, 'p_id': pId};
+
+    String _json = JsonEncoder().convert(_bodyMap);
+
+    dynamic _answer = await _send(
+      method.post,
+      url,
+      headers: headers,
+      body: _json,
+    );
+
+    Column _column = Column.fromJson(_answer);
+    return _column;
+  }
 
   dynamic editColumn() async {}
 

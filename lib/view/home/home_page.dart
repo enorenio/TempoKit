@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:tempokit/model/user.dart';
-import 'package:tempokit/util/repository.dart';
+import 'package:tempokit/model/project.dart';
+import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'package:tempokit/view/home/favourites_tab.dart';
 import 'package:tempokit/view/home/recents_tab.dart';
-import '../../injection_container.dart';
-import '../../util/bloc/auth/auth_bloc.dart';
 import 'all_tab.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -26,8 +21,6 @@ void _navigateToSecondScreen(BuildContext context) {
         builder: (context) => _NewProject(),
       ));
 }
-
-
 
 class _HomePageState extends State<HomePage> {
   @override
@@ -128,7 +121,17 @@ class _NewProject extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0)),
                           onPressed: () {
-                            _handleNewProject();
+                            if (true) { //TODO: change true to ...validate()
+                              BlocProvider.of<HomeBloc>(context).add(
+                                CreateProjectEvent(
+                                  project: Project(
+                                    name: _projectNameController.text,
+                                    description: _descriptionController.text,
+                                  ),
+                                ),
+                              );
+                              Navigator.pop(context);
+                            }
                           },
                           child: Text(
                             'Create',
@@ -166,18 +169,5 @@ class _NewProject extends StatelessWidget {
         )),
       ),
     );
-  }
-
-  void _handleNewProject() async {
-    final _test = await sl<Repository>().createProject(
-      name: _projectNameController.text,
-      description: _projectNameController.text,
-      compId: 4,
-    );
-    print(_test); // wait for 2 secs than look at terminal (debug console)
-    // this is just concept to show you how it will probably work
-    // it is temporary, just to test, you can delete it if you want to
-    // i didnt decide whether to make this call to Bloc or straight forward to repository yet
-    // but this is all i can give at this point of time.
   }
 }

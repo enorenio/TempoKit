@@ -2,180 +2,164 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:tempokit/model/user.dart';
-import 'package:tempokit/util/repository.dart';
-import 'package:tempokit/view/home/favourites_tab.dart';
-import 'package:tempokit/view/home/recents_tab.dart';
-import '../../injection_container.dart';
-import '../../util/bloc/auth/auth_bloc.dart';
-import '../wrapper/wrapper_page.dart';
-
-int _itemCount=5;
+import 'package:tempokit/model/project.dart';
+import 'package:tempokit/util/bloc/home/home_bloc.dart';
+import 'package:tempokit/util/errors.dart';
+import 'package:tempokit/view/widgets/loading_widget.dart';
+import 'package:tempokit/view/widgets/temp_widget.dart';
+import 'package:tempokit/model/column.dart' as c;
 
 class ProjectPage extends StatefulWidget {
-  final index;
-  
-  
-  ProjectPage({this.index});
-  
+  final Project project;
+
+  ProjectPage({this.project});
+
   @override
   _ProjectPageState createState() => _ProjectPageState();
-  
 }
 
-
 class _ProjectPageState extends State<ProjectPage> {
- 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: sl<Repository>().getProjects(),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-            case ConnectionState.none:
-            case ConnectionState.active:
-              return Wrap(
-                children: <Widget>[LinearProgressIndicator()],
-              );
-            case ConnectionState.done:
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text(snapshot.data[widget.index].name),
-                ),
-                body: //_buildCarousel(context, widget.index)
-                MyCarousel(itemIndex: widget.index),
-                floatingActionButton: FloatingActionButton(
-                  onPressed: ()=> showNewCoulmnView(),
-                  child: Icon(Icons.add),
-                  backgroundColor: Colors.amber[800]),
-              );
-          
-          }
-        },
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(
+          onPressed: () => Navigator.maybePop(context).then((_) =>
+              BlocProvider.of<HomeBloc>(context).add(GetProjectsEvent())),
+        ),
+        title: Text(widget.project.name),
+      ),
+      body: MyCarousel(project: widget.project),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showNewCoulmnView(project: widget.project),
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).primaryColor,
+        ),
+        backgroundColor: Theme.of(context).accentColor,
+      ),
     );
   }
-  void showNewCoulmnView() {
+
+  void showNewCoulmnView({Project project}) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return NewColumnView();
+          return NewColumnView(project: project);
         });
   }
-
 }
 
+class MyCarousel extends StatefulWidget {
+  final Project project;
 
+  MyCarousel({this.project});
+  _MyCarouselState createState() => _MyCarouselState();
+}
 
+class _MyCarouselState extends State<MyCarousel> {
+  @override
+  initState() {
+    super.initState();
+    BlocProvider.of<HomeBloc>(context)
+        .add(GetColumnsAndTasksEvent(project: widget.project));
+  }
 
-final List<String> itemName = <String>['New requests', 'In progress', 'Done', 'Not approved','Add'];
-
-class MyCarousel extends StatefulWidget{
-   final int itemIndex; 
-     
-   MyCarousel({this.itemIndex}); 
-   _MyCarouselState createState() => _MyCarouselState();
- 
- }
-
- class _MyCarouselState extends State<MyCarousel>{
-   
-   @override
-   Widget build(BuildContext context) {
-     return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          //Text('Carousel $carouselIndex'),
-          SizedBox(
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+      if (state is Loading) {
+        print('$this loading');
+        return loadingWidget;
+      } else if (state is HomeError) {
+        showError(context, state);
+      } else if (state is ColumnsAndTasksState) {
+        if (state.columnsAndTasks.length > 0) {
+          return SizedBox(
             // you may want to use an aspect ratio here for tablet support
             height: 245.0,
             child: PageView.builder(
               // store this controller in a State to save the carousel scroll position
               controller: PageController(viewportFraction: 0.8),
-              itemCount: _itemCount,
-              itemBuilder: (BuildContext context, int itemIndex) {
-                return MyItem(itemIndex: itemIndex);
+              itemCount: state.columnsAndTasks.length,
+              itemBuilder: (BuildContext context, int index) {
+                return MyItem(columnAndTasks: state.columnsAndTasks[index]);
               },
             ),
-          )
-        ],
-      );
-   }
-   _updateItemCount(String columnName){
-    setState(() {
-      _itemCount++;
-      itemName.add(columnName);
-     
-      
-
+          );
+        } else {
+          return Center(
+            child: Text('No columns created yet'),
+          );
+        }
+      }
+      return tempWidget;
     });
- }
- }
+  }
 
-  
- 
- 
- class MyItem extends StatefulWidget{
-   final int itemIndex;
-   
-   MyItem({this.itemIndex});
-   _MyItemState createState() => _MyItemState();
+  // _updateItemCount(String columnName) {
+  //   setState(() {
+  //     _itemCount++;
+  //     itemName.add(columnName);
+  //   });
+  // }
+}
 
- }
+class MyItem extends StatefulWidget {
+  final dynamic columnAndTasks;
 
- class _MyItemState extends State<MyItem>{
+  MyItem({this.columnAndTasks});
+  _MyItemState createState() => _MyItemState();
+}
 
-   @override
-   Widget build(BuildContext context) {
-     return Container(
-          margin: EdgeInsets.only(top:10),
-          child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(children:<Widget>[
-            Container(
-              alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(bottom: 10.0),
-                  child: Text(
-                    itemName[widget.itemIndex],
-                    style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w600),
-                  ),
+class _MyItemState extends State<MyItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        margin: EdgeInsets.only(top: 10),
+        child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            child: Column(children: <Widget>[
+              Container(
+                alignment: Alignment.centerLeft,
+                margin: EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  widget.columnAndTasks['column'].name,
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
                 ),
-            MyCont(
-              child: IconButton(
-                icon: Icon(Icons.add),
-                onPressed:()=>showNewRequestView(),
-                ),          
-            ),
-          
+              ),
+              MyCont(
+                child: IconButton(
+                  icon: Icon(Icons.add),
+                  onPressed: () => showNewRequestView(),
+                ),
+              ),
+            ])));
+  }
 
-          ]
-          )
-        )
-  );
-  
-   }
-    void showNewRequestView() {
+  void showNewRequestView() {
     showModalBottomSheet(
         context: context,
         builder: (context) {
           return NewRequestView();
         });
   }
-
- }
-
-
+}
 
 class NewColumnView extends StatelessWidget {
+  final Project project;
+
   final columnNameController = TextEditingController();
   final columnFormKey = GlobalKey<FormState>();
-  GlobalKey<_MyCarouselState> carouselGlobalKey = new GlobalKey<_MyCarouselState>();
-  void setCarouselState(){
-     carouselGlobalKey.currentState._updateItemCount(columnNameController.text);
-  }
+
+  // GlobalKey<_MyCarouselState> carouselGlobalKey =
+  //     new GlobalKey<_MyCarouselState>();
+  // void setCarouselState() {
+  //   carouselGlobalKey.currentState._updateItemCount(columnNameController.text);
+  // }
+
+  NewColumnView({Key key, this.project}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -212,9 +196,15 @@ class NewColumnView extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30.0)),
                     onPressed: () {
                       if (columnFormKey.currentState.validate()) {
+                        BlocProvider.of<HomeBloc>(context).add(
+                          CreateColumnEvent(
+                            project: project,
+                            column: c.Column(name: columnNameController.text),
+                          ),
+                        );
                         Navigator.pop(context);
-                        setCarouselState();
-                        //print(_itemCount);
+                        // setCarouselState();
+                        // print(_itemCount);
                       }
                     },
                     child: Text(
@@ -231,14 +221,13 @@ class NewColumnView extends StatelessWidget {
           ),
         ));
   }
-  
 }
 
 class NewRequestView extends StatelessWidget {
   final requestNameController = TextEditingController();
   final requestFormKey = GlobalKey<FormState>();
   GlobalKey<_MyItemState> itemGlobalKey = new GlobalKey<_MyItemState>();
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -274,13 +263,7 @@ class NewRequestView extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0)),
                     onPressed: () {
-                      if (requestFormKey.currentState.validate()) {
-                        Navigator.pop(context);
-                        //itemName.add(columnNameController.text);
-                        //setCarouselState();
-                        //itemName.removeLast();
-                        print(_itemCount);
-                      }
+                      _handleNewTask();
                     },
                     child: Text(
                       'Create',
@@ -296,37 +279,45 @@ class NewRequestView extends StatelessWidget {
           ),
         ));
   }
-  
+
+  void _handleNewTask() async {
+    if (requestFormKey.currentState.validate()) {
+      // Navigator.pop(context);
+      //itemName.add(columnNameController.text);
+      //setCarouselState();
+      //itemName.removeLast();
+      // print(_itemCount);
+    }
+  }
 }
 
-class MyCont extends StatelessWidget{
+class MyCont extends StatelessWidget {
   Widget child;
 
   MyCont({this.child});
   @override
-  Widget build(BuildContext context){
-     return Row(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 7.0),
-                margin: EdgeInsets.only(bottom: 20.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Color.fromRGBO(60, 60, 60, 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color.fromRGBO(13, 51, 32, 0.1),
-                      offset: Offset(0.0, 6.0),
-                      blurRadius: 10.0,
-                    ),
-                  ],
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 7.0),
+            margin: EdgeInsets.only(bottom: 20.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Color.fromRGBO(60, 60, 60, 1),
+              boxShadow: [
+                BoxShadow(
+                  color: Color.fromRGBO(13, 51, 32, 0.1),
+                  offset: Offset(0.0, 6.0),
+                  blurRadius: 10.0,
                 ),
-                child: this.child,
-              ),
+              ],
             ),
-          ],
-        );
+            child: this.child,
+          ),
+        ),
+      ],
+    );
   }
 }

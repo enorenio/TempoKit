@@ -9,8 +9,8 @@ class MyTasksPage extends StatefulWidget {
 
   @override
   _MyTasksPageState createState() => _MyTasksPageState();
-
 }
+
 class _MyTasksPageState extends State<MyTasksPage> {
   @override
   Widget build(BuildContext context) {
@@ -20,11 +20,15 @@ class _MyTasksPageState extends State<MyTasksPage> {
       ),
       body: Center(child: TasksListView()),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showNewTaskView();
-          },
-          child: Icon(Icons.add),
-          backgroundColor: Colors.red),
+        onPressed: () {
+          showNewTaskView();
+        },
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).primaryColor,
+        ),
+        backgroundColor: Theme.of(context).accentColor,
+      ),
     );
   }
 
