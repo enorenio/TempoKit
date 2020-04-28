@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/project.dart';
+import 'package:tempokit/model/task.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/widgets/loading_widget.dart';
@@ -83,7 +84,10 @@ class _MyCarouselState extends State<MyCarousel> {
               controller: PageController(viewportFraction: 0.8),
               itemCount: state.columnsAndTasks.length,
               itemBuilder: (BuildContext context, int index) {
-                return MyItem(columnAndTasks: state.columnsAndTasks[index]);
+                return MyItem(
+                  columnAndTasks: state.columnsAndTasks[index],
+                  project: widget.project,
+                );
               },
             ),
           );
@@ -107,41 +111,61 @@ class _MyCarouselState extends State<MyCarousel> {
 
 class MyItem extends StatefulWidget {
   final dynamic columnAndTasks;
+  final Project project;
 
-  MyItem({this.columnAndTasks});
+  MyItem({this.columnAndTasks, this.project});
   _MyItemState createState() => _MyItemState();
 }
 
 class _MyItemState extends State<MyItem> {
   @override
   Widget build(BuildContext context) {
+    c.Column currentColumn = widget.columnAndTasks['column'];
+    List<Task> currentTasks = widget.columnAndTasks['tasks'];
     return Container(
-        margin: EdgeInsets.only(top: 10),
-        child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(children: <Widget>[
-              Container(
-                alignment: Alignment.centerLeft,
-                margin: EdgeInsets.only(bottom: 10.0),
-                child: Text(
-                  widget.columnAndTasks['column'].name,
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
-                ),
+      margin: EdgeInsets.only(top: 10),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(bottom: 10.0),
+              child: Text(
+                currentColumn.name,
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
               ),
-              MyCont(
-                child: IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () => showNewRequestView(),
-                ),
+            ),
+            MyCont(
+              child: Column(
+                children: [
+                  ...(currentTasks
+                      .map((task) => Text(task.name))
+                      .toList()), //TODO: make excellent design for tasks
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () => showNewRequestView(
+                      project: widget.project,
+                      column: currentColumn,
+                    ),
+                  ),
+                ],
               ),
-            ])));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  void showNewRequestView() {
+  void showNewRequestView({Project project, c.Column column}) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return NewRequestView();
+          return NewRequestView(
+            project: project,
+            column: column,
+          );
         });
   }
 }
@@ -163,70 +187,76 @@ class NewColumnView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 180,
-        child: SafeArea(
-          minimum: const EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Form(
-            key: columnFormKey,
-            child: Column(
-              children: <Widget>[
-                Icon(Icons.drag_handle),
-                SizedBox(
-                  height: 10,
+      height: 180,
+      child: SafeArea(
+        minimum: const EdgeInsets.only(left: 16.0, right: 16.0),
+        child: Form(
+          key: columnFormKey,
+          child: Column(
+            children: <Widget>[
+              Icon(Icons.drag_handle),
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value.isEmpty) return 'Please enter column name!';
+                },
+                controller: columnNameController,
+                cursorColor: Color(0xFF3C4858),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  hintText: 'Column name...',
                 ),
-                TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) return 'Please enter column name!';
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              ButtonTheme(
+                minWidth: 150,
+                child: RaisedButton(
+                  color: Color.fromRGBO(60, 60, 60, 1),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  onPressed: () {
+                    if (columnFormKey.currentState.validate()) {
+                      BlocProvider.of<HomeBloc>(context).add(
+                        CreateColumnEvent(
+                          project: project,
+                          column: c.Column(name: columnNameController.text),
+                        ),
+                      );
+                      Navigator.pop(context);
+                      // setCarouselState();
+                      // print(_itemCount);
+                    }
                   },
-                  controller: columnNameController,
-                  cursorColor: Color(0xFF3C4858),
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
-                    hintText: 'Column name...',
+                  child: Text(
+                    'Create',
+                    style: TextStyle(
+                        color: Colors.amber[800],
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                ButtonTheme(
-                  minWidth: 150,
-                  child: RaisedButton(
-                    color: Color.fromRGBO(60, 60, 60, 1),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
-                    onPressed: () {
-                      if (columnFormKey.currentState.validate()) {
-                        BlocProvider.of<HomeBloc>(context).add(
-                          CreateColumnEvent(
-                            project: project,
-                            column: c.Column(name: columnNameController.text),
-                          ),
-                        );
-                        Navigator.pop(context);
-                        // setCarouselState();
-                        // print(_itemCount);
-                      }
-                    },
-                    child: Text(
-                      'Create',
-                      style: TextStyle(
-                          color: Colors.amber[800],
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 
 class NewRequestView extends StatelessWidget {
+  final Project project;
+  final c.Column column;
+
   final requestNameController = TextEditingController();
   final requestFormKey = GlobalKey<FormState>();
   GlobalKey<_MyItemState> itemGlobalKey = new GlobalKey<_MyItemState>();
+
+  NewRequestView({Key key, this.project, this.column}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +293,11 @@ class NewRequestView extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0)),
                     onPressed: () {
-                      _handleNewTask();
+                      _handleNewTask(
+                        context: context,
+                        project: project,
+                        column: column,
+                      );
                     },
                     child: Text(
                       'Create',
@@ -280,13 +314,19 @@ class NewRequestView extends StatelessWidget {
         ));
   }
 
-  void _handleNewTask() async {
+  void _handleNewTask(
+      {BuildContext context, Project project, c.Column column}) async {
     if (requestFormKey.currentState.validate()) {
-      // Navigator.pop(context);
-      //itemName.add(columnNameController.text);
-      //setCarouselState();
-      //itemName.removeLast();
-      // print(_itemCount);
+      BlocProvider.of<HomeBloc>(context).add(
+        CreateTaskEvent(
+          project: project,
+          task: Task(
+            name: requestNameController.text,
+            colId: column.colId,
+          ),
+        ),
+      );
+      Navigator.pop(context);
     }
   }
 }

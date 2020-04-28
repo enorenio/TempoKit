@@ -29,8 +29,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GetProjectsEvent) {
       try {
         Company _company = await repository.getCurrentCompany();
-        List<Project> _projects =
-            await repository.getProjects(compId: _company.compId);
+        List<Project> _projects = await repository.getProjects(
+          isFavorited: event.isFavorite,
+          compId: _company.compId,
+        );
         yield ProjectsState(projects: _projects);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
@@ -74,9 +76,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       try {
         await repository.createColumn(
             pId: event.project.pId, name: event.column.name);
-        await repository.createTask(
-          task: Task(),
-        );
 
         dynamic columnsAndTasks =
             await repository.getColumnsAndTasks(pId: event.project.pId);

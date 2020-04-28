@@ -213,7 +213,7 @@ class _SignUpState extends State<SignUpPage> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                             decoration: InputDecoration(
-                                hintText: 'Our litte secret',
+                                hintText: 'Our little secret',
                                 suffixIcon: Icon(Icons.lock_outline)),
                             obscureText: true,
                           ),

@@ -26,6 +26,9 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
       body: DefaultTabController(
         length: 3,
         child: new Scaffold(
@@ -121,7 +124,8 @@ class _NewProject extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0)),
                           onPressed: () {
-                            if (true) { //TODO: change true to ...validate()
+                            if (true) {
+                              //TODO: change true to ...validate()
                               BlocProvider.of<HomeBloc>(context).add(
                                 CreateProjectEvent(
                                   project: Project(

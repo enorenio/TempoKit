@@ -14,9 +14,7 @@ class _WrapperPageState extends State<WrapperPage> {
   int _selectedIndex = 0;
 
   static List<AppBar> _appBarOptions = [
-    AppBar(
-      title: const Text('Home'),
-    ),
+    null,
     null,
     AppBar(
       title: const Text('Inbox'),

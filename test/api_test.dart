@@ -86,7 +86,7 @@ void main() {
         uEmail: 'morshnev.aleksey@gmail.com',
         password: '12345',
       );
-      final result = await repository.getColumns(pId: 3);
+      final result = await repository.getColumns(pId: 4);
       // assert
       print(result);
       expect(result, result);
@@ -100,7 +100,7 @@ void main() {
       );
       final result = await repository.createColumn(
         name: 'Column${Random().nextInt(1 << 16)}',
-        pId: 3,
+        pId: 4,
       );
       // assert
       print(result);
@@ -173,7 +173,7 @@ void main() {
         uEmail: 'morshnev.aleksey@gmail.com',
         password: '12345',
       );
-      final result = await repository.getColumnsAndTasks(pId: 3);
+      final result = await repository.getColumnsAndTasks(pId: 4);
       // assert
       print(result);
       expect(result, result);
@@ -189,7 +189,7 @@ void main() {
           name: 'Task${Random().nextInt(1 << 16)}',
           description: 'Description',
           dueDate: '2020-05-05',
-          colId: 3,
+          colId: 8,
         ),
       );
       // assert
