@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/util/bloc/inbox/inbox_bloc.dart';
+import 'package:tempokit/view/widgets/gray_card.dart';
 import '../account/account_page.dart';
 import 'package:tempokit/util/errors.dart';
 
@@ -49,7 +50,7 @@ class InboxPageState extends State<InboxPage> {
                     itemCount: state.tasks.length,
                     itemBuilder: (context, index) {
                       Task task = state.tasks[index];
-                      return MyCont(
+                      return GrayCard(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
