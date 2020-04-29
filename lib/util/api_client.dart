@@ -262,7 +262,30 @@ class ApiClient {
     return _answer.map<Task>((item) => Task.fromJson(item)).toList();
   }
 
-  dynamic assignTask() async {}
+  Future<bool> assignTask({Task task, List<User> assignees}) async {
+    Uri url = Uri.https(baseUrl, 'api/task/assign');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+      'Content-Type': 'application/json',
+    };
+
+    Map _bodyMap = {
+      'task_id': task.taskId,
+      'assignees': assignees.map<String>((item) => item.uEmail).toList(),
+    };
+
+    String _json = JsonEncoder().convert(_bodyMap);
+
+    await _send(
+      method.post,
+      url,
+      headers: headers,
+      body: _json,
+    );
+
+    return true;
+  }
 
   //! Column ------------------------------------------------------------------------------------------------------------
 

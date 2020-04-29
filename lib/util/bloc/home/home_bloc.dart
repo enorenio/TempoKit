@@ -40,6 +40,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           compId: _company.compId,
         );
         yield ProjectsState(projects: _projects);
+      } on CacheException catch (exception) {
+        yield ProjectsState(projects: []);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {
@@ -84,6 +86,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         List<Project> _projects =
             await repository.getProjects(compId: _company.compId);
         yield ProjectsState(projects: _projects);
+      } on CacheException catch (exception) {
+        yield ProjectsState(projects: []);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {
@@ -122,7 +126,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     if (event is CreateCommentEvent) {
       try {
-        await repository.createComment(text: event.comment.text, taskId: event.taskId);
+        await repository.createComment(
+            text: event.comment.text, taskId: event.taskId);
 
         List<Comment> comments =
             await repository.getAllComments(taskId: event.taskId);

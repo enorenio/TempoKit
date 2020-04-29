@@ -5,3 +5,10 @@ import 'package:flutter/material.dart';
 Widget loadingWidget = Scaffold(
   body: Center(child: CircularProgressIndicator()),
 );
+
+Widget progressLoadingWidget({double progress}) => Scaffold(
+      body: Center(
+          child: CircularProgressIndicator(
+        value: progress,
+      )),
+    );

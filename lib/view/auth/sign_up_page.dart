@@ -63,6 +63,8 @@ class _SignUpState extends State<SignUpPage> {
       builder: (context, state) {
         if (state is Loading) {
           return loadingWidget;
+        } else if (state is ProgressLoading) {
+          return progressLoadingWidget(progress: state.progress);
         } else if (state is AuthError) {
           showError(context, state);
         }

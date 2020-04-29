@@ -20,11 +20,20 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Repository repository;
 
+  double _progress = 0;
+  double get progress {
+    return _progress += 1 / 14;
+  }
+
+  set progress(double value) => _progress = value;
+
   AuthBloc({this.repository}) : assert(repository != null);
 
-  Future<void> generateStartupData({User user}) async {
+  Stream<AuthState> generateStartupData({User user}) async* {
     Company company = await repository.createCompany(name: 'My Workspace');
     repository.selectCompany(company: company);
+
+    yield ProgressLoading(progress: progress);
 
     Project project = await repository.createProject(
       name: 'Example Project',
@@ -32,14 +41,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       compId: company.compId,
     );
 
+    yield ProgressLoading(progress: progress);
+
     c.Column todo =
         await repository.createColumn(name: 'To Do', pId: project.pId);
+
+    yield ProgressLoading(progress: progress);
 
     c.Column doing =
         await repository.createColumn(name: 'Doing', pId: project.pId);
 
+    yield ProgressLoading(progress: progress);
+
     c.Column done =
         await repository.createColumn(name: 'Done', pId: project.pId);
+
+    yield ProgressLoading(progress: progress);
 
     await repository.createTask(
       task: Task(
@@ -49,6 +66,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
 
+    yield ProgressLoading(progress: progress);
+
+    Task task1 = await repository.createTask(
+      task: Task(
+        name: 'Facebook promotions',
+        description: 'Buy ads in facebook',
+        colId: todo.colId,
+      ),
+    );
+
+    yield ProgressLoading(progress: progress);
+
     await repository.createTask(
       task: Task(
         name: 'Ads design',
@@ -57,6 +86,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
 
+    yield ProgressLoading(progress: progress);
+
+    Task task2 = await repository.createTask(
+      task: Task(
+        name: 'Finish the project README',
+        description: 'Add the version of framework',
+        colId: doing.colId,
+      ),
+    );
+
+    yield ProgressLoading(progress: progress);
+
     await repository.createTask(
       task: Task(
         name: 'Pay money to designer',
@@ -64,6 +105,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         colId: done.colId,
       ),
     );
+
+    yield ProgressLoading(progress: progress);
+
+    Task task3 = await repository.createTask(
+      task: Task(
+        name: 'Add license to project',
+        description: 'Choose MIT or GPL-3.0',
+        colId: done.colId,
+      ),
+    );
+
+    yield ProgressLoading(progress: progress);
+
+    await repository.assignTask(task: task1, assignees: [user]);
+
+    yield ProgressLoading(progress: progress);
+
+    await repository.assignTask(task: task2, assignees: [user]);
+
+    yield ProgressLoading(progress: progress);
+
+    await repository.assignTask(task: task3, assignees: [user]);
+
+    yield ProgressLoading(progress: progress);
+
+    progress = 0;
+
+    ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
+        Routes.wrapperPage, (Route<dynamic> route) => false);
+    yield Authenticated(user: user);
   }
 
   @override
@@ -81,11 +152,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         try {
           company = await repository.getCurrentCompany();
+          repository.selectCompany(company: company);
         } on CacheException {
-          company = (await repository.getAllCompanies())[0];
+          List<Company> companies = await repository.getAllCompanies();
+          if (companies.length > 0) {
+            company = companies[0];
+            repository.selectCompany(company: company);
+          }
         }
 
-        repository.selectCompany(company: company);
         ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
             Routes.wrapperPage, (Route<dynamic> route) => false);
         yield Authenticated(user: _user);
@@ -132,17 +207,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     if (event is RegistrationAttempt) {
       print('RegistrationAttempt');
-      yield Loading();
+      // yield Loading();
 
       try {
         bool _result = await repository.register(user: event.user);
 
         if (_result) {
-          await generateStartupData(user: event.user);
-
-          ExtendedNavigator.ofRouter<GlobalRouter>().pushNamedAndRemoveUntil(
-              Routes.wrapperPage, (Route<dynamic> route) => false);
-          yield Authenticated(user: event.user);
+          yield* generateStartupData(user: event.user);
         } else {
           throw WrongCredentialsException();
         }

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/util/bloc/account/account_bloc.dart';
+import 'package:tempokit/util/bloc/inbox/inbox_bloc.dart';
 import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
@@ -39,6 +40,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<MyTasksBloc>(
           create: (_) => sl<MyTasksBloc>(),
+        ),
+        BlocProvider<InboxBloc>(
+          create: (_) => sl<InboxBloc>(),
         ),
         BlocProvider<AccountBloc>(
           create: (_) => sl<AccountBloc>(),

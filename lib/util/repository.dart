@@ -179,7 +179,15 @@ class Repository {
     }
   }
 
-  dynamic assignTask() async {}
+  Future<bool> assignTask({Task task, List<User> assignees}) async {
+    if (await networkInfo.isConnected) {
+      bool _answer = await apiClient.assignTask(task: task, assignees: assignees);
+
+      return _answer;
+    } else {
+      throw NetworkException();
+    }
+  }
 
   //! Column ------------------------------------------------------------------------------------------------------------
 

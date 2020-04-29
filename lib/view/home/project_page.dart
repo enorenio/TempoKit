@@ -79,9 +79,10 @@ class _MyCarouselState extends State<MyCarousel> {
         if (state.columnsAndTasks.length > 0) {
           return SizedBox(
             // you may want to use an aspect ratio here for tablet support
-            height: 245.0,
+            // height: 245.0,
             child: PageView.builder(
               // store this controller in a State to save the carousel scroll position
+              physics: BouncingScrollPhysics(),
               controller: PageController(viewportFraction: 0.8),
               itemCount: state.columnsAndTasks.length,
               itemBuilder: (BuildContext context, int index) {
@@ -100,13 +101,6 @@ class _MyCarouselState extends State<MyCarousel> {
       return tempWidget;
     });
   }
-
-  // _updateItemCount(String columnName) {
-  //   setState(() {
-  //     _itemCount++;
-  //     itemName.add(columnName);
-  //   });
-  // }
 }
 
 class MyItem extends StatefulWidget {
@@ -298,7 +292,7 @@ class NewRequestView extends StatelessWidget {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return UsersListView();
+                              return UsersListView(allUsers: []); //TODO: pass here users or make request and get them
                             });
                       },
                       label: Column(
@@ -432,7 +426,8 @@ class MyCont extends StatelessWidget {
 }
 
 class UsersListView extends StatefulWidget {
-  const UsersListView({Key key}) : super(key: key);
+  final List<User> allUsers;
+  UsersListView({Key key, this.allUsers}) : super(key: key);
 
   @override
   _UsersListViewState createState() => _UsersListViewState();
@@ -451,18 +446,19 @@ class _UsersListViewState extends State<UsersListView> {
             children: <Widget>[
               Container(
                 height: 325,
-                child: FutureBuilder(
-                  future: sl<Repository>().getUsers(), //TODO: delete this
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<User> data = snapshot.data;
-                      return usersListView(context, data);
-                    } else if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    }
-                    return Center(child: CircularProgressIndicator());
-                  },
-                ),
+                child: usersListView(context, widget.allUsers),
+                // child: FutureBuilder(
+                //   future: sl<Repository>().getUsers(),
+                //   builder: (context, snapshot) {
+                //     if (snapshot.hasData) {
+                //       List<User> data = snapshot.data;
+                //       return usersListView(context, data);
+                //     } else if (snapshot.hasError) {
+                //       return Text("${snapshot.error}");
+                //     }
+                //     return Center(child: CircularProgressIndicator());
+                //   },
+                // ),
               ),
               SizedBox(
                 height: 27,
@@ -491,15 +487,15 @@ class _UsersListViewState extends State<UsersListView> {
   Future<List<User>> _fetchTasks() async {
     //TO DO
   }
-  ListView usersListView(context, data) {
+  ListView usersListView(context, allUsers) {
     return ListView.builder(
-        itemCount: data.length,
+        itemCount: allUsers.length,
         itemBuilder: (context, index) {
-          return userTile(data[index]);
+          return userTile(user: allUsers[index]);
         });
   }
 
-  CheckboxListTile userTile(User user) => CheckboxListTile(
+  CheckboxListTile userTile({User user}) => CheckboxListTile(
         title: Text(user.uEmail,
             style: TextStyle(
               fontWeight: FontWeight.w500,

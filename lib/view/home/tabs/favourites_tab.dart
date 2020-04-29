@@ -43,7 +43,7 @@ class _FavouritesTabState extends State<FavouritesTab> {
               });
         } else {
           return Center(
-            child: Text('No projects created yet'),
+            child: Text('You have no favorite project'),
           );
         }
       }

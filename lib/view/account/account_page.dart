@@ -11,8 +11,6 @@ import 'package:tempokit/view/widgets/loading_widget.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 import '../../util/bloc/auth/auth_bloc.dart';
 
-var companyIndex;
-
 class AccountPage extends StatefulWidget {
   const AccountPage({Key key}) : super(key: key);
 

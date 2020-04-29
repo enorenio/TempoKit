@@ -3,9 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/project.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
-import 'package:tempokit/view/home/favourites_tab.dart';
-import 'package:tempokit/view/home/recents_tab.dart';
-import 'all_tab.dart';
+import 'package:tempokit/view/home/tabs/all_tab.dart';
+import 'package:tempokit/view/home/tabs/favourites_tab.dart';
+import 'package:tempokit/view/home/tabs/recents_tab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);

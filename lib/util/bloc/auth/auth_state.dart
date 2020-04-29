@@ -12,6 +12,12 @@ class Authenticated extends AuthState {
   Authenticated({this.user});
 }
 
+class ProgressLoading extends AuthState {
+  final double progress;
+
+  ProgressLoading({this.progress});
+}
+
 class Loading extends AuthState {}
 
 class AuthError extends AuthState implements GeneralState{

@@ -210,6 +210,26 @@ void main() {
       print(result);
       expect(result, result);
     });
+
+    test('should perform [POST] assign', () async {
+      // act
+      await repository.logIn(
+        uEmail: 'morshnev.aleksey@gmail.com',
+        password: '12345',
+      );
+      final result = await repository.assignTask(
+          task: Task(
+            taskId: 5
+          ),
+          assignees: [
+            User(
+              uEmail: 'morshnev.aleksey@gmail.com',
+            ),
+          ]);
+      // assert
+      print(result);
+      expect(result, result);
+    });
   });
 
   group('comments', () {

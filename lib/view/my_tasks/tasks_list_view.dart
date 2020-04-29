@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/model/task.dart';
 import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/widgets/task_view.dart';
@@ -28,7 +29,7 @@ class _TasksListViewState extends State<TasksListView> {
         showError(context, state);
       } else if (state is TasksState) {
         if (state.tasks.length > 0) {
-          return tasksListView(context, state.tasks);
+          return tasksListView(context: context, tasks: state.tasks);
         } else {
           return Center(
             child: Text('No tasks created yet'),
@@ -39,16 +40,16 @@ class _TasksListViewState extends State<TasksListView> {
     });
   }
 
-  ListView tasksListView(context, data) {
+  ListView tasksListView({BuildContext context, List<Task> tasks}) {
     return ListView.builder(
-        itemCount: data.length,
+        itemCount: tasks.length,
         itemBuilder: (context, index) {
-          return tile(context, data[index].name);
+          return tile(context, tasks[index]);
         });
   }
 
-  ListTile tile(BuildContext context, String title) => ListTile(
-        title: Text(title,
+  ListTile tile(BuildContext context, Task task) => ListTile(
+        title: Text(task.name,
             style: TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 20,
@@ -59,10 +60,9 @@ class _TasksListViewState extends State<TasksListView> {
               context,
               MaterialPageRoute(
                 builder: (context) => TaskView(
-
+                  task: task,
                 ),
               ));
         },
       );
 }
-
