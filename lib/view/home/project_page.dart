@@ -30,9 +30,9 @@ class _ProjectPageState extends State<ProjectPage> {
         ),
         title: Text(widget.project.name),
       ),
-      body: MyCarousel(project: widget.project),
+      body: MyCarousel(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showNewCoulmnView(project: widget.project),
+        onPressed: () => showNewCoulmnView(),
         child: Icon(
           Icons.add,
           color: Theme.of(context).primaryColor,
@@ -42,19 +42,16 @@ class _ProjectPageState extends State<ProjectPage> {
     );
   }
 
-  void showNewCoulmnView({Project project}) {
+  void showNewCoulmnView() {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          return NewColumnView(project: project);
+          return NewColumnView();
         });
   }
 }
 
 class MyCarousel extends StatefulWidget {
-  final Project project;
-
-  MyCarousel({this.project});
   _MyCarouselState createState() => _MyCarouselState();
 }
 
@@ -62,8 +59,7 @@ class _MyCarouselState extends State<MyCarousel> {
   @override
   initState() {
     super.initState();
-    BlocProvider.of<HomeBloc>(context)
-        .add(GetColumnsAndTasksEvent(project: widget.project));
+    BlocProvider.of<HomeBloc>(context).add(GetColumnsAndTasksEvent());
   }
 
   @override
@@ -86,7 +82,6 @@ class _MyCarouselState extends State<MyCarousel> {
               itemBuilder: (BuildContext context, int index) {
                 return MyItem(
                   columnAndTasks: state.columnsAndTasks[index],
-                  project: widget.project,
                 );
               },
             ),
@@ -111,9 +106,8 @@ class _MyCarouselState extends State<MyCarousel> {
 
 class MyItem extends StatefulWidget {
   final dynamic columnAndTasks;
-  final Project project;
 
-  MyItem({this.columnAndTasks, this.project});
+  MyItem({this.columnAndTasks});
   _MyItemState createState() => _MyItemState();
 }
 
@@ -145,7 +139,6 @@ class _MyItemState extends State<MyItem> {
                   IconButton(
                     icon: Icon(Icons.add),
                     onPressed: () => showNewRequestView(
-                      project: widget.project,
                       column: currentColumn,
                     ),
                   ),
@@ -158,12 +151,11 @@ class _MyItemState extends State<MyItem> {
     );
   }
 
-  void showNewRequestView({Project project, c.Column column}) {
+  void showNewRequestView({c.Column column}) {
     showModalBottomSheet(
         context: context,
         builder: (context) {
           return NewRequestView(
-            project: project,
             column: column,
           );
         });
@@ -171,18 +163,8 @@ class _MyItemState extends State<MyItem> {
 }
 
 class NewColumnView extends StatelessWidget {
-  final Project project;
-
   final columnNameController = TextEditingController();
   final columnFormKey = GlobalKey<FormState>();
-
-  // GlobalKey<_MyCarouselState> carouselGlobalKey =
-  //     new GlobalKey<_MyCarouselState>();
-  // void setCarouselState() {
-  //   carouselGlobalKey.currentState._updateItemCount(columnNameController.text);
-  // }
-
-  NewColumnView({Key key, this.project}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +204,6 @@ class NewColumnView extends StatelessWidget {
                     if (columnFormKey.currentState.validate()) {
                       BlocProvider.of<HomeBloc>(context).add(
                         CreateColumnEvent(
-                          project: project,
                           column: c.Column(name: columnNameController.text),
                         ),
                       );
@@ -249,14 +230,13 @@ class NewColumnView extends StatelessWidget {
 }
 
 class NewRequestView extends StatelessWidget {
-  final Project project;
   final c.Column column;
 
   final requestNameController = TextEditingController();
   final requestFormKey = GlobalKey<FormState>();
   GlobalKey<_MyItemState> itemGlobalKey = new GlobalKey<_MyItemState>();
 
-  NewRequestView({Key key, this.project, this.column}) : super(key: key);
+  NewRequestView({Key key, this.column}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -295,7 +275,6 @@ class NewRequestView extends StatelessWidget {
                     onPressed: () {
                       _handleNewTask(
                         context: context,
-                        project: project,
                         column: column,
                       );
                     },
@@ -314,12 +293,10 @@ class NewRequestView extends StatelessWidget {
         ));
   }
 
-  void _handleNewTask(
-      {BuildContext context, Project project, c.Column column}) async {
+  void _handleNewTask({BuildContext context, c.Column column}) async {
     if (requestFormKey.currentState.validate()) {
       BlocProvider.of<HomeBloc>(context).add(
         CreateTaskEvent(
-          project: project,
           task: Task(
             name: requestNameController.text,
             colId: column.colId,

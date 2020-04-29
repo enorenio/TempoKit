@@ -38,7 +38,10 @@ class _AllTabState extends State<AllTab> {
                 return ListTile(
                   title: Text(current.name),
                   subtitle: Text(current.description),
-                  onTap: () => _navigateToProject(context, current),
+                  onTap: () => _navigateToProject(
+                    context: context,
+                    project: current,
+                  ),
                 );
               });
         } else {
@@ -51,7 +54,8 @@ class _AllTabState extends State<AllTab> {
     });
   }
 
-  void _navigateToProject(BuildContext context, Project project) async {
+  void _navigateToProject({BuildContext context, Project project}) async {
+    BlocProvider.of<HomeBloc>(context).add(SelectProjectEvent(project: project));
     Navigator.push(
         context,
         MaterialPageRoute(

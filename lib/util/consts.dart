@@ -8,6 +8,12 @@ LinearGradient orangeToYellow = LinearGradient(
   end: Alignment.bottomRight,
 );
 
+// LinearGradient blueToSky = LinearGradient(
+//   colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+//   begin: Alignment.centerLeft,
+//   end: Alignment.centerRight,
+// );
+
 ThemeData themeData = ThemeData(
   brightness: Brightness.dark,
   primaryColor: Colors.grey[900],

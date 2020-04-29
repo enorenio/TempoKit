@@ -18,6 +18,7 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final Repository repository;
+  Project project;
 
   HomeBloc({this.repository}) : assert(repository != null);
 
@@ -26,6 +27,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   @override
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
+    if (event is SelectProjectEvent) {
+      project = event.project;
+    }
+
     if (event is GetProjectsEvent) {
       try {
         Company _company = await repository.getCurrentCompany();
@@ -44,7 +49,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is GetColumnsAndTasksEvent) {
       try {
         dynamic columnsAndTasks =
-            await repository.getColumnsAndTasks(pId: event.project.pId);
+            await repository.getColumnsAndTasks(pId: project.pId);
 
         yield ColumnsAndTasksState(columnsAndTasks: columnsAndTasks);
       } on NetworkException catch (exception) {
@@ -75,10 +80,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is CreateColumnEvent) {
       try {
         await repository.createColumn(
-            pId: event.project.pId, name: event.column.name);
+            pId: project.pId, name: event.column.name);
 
         dynamic columnsAndTasks =
-            await repository.getColumnsAndTasks(pId: event.project.pId);
+            await repository.getColumnsAndTasks(pId: project.pId);
         yield ColumnsAndTasksState(columnsAndTasks: columnsAndTasks);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
@@ -92,7 +97,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await repository.createTask(task: event.task);
 
         dynamic columnsAndTasks =
-            await repository.getColumnsAndTasks(pId: event.project.pId);
+            await repository.getColumnsAndTasks(pId: project.pId);
         yield ColumnsAndTasksState(columnsAndTasks: columnsAndTasks);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
