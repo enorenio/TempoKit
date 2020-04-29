@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
 import '../account/account_page.dart';
 import 'package:tempokit/util/errors.dart';
@@ -127,7 +128,7 @@ class InboxPageState extends State<InboxPage> {
           return NewCommentView();
         });
      BlocProvider.of<MyTasksBloc>(context).add(CreateCommentEvent(
-        text: comment, taskId: taskId
+        comment: Comment(text: comment), taskId: taskId
        ));
   }
 }

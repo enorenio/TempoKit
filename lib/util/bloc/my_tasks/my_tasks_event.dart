@@ -21,8 +21,8 @@ class CreateTaskEvent extends MyTasksEvent {
 }
 
 class CreateCommentEvent extends MyTasksEvent {
-  final String text;
+  final Comment comment;
   final int taskId;
 
-  CreateCommentEvent({this.text, this.taskId});
+  CreateCommentEvent({this.comment, this.taskId});
 }

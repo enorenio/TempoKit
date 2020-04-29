@@ -77,7 +77,7 @@ class MyTasksBloc extends Bloc<MyTasksEvent, MyTasksState> {
 
     if (event is CreateCommentEvent) {
       try {
-        await repository.createComment(text: event.text, taskId: event.taskId);
+        await repository.createComment(text: event.comment.text, taskId: event.taskId);
 
         List<Comment> comments =
             await repository.getAllComments(taskId: event.taskId);

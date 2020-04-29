@@ -30,6 +30,12 @@ class CreateProjectEvent extends HomeEvent {
   String toString() => 'Create project event';
 }
 
+class GetCommentsEvent extends HomeEvent {
+  final int taskId;
+
+  GetCommentsEvent({this.taskId});
+}
+
 class CreateColumnEvent extends HomeEvent {
   final c.Column column;
 
@@ -40,4 +46,11 @@ class CreateTaskEvent extends HomeEvent {
   final Task task;
 
   CreateTaskEvent({this.task});
+}
+
+class CreateCommentEvent extends HomeEvent {
+  final Comment comment;
+  final int taskId;
+
+  CreateCommentEvent({this.comment, this.taskId});
 }

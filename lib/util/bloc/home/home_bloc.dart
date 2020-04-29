@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/project.dart';
 import 'package:tempokit/model/column.dart' as c;
@@ -59,6 +60,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }
 
+    if (event is GetCommentsEvent) {
+      try {
+        List<Comment> _comments =
+            await repository.getAllComments(taskId: event.taskId);
+
+        yield CommentsState(comments: _comments);
+      } on NetworkException catch (exception) {
+        yield NetworkError(internalError: exception);
+      } on ServerException catch (exception) {
+        yield ServerError(internalError: exception);
+      }
+    }
+
     if (event is CreateProjectEvent) {
       try {
         Company _company = await repository.getCurrentCompany();
@@ -99,6 +113,20 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         dynamic columnsAndTasks =
             await repository.getColumnsAndTasks(pId: project.pId);
         yield ColumnsAndTasksState(columnsAndTasks: columnsAndTasks);
+      } on NetworkException catch (exception) {
+        yield NetworkError(internalError: exception);
+      } on ServerException catch (exception) {
+        yield ServerError(internalError: exception);
+      }
+    }
+
+    if (event is CreateCommentEvent) {
+      try {
+        await repository.createComment(text: event.comment.text, taskId: event.taskId);
+
+        List<Comment> comments =
+            await repository.getAllComments(taskId: event.taskId);
+        yield CommentsState(comments: comments);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {

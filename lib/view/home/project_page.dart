@@ -140,7 +140,6 @@ class _MyItemState extends State<MyItem> {
                 children: [
                   ...(currentTasks
                       .map((task) => ListTile(
-                            
                             title: Text(task.name),
                             onTap: () {
                               print("You pressed task tile!");
@@ -253,8 +252,6 @@ class NewRequestView extends StatelessWidget {
   final _taskNameController = TextEditingController();
   final _taskDescriptionController = new TextEditingController();
   DateTime _dateTime;
-
-
 
   final _requestFormKey = GlobalKey<FormState>();
   GlobalKey<_MyItemState> itemGlobalKey = new GlobalKey<_MyItemState>();

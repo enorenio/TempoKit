@@ -16,6 +16,12 @@ class ColumnsAndTasksState extends HomeState {
   ColumnsAndTasksState({this.columnsAndTasks});
 }
 
+class CommentsState extends HomeState {
+  final List<Comment> comments;
+
+  CommentsState({this.comments});
+}
+
 class Loading extends HomeState {}
 
 class HomeError extends HomeState implements GeneralState {
