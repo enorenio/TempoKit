@@ -1,18 +1,17 @@
 import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+
+import 'package:tempokit/model/column.dart' as c;
 import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/project.dart';
-import 'package:tempokit/model/column.dart' as c;
 import 'package:tempokit/model/task.dart';
-
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/errors.dart';
-import 'package:tempokit/util/routes/global_router.gr.dart';
-
 import 'package:tempokit/util/repository.dart';
+import 'package:tempokit/util/routes/global_router.gr.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

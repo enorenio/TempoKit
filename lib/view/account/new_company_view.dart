@@ -24,7 +24,7 @@ class NewCompanyView extends StatelessWidget {
                 ),
                 TextFormField(
                   validator: (value) {
-                    if (value.isEmpty) return 'Please enter company name!';
+                    return value.isEmpty ? 'Please enter company name!' : null;
                   },
                   controller: companyNameController,
                   cursorColor: Color(0xFF3C4858),

@@ -15,7 +15,7 @@ class Column {
 
   Column.fromJson(Map jsonMap)
       : colId = jsonMap['col_id'],
-        name = jsonMap['name']??jsonMap['col_name'], //TODO: delete this
+        name = jsonMap['name']??jsonMap['col_name'],
         uEmail = jsonMap['u_email'],
         pId = jsonMap['p_id'];
 

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:auto_route/auto_route.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:tempokit/model/comment.dart';
@@ -7,10 +6,8 @@ import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/project.dart';
 import 'package:tempokit/model/column.dart' as c;
 import 'package:tempokit/model/task.dart';
-import 'package:tempokit/model/user.dart';
 
 import 'package:tempokit/util/errors.dart';
-import 'package:tempokit/util/routes/global_router.gr.dart';
 
 import 'package:tempokit/util/repository.dart';
 
@@ -40,7 +37,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           compId: _company.compId,
         );
         yield ProjectsState(projects: _projects);
-      } on CacheException catch (exception) {
+      } on CacheException {
         yield ProjectsState(projects: []);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
@@ -86,7 +83,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         List<Project> _projects =
             await repository.getProjects(compId: _company.compId);
         yield ProjectsState(projects: _projects);
-      } on CacheException catch (exception) {
+      } on CacheException {
         yield ProjectsState(projects: []);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);

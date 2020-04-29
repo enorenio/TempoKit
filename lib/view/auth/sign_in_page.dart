@@ -138,6 +138,7 @@ class _SignInState extends State<SignInPage> {
                               return 'Please enter your email!';
                             if (isEmailAddressValid(value) == false)
                               return 'Incorrect email address. Try again!';
+                            return null;
                           },
                           controller: _emailController,
                           onSaved: (value) => _formData['email'] = value,
@@ -161,6 +162,7 @@ class _SignInState extends State<SignInPage> {
                               return 'Please enter your passsword!';
                             if (value.length < 4)
                               return 'Length of your password must be at least 4 symbols!';
+                            return null;
                           },
                           controller: _passwordController,
                           onSaved: (value) => _formData['password'] = value,

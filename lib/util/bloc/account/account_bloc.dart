@@ -30,7 +30,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         List<Company> companies = await repository.getAllCompanies();
         Company current = await repository.getCurrentCompany();
         yield CompaniesState(companies: companies, current: current);
-      } on CacheException catch (exception) {
+      } on CacheException {
         yield CompaniesState(companies: [], current: null);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);

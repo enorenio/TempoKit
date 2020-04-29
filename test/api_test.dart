@@ -1,14 +1,13 @@
 import 'dart:math';
 
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
+
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
-
 import 'package:tempokit/util/api_client.dart';
 import 'package:tempokit/util/cache_controller.dart';
-import 'package:encrypt/encrypt.dart';
 import 'package:tempokit/util/network/network_info.dart';
 import 'package:tempokit/util/repository.dart';
 

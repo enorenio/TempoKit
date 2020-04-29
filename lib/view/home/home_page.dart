@@ -85,7 +85,7 @@ class _NewProject extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 15.0),
                     child: TextFormField(
                       validator: (value) {
-                        if (value.isEmpty) return 'Please enter name!';
+                        return value.isEmpty ? 'Please enter name!' : null;
                       },
                       controller: _projectNameController,
                       //onSaved: (value) => _formData['email'] = value,
@@ -102,7 +102,7 @@ class _NewProject extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     margin: EdgeInsets.symmetric(vertical: 15.0),
                     child: TextFormField(
-                      validator: (value) {},
+                      // validator: (value) {},
                       controller: _descriptionController,
                       //onSaved: (value) => _formData['email'] = value,
                       cursorColor: Color(0xFF3C4858),

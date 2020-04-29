@@ -139,8 +139,7 @@ class _SignUpState extends State<SignUpPage> {
                           margin: EdgeInsets.symmetric(vertical: 5.0),
                           child: TextFormField(
                             validator: (value) {
-                              if (value.isEmpty)
-                                return 'Please enter your name!';
+                              return value.isEmpty ? 'Please enter your name!' : null;
                             },
                             controller: _nameController,
                             onSaved: (value) => _formData['name'] = value,
@@ -160,8 +159,7 @@ class _SignUpState extends State<SignUpPage> {
                           margin: EdgeInsets.symmetric(vertical: 5.0),
                           child: TextFormField(
                             validator: (value) {
-                              if (value.isEmpty)
-                                return 'Please enter your job type!';
+                              return value.isEmpty ? 'Please enter your job type!' : null;
                             },
                             controller: _workTypeController,
                             onSaved: (value) => _formData['workType'] = value,
@@ -185,6 +183,7 @@ class _SignUpState extends State<SignUpPage> {
                                 return 'Please enter your email!';
                               if (isEmailAddressValid(value) == false)
                                 return 'Incorrect email address. Try again!';
+                              return null;
                             },
                             controller: _emailController,
                             onSaved: (value) => _formData['email'] = value,
@@ -208,6 +207,7 @@ class _SignUpState extends State<SignUpPage> {
                                 return 'Please enter your passsword!';
                               if (value.length < 4)
                                 return 'Length of your password must be at least 4 symbols!';
+                              return null;
                             },
                             controller: _passwordController,
                             onSaved: (value) => _formData['password'] = value,

@@ -4,7 +4,6 @@ import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/util/bloc/inbox/inbox_bloc.dart';
 import 'package:tempokit/view/widgets/gray_card.dart';
-import '../account/account_page.dart';
 import 'package:tempokit/util/errors.dart';
 
 class InboxPage extends StatefulWidget {
@@ -243,7 +242,7 @@ class NewCommentView extends StatelessWidget {
                 ),
                 TextFormField(
                   validator: (value) {
-                    if (value.isEmpty) return 'Please enter column name!';
+                    return value.isEmpty ? 'Please enter company name!' : null;
                   },
                   controller: commentController,
                   cursorColor: Color(0xFF3C4858),
