@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/util/repository.dart';
-import 'package:tempokit/view/my_tasks/task_view.dart';
+import 'package:tempokit/view/widgets/task_view.dart';
 
 import '../../injection_container.dart';
 
