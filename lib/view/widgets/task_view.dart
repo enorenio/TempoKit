@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../model/task.dart';
+
 class TaskView extends StatefulWidget {
-  final String taskName;
-  const TaskView({Key key, this.taskName}) : super(key: key);
+  final Task task;
+  const TaskView({Key key, this.task}) : super(key: key);
 
   @override
   _TaskViewState createState() => _TaskViewState();
@@ -20,11 +22,11 @@ class _TaskViewState extends State<TaskView> {
       body: SafeArea(
         minimum: const EdgeInsets.all(16.0),
         child: ListView(
-
           children: <Widget>[
             Text(
-              widget.taskName,
-              style: TextStyle(fontSize: 35),
+              widget.task.name,
+              style: TextStyle(
+                  fontSize: 35, color: Color.fromRGBO(0, 212, 106, 1)),
             ),
             SizedBox(
               height: 20,
@@ -81,16 +83,16 @@ class _TaskViewState extends State<TaskView> {
             Text(
               "Description:",
               style: TextStyle(
-                color: Color.fromRGBO(180, 180, 180, 1),
-                fontSize: 25
-                ),
+                  color: Color.fromRGBO(231, 60, 112, 1), fontSize: 25),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
-              "No description",
-              style: TextStyle(fontSize: 15),
+              widget.task.description != null
+                  ? widget.task.description
+                  : "No Description.",
+              style: TextStyle(fontSize: 20),
             ),
             SizedBox(
               height: 20,
@@ -98,16 +100,14 @@ class _TaskViewState extends State<TaskView> {
             Text(
               "Comments:",
               style: TextStyle(
-                color: Color.fromRGBO(180, 180, 180, 1),
-                fontSize: 25
-                ),
+                  color: Color.fromRGBO(231, 60, 112, 1), fontSize: 25),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
               "No comments",
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 20),
             ),
             SizedBox(
               height: 20,

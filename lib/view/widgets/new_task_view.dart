@@ -1,11 +1,9 @@
 import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
-import 'package:tempokit/util/repository.dart';
-
-import '../../injection_container.dart';
+import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
 import 'users_list_view.dart';
 class NewTaskView extends StatelessWidget {
   final _taskNameController = new TextEditingController();
@@ -119,7 +117,11 @@ class NewTaskView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30.0)),
                 onPressed: () {
                   if (_taskFormKey.currentState.validate()) {
+                    BlocProvider.of<MyTasksBloc>(context).add(
+                                CreateTaskEvent()
+                              );
                     Navigator.pop(context);
+
                     print("New task created: " + _taskNameController.text);
                   }
                 },

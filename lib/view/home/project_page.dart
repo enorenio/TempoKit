@@ -7,8 +7,13 @@ import 'package:tempokit/model/task.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/widgets/loading_widget.dart';
+import 'package:tempokit/view/widgets/task_view.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 import 'package:tempokit/model/column.dart' as c;
+
+import '../../injection_container.dart';
+import '../../model/user.dart';
+import '../../util/repository.dart';
 
 class ProjectPage extends StatefulWidget {
   final Project project;
@@ -140,7 +145,20 @@ class _MyItemState extends State<MyItem> {
               child: Column(
                 children: [
                   ...(currentTasks
-                      .map((task) => Text(task.name))
+                      .map((task) => ListTile(
+                            
+                            title: Text(task.name),
+                            onTap: () {
+                              print("You pressed task tile!");
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TaskView(
+                                      task: task,
+                                    ),
+                                  ));
+                            },
+                          ))
                       .toList()), //TODO: make excellent design for tasks
                   IconButton(
                     icon: Icon(Icons.add),
@@ -252,8 +270,14 @@ class NewRequestView extends StatelessWidget {
   final Project project;
   final c.Column column;
 
-  final requestNameController = TextEditingController();
-  final requestFormKey = GlobalKey<FormState>();
+  final _taskNameController = TextEditingController();
+  final _taskDescriptionController = new TextEditingController();
+  DateTime _dateTime;
+
+
+
+
+  final _requestFormKey = GlobalKey<FormState>();
   GlobalKey<_MyItemState> itemGlobalKey = new GlobalKey<_MyItemState>();
 
   NewRequestView({Key key, this.project, this.column}) : super(key: key);
@@ -261,67 +285,139 @@ class NewRequestView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 180,
         child: SafeArea(
-          minimum: const EdgeInsets.only(left: 16.0, right: 16.0),
-          child: Form(
-            key: requestFormKey,
-            child: Column(
+      minimum: const EdgeInsets.only(left: 16.0, right: 16.0),
+      child: Form(
+        key: _requestFormKey,
+        child: ListView(
+          children: <Widget>[
+            Icon(Icons.drag_handle),
+            SizedBox(
+              height: 10,
+            ),
+            TextFormField(
+              validator: (value) {
+                if (value.isEmpty) return 'Please enter task name!';
+              },
+              controller: _taskNameController,
+              cursorColor: Color(0xFF3C4858),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              decoration: InputDecoration(
+                hintText: 'Task name...',
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Icon(Icons.drag_handle),
-                SizedBox(
-                  height: 10,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    if (value.isEmpty) return 'Please enter request!';
-                  },
-                  controller: requestNameController,
-                  cursorColor: Color(0xFF3C4858),
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  decoration: InputDecoration(
-                    hintText: 'Your request...',
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
+                ButtonTheme(
+                  minWidth: 150,
+                  child: FlatButton.icon(
+                      icon: Icon(Icons.supervised_user_circle, size: 40),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return UsersListView();
+                            });
+                      },
+                      label: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Assigned to:',
+                            style: TextStyle(
+                                color: Colors.amber[800],
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Username',
+                            style: TextStyle(
+                                color: Colors.amber[800],
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      )),
                 ),
                 ButtonTheme(
                   minWidth: 150,
-                  child: RaisedButton(
-                    color: Color.fromRGBO(60, 60, 60, 1),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0)),
+                  child: FlatButton.icon(
+                    icon: Icon(Icons.date_range, size: 40),
                     onPressed: () {
-                      _handleNewTask(
-                        context: context,
-                        project: project,
-                        column: column,
-                      );
+                      showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2020),
+                              lastDate: DateTime(2050))
+                          .then((date) {
+                        _dateTime = date;
+                      });
                     },
-                    child: Text(
-                      'Create',
+                    label: Text(
+                      'Due Date',
                       style: TextStyle(
                           color: Colors.amber[800],
-                          fontSize: 14.0,
+                          fontSize: 18.0,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ));
+            SizedBox(height: 20),
+            TextFormField(
+                controller: _taskDescriptionController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                cursorColor: Color(0xFF3C4858),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                  hintText: 'Description...',
+                )),
+            SizedBox(height: 20),
+            ButtonTheme(
+              minWidth: 150,
+              child: RaisedButton(
+                color: Color.fromRGBO(60, 60, 60, 1),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0)),
+                onPressed: () {
+                  _handleNewTask(
+                    context: context,
+                    project: project,
+                    column: column,
+                  );
+                },
+                child: Text(
+                  'Create',
+                  style: TextStyle(
+                      color: Colors.amber[800],
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 
   void _handleNewTask(
       {BuildContext context, Project project, c.Column column}) async {
-    if (requestFormKey.currentState.validate()) {
+    if (_requestFormKey.currentState.validate()) {
       BlocProvider.of<HomeBloc>(context).add(
         CreateTaskEvent(
           project: project,
           task: Task(
-            name: requestNameController.text,
+            name: _taskNameController.text,
+            description: _taskDescriptionController.text,
             colId: column.colId,
           ),
         ),
@@ -360,4 +456,91 @@ class MyCont extends StatelessWidget {
       ],
     );
   }
+}
+
+class UsersListView extends StatefulWidget {
+  const UsersListView({Key key}) : super(key: key);
+
+  @override
+  _UsersListViewState createState() => _UsersListViewState();
+}
+
+class _UsersListViewState extends State<UsersListView> {
+  List<User> selectedUsers = new List<User>();
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("Assign to:"),
+      content: Container(
+          height: 400,
+          width: 300,
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 325,
+                child: FutureBuilder(
+                  future: sl<Repository>().getUsers(), //TODO: delete this
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<User> data = snapshot.data;
+                      return usersListView(context, data);
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 27,
+              ),
+              ButtonTheme(
+                minWidth: 150,
+                child: RaisedButton(
+                  color: Color.fromRGBO(60, 60, 60, 1),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  onPressed: () {},
+                  child: Text(
+                    'Assign',
+                    style: TextStyle(
+                        color: Colors.amber[800],
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )
+            ],
+          )),
+    );
+  }
+
+  Future<List<User>> _fetchTasks() async {
+    //TO DO
+  }
+  ListView usersListView(context, data) {
+    return ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return userTile(data[index]);
+        });
+  }
+
+  CheckboxListTile userTile(User user) => CheckboxListTile(
+        title: Text(user.uEmail,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+            )),
+        value: selectedUsers.contains(user) ? true : false,
+        onChanged: (bool value) {
+          setState(() {
+            if (selectedUsers.contains(user)) {
+              selectedUsers.remove(user);
+            } else {
+              selectedUsers.add(user);
+            }
+          });
+        },
+      );
 }

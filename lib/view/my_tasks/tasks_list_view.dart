@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/util/bloc/my_tasks/my_tasks_bloc.dart';
 import 'package:tempokit/util/errors.dart';
-import 'package:tempokit/view/my_tasks/task_view.dart';
+import 'package:tempokit/view/widgets/task_view.dart';
 import 'package:tempokit/view/widgets/loading_widget.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 
@@ -59,11 +59,10 @@ class _TasksListViewState extends State<TasksListView> {
               context,
               MaterialPageRoute(
                 builder: (context) => TaskView(
-                  taskName: title,
+
                 ),
               ));
         },
       );
 }
 
-class Context {}
