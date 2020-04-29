@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:tempokit/util/bloc/auth/auth_bloc.dart';
 import 'package:tempokit/util/consts.dart';
 import 'package:tempokit/util/errors.dart';
-import 'package:tempokit/view/widgets/loading_widget.dart';
-import '../../util/bloc/auth/auth_bloc.dart';
 import 'package:tempokit/util/routes/global_router.gr.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:tempokit/view/widgets/loading_widget.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key key}) : super(key: key);
@@ -64,12 +65,10 @@ class _SignInState extends State<SignInPage> {
         showError(context, state);
       }
       return Scaffold(
-        //backgroundColor: Colors.black12,
         appBar: AppBar(
           brightness: Brightness.light,
           elevation: 0.0,
           backgroundColor: Colors.transparent,
-          //backgroundColor: Colors.white,
           leading: InkWell(
             customBorder: CircleBorder(),
             child: IconButton(
@@ -102,10 +101,11 @@ class _SignInState extends State<SignInPage> {
                             Text(
                               "Hey! ",
                               style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                  letterSpacing: 1.0),
+                                fontSize: 30,
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                                letterSpacing: 1.0,
+                              ),
                             ),
                           ],
                         ),
@@ -144,10 +144,13 @@ class _SignInState extends State<SignInPage> {
                           onSaved: (value) => _formData['email'] = value,
                           cursorColor: Color(0xFF3C4858),
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                           decoration: InputDecoration(
-                              hintText: 'It\'s your email',
-                              suffixIcon: Icon(Icons.alternate_email)),
+                            hintText: 'It\'s your email',
+                            suffixIcon: Icon(Icons.alternate_email),
+                          ),
                         ),
                       ),
                       Container(
@@ -168,10 +171,13 @@ class _SignInState extends State<SignInPage> {
                           onSaved: (value) => _formData['password'] = value,
                           cursorColor: Color(0xFF3C4858),
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                           decoration: InputDecoration(
-                              hintText: 'Our little secret',
-                              suffixIcon: Icon(Icons.lock_outline)),
+                            hintText: 'Our little secret',
+                            suffixIcon: Icon(Icons.lock_outline),
+                          ),
                           obscureText: true,
                         ),
                       ),
@@ -183,15 +189,17 @@ class _SignInState extends State<SignInPage> {
                           borderRadius: BorderRadius.circular(30.0),
                           boxShadow: [
                             BoxShadow(
-                                color: Color(0xFF3C4858).withOpacity(.4),
-                                offset: Offset(10.0, 10.0),
-                                blurRadius: 10.0),
+                              color: Color(0xFF3C4858).withOpacity(.4),
+                              offset: Offset(10.0, 10.0),
+                              blurRadius: 10.0,
+                            ),
                           ],
                         ),
                         child: RaisedButton(
                           padding: EdgeInsets.all(0.0),
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0)),
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
                           child: Container(
                             padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                             decoration: BoxDecoration(
@@ -202,16 +210,15 @@ class _SignInState extends State<SignInPage> {
                               children: <Widget>[
                                 Expanded(
                                   child: Container(
-                                    //decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.deepOrange, Colors.yellow]),),
                                     alignment: Alignment.center,
                                     margin: EdgeInsets.only(left: 40.0),
-
                                     child: Text(
                                       'Let\'s go',
                                       style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold),
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -219,8 +226,9 @@ class _SignInState extends State<SignInPage> {
                                   height: 40.0,
                                   width: 40.0,
                                   decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context).primaryColor),
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                                   child: Icon(
                                     Icons.arrow_forward,
                                     color: Theme.of(context).accentColor,
@@ -241,17 +249,22 @@ class _SignInState extends State<SignInPage> {
                       ),
                       Container(
                         child: RichText(
-                            text: TextSpan(
-                                style: Theme.of(context).textTheme.body1,
-                                children: [
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.body1,
+                            children: [
                               TextSpan(
                                 text: 'First time here? ',
                               ),
                               TextSpan(
-                                  text: 'Sign Up',
-                                  style: TextStyle(color: Theme.of(context).accentColor),
-                                  recognizer: _signUpTapRecognizer),
-                            ])),
+                                text: 'Sign Up',
+                                style: TextStyle(
+                                  color: Theme.of(context).accentColor,
+                                ),
+                                recognizer: _signUpTapRecognizer,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),

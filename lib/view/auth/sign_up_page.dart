@@ -69,12 +69,10 @@ class _SignUpState extends State<SignUpPage> {
           showError(context, state);
         }
         return Scaffold(
-          //backgroundColor: Colors.black12,
           appBar: AppBar(
             brightness: Brightness.light,
             elevation: 0.0,
             backgroundColor: Colors.transparent,
-            //backgroundColor: Colors.white,
             leading: InkWell(
               customBorder: CircleBorder(),
               child: IconButton(
@@ -107,10 +105,11 @@ class _SignUpState extends State<SignUpPage> {
                               Text(
                                 "Let us",
                                 style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                    letterSpacing: 1.0),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.white,
+                                  letterSpacing: 1.0,
+                                ),
                               ),
                             ],
                           ),
@@ -139,16 +138,21 @@ class _SignUpState extends State<SignUpPage> {
                           margin: EdgeInsets.symmetric(vertical: 5.0),
                           child: TextFormField(
                             validator: (value) {
-                              return value.isEmpty ? 'Please enter your name!' : null;
+                              return value.isEmpty
+                                  ? 'Please enter your name!'
+                                  : null;
                             },
                             controller: _nameController,
                             onSaved: (value) => _formData['name'] = value,
                             cursorColor: Color(0xFF3C4858),
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                             decoration: InputDecoration(
-                                hintText: 'Your First and Last names',
-                                suffixIcon: Icon(Icons.account_circle)),
+                              hintText: 'Your First and Last names',
+                              suffixIcon: Icon(Icons.account_circle),
+                            ),
                           ),
                         ),
                         Container(
@@ -159,16 +163,23 @@ class _SignUpState extends State<SignUpPage> {
                           margin: EdgeInsets.symmetric(vertical: 5.0),
                           child: TextFormField(
                             validator: (value) {
-                              return value.isEmpty ? 'Please enter your job type!' : null;
+                              return value.isEmpty
+                                  ? 'Please enter your job type!'
+                                  : null;
                             },
                             controller: _workTypeController,
                             onSaved: (value) => _formData['workType'] = value,
                             cursorColor: Color(0xFF3C4858),
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                             decoration: InputDecoration(
-                                hintText: 'What do you do?',
-                                suffixIcon: Icon(Icons.business_center)),
+                              hintText: 'What do you do?',
+                              suffixIcon: Icon(
+                                Icons.business_center,
+                              ),
+                            ),
                           ),
                         ),
                         Container(
@@ -189,10 +200,15 @@ class _SignUpState extends State<SignUpPage> {
                             onSaved: (value) => _formData['email'] = value,
                             cursorColor: Color(0xFF3C4858),
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                             decoration: InputDecoration(
-                                hintText: 'It\'s your email',
-                                suffixIcon: Icon(Icons.alternate_email)),
+                              hintText: 'It\'s your email',
+                              suffixIcon: Icon(
+                                Icons.alternate_email,
+                              ),
+                            ),
                           ),
                         ),
                         Container(
@@ -213,10 +229,15 @@ class _SignUpState extends State<SignUpPage> {
                             onSaved: (value) => _formData['password'] = value,
                             cursorColor: Color(0xFF3C4858),
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                             decoration: InputDecoration(
-                                hintText: 'Our little secret',
-                                suffixIcon: Icon(Icons.lock_outline)),
+                              hintText: 'Our little secret',
+                              suffixIcon: Icon(
+                                Icons.lock_outline,
+                              ),
+                            ),
                             obscureText: true,
                           ),
                         ),
@@ -236,7 +257,8 @@ class _SignUpState extends State<SignUpPage> {
                           child: RaisedButton(
                             padding: EdgeInsets.all(0.0),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0)),
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
                             child: Container(
                               padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
                               decoration: BoxDecoration(
@@ -247,10 +269,8 @@ class _SignUpState extends State<SignUpPage> {
                                 children: <Widget>[
                                   Expanded(
                                     child: Container(
-                                      //decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.deepOrange, Colors.yellow]),),
                                       alignment: Alignment.center,
                                       margin: EdgeInsets.only(left: 40.0),
-
                                       child: Text(
                                         'Create Account',
                                         style: TextStyle(
@@ -265,8 +285,9 @@ class _SignUpState extends State<SignUpPage> {
                                     height: 40.0,
                                     width: 40.0,
                                     decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Theme.of(context).primaryColor),
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
                                     child: Icon(
                                       Icons.arrow_forward,
                                       color: Theme.of(context).accentColor,
@@ -294,9 +315,12 @@ class _SignUpState extends State<SignUpPage> {
                                   text: 'Already have an account? ',
                                 ),
                                 TextSpan(
-                                    text: 'Login',
-                                    style: TextStyle(color: Theme.of(context).accentColor),
-                                    recognizer: _signInTapRecognizer),
+                                  text: 'Login',
+                                  style: TextStyle(
+                                    color: Theme.of(context).accentColor,
+                                  ),
+                                  recognizer: _signInTapRecognizer,
+                                ),
                               ])),
                         ),
                       ],
