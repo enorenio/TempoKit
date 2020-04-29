@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/company.dart';
+import 'package:tempokit/model/project.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
 
@@ -61,12 +62,26 @@ class MyTasksBloc extends Bloc<MyTasksEvent, MyTasksState> {
       }
     }
 
+    if (event is CreateTaskEvent) {
+      try {
+        await repository.createTask(task: event.task);
+
+        List<Task> myTasks = await repository.getMyTasks();
+        yield TasksState(tasks: myTasks);
+      } on NetworkException catch (exception) {
+        yield NetworkError(internalError: exception);
+      } on ServerException catch (exception) {
+        yield ServerError(internalError: exception);
+      }
+    }
+
     if (event is CreateCommentEvent) {
       try {
-        Comment _comment = await repository.createComment(
-            text: event.text, taskId: event.taskId);
+        await repository.createComment(text: event.text, taskId: event.taskId);
 
-        yield CommentState(comment: _comment);
+        List<Comment> comments =
+            await repository.getAllComments(taskId: event.taskId);
+        yield CommentsState(comments: comments);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {

@@ -14,6 +14,12 @@ class GetCommentsEvent extends MyTasksEvent {
   GetCommentsEvent({this.taskId});
 }
 
+class CreateTaskEvent extends MyTasksEvent {
+  final Task task;
+
+  CreateTaskEvent({this.task});
+}
+
 class CreateCommentEvent extends MyTasksEvent {
   final String text;
   final int taskId;

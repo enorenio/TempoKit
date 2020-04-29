@@ -22,12 +22,6 @@ class CommentsState extends MyTasksState {
   CommentsState({this.comments});
 }
 
-class CommentState extends MyTasksState {
-  final Comment comment;
-
-  CommentState({this.comment});
-}
-
 class Loading extends MyTasksState {}
 
 class MyTasksError extends MyTasksState implements GeneralState {
