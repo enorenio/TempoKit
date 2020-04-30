@@ -111,7 +111,6 @@ class _TaskViewState extends State<TaskView> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
-                  Chip(label: Text("Tag")),
                   Chip(label: Text("UI")),
                   Chip(label: Text("Monetization")),
                   Chip(label: Text("Design")),

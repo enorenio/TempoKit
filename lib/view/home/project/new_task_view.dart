@@ -23,6 +23,8 @@ class _NewTaskViewState extends State<NewTaskView> {
   DateTime _dateTime;
 
   final _requestFormKey = GlobalKey<FormState>();
+  List<String> tags = ["UI", "Monetization", "Design", "Code", "Bugs"];
+  List<String> selectedTags = new List();
 
   // GlobalKey<_MyItemState> itemGlobalKey = new GlobalKey<_MyItemState>();
 
@@ -116,6 +118,15 @@ class _NewTaskViewState extends State<NewTaskView> {
               ],
             ),
             SizedBox(height: 20),
+            Container(
+                height: 40,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: tags.length,
+                    itemBuilder: (context, index) {
+                      return tagChip(tags[index]);
+                    })),
+            SizedBox(height: 20),
             TextFormField(
                 controller: _taskDescriptionController,
                 keyboardType: TextInputType.multiline,
@@ -167,4 +178,18 @@ class _NewTaskViewState extends State<NewTaskView> {
       Navigator.pop(context);
     }
   }
+
+  FilterChip tagChip(String text) => FilterChip(
+        label: Text(text),
+        selected: selectedTags.contains(text),
+        onSelected: (value) {
+          setState(() {
+            if (selectedTags.contains(text)) {
+              selectedTags.remove(text);
+            } else {
+              selectedTags.add(text);
+            }
+          });
+        },
+      );
 }
