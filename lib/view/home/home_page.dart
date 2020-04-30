@@ -59,7 +59,6 @@ class _HomePageState extends State<HomePage> {
           _navigateToSecondScreen(context);
         },
         child: Icon(Icons.assignment),
-        backgroundColor: Colors.amber[800],
       ),
     );
   }

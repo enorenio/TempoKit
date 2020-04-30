@@ -18,6 +18,8 @@ class _ColumnViewState extends State<ColumnView> {
   Widget build(BuildContext context) {
     c.Column currentColumn = widget.columnAndTasks['column'];
     List<Task> currentTasks = widget.columnAndTasks['tasks'];
+    List<dynamic> currentComments = widget.columnAndTasks['comments'];
+
     return Container(
       margin: EdgeInsets.only(top: 10),
       child: Padding(
@@ -34,25 +36,29 @@ class _ColumnViewState extends State<ColumnView> {
             ),
             Column(
               children: [
-                ListTile(
-                  title: GrayCard(
-                    child: Icon(Icons.add),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 8.0,
-                      vertical: 8.0,
-                    ),
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 0.0,
-                      vertical: 4.0,
+                GrayCard(
+                  child: ListTile(
+                    title: Icon(Icons.add),
+                    onTap: () => showNewRequestView(column: currentColumn),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 0.0,
                     ),
                   ),
-                  onTap: () => showNewRequestView(column: currentColumn),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 0.0,
+                  ),
+                  margin: EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 4.0,
+                  ),
                 ),
                 ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * .648,
+                      maxHeight: MediaQuery.of(context).size.height * .637,
                     ),
-                    child: TaskListView(tasks: currentTasks)),
+                    child: TaskListView(tasks: currentTasks, comments: currentComments)),
               ],
             ),
             // TaskListView(tasks:currentTasks),

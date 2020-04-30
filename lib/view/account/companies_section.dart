@@ -6,7 +6,6 @@ import 'package:tempokit/util/bloc/account/account_bloc.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/account/globals.dart';
 import 'package:tempokit/view/account/new_company_view.dart';
-import 'package:tempokit/view/widgets/temp_widget.dart';
 
 class CompaniesSection extends StatefulWidget {
   CompaniesSection({Key key}) : super(key: key);
@@ -38,7 +37,7 @@ class _CompaniesSectionState extends State<CompaniesSection> {
             ],
           );
         }
-        return tempWidget;
+        return Container();
       },
     );
   }

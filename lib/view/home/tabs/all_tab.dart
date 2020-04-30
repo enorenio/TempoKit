@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/project.dart';
@@ -21,6 +23,19 @@ class _AllTabState extends State<AllTab> {
     BlocProvider.of<HomeBloc>(context).add(GetProjectsEvent());
   }
 
+  List<Color> colors = [
+    Colors.pink[700],
+    Colors.deepOrangeAccent[700],
+    Colors.blue[700],
+    Colors.red[700],
+    Colors.purple[700],
+    Colors.green[700],
+    Colors.indigo[700],
+    Colors.teal[700],
+    Colors.deepPurple[700],
+    Colors.brown[700],
+  ];
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
@@ -36,17 +51,31 @@ class _AllTabState extends State<AllTab> {
               itemBuilder: (BuildContext context, int index) {
                 Project current = state.projects[index];
                 return Card(
-                  color: Colors.transparent,
-                  margin: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
-                  child: ListTile(
-                  leading: Icon(Icons.assignment,size: 40,color: Colors.amber[700],),
-                  title: Text(current.name),
-                  subtitle: Text(current.description),
-                  onTap: () => _navigateToProject(
-                    context: context,
-                    project: current,
-                  ),
-                ));
+                    color: Colors.transparent,
+                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    child: ListTile(
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: colors[Random().nextInt(colors.length)],
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.assignment,
+                            size: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      title: Text(current.name),
+                      subtitle: Text(current.description),
+                      onTap: () => _navigateToProject(
+                        context: context,
+                        project: current,
+                      ),
+                    ));
               });
         } else {
           return Center(
