@@ -184,7 +184,7 @@ class ApiClient {
 
   //! Task ------------------------------------------------------------------------------------------------------------
 
-  Future<dynamic> getColumnsAndTasks({int pId}) async {
+  Future<List<dynamic>> getColumnsAndTasks({int pId}) async {
     Map<String, String> queryParams = {'p_id': pId.toString()};
 
     Uri url = Uri.https(baseUrl, 'api/task', queryParams);

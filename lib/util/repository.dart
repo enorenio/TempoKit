@@ -142,9 +142,9 @@ class Repository {
 
   //! Task ------------------------------------------------------------------------------------------------------------
 
-  Future<dynamic> getColumnsAndTasks({int pId}) async {
+  Future<List<dynamic>> getColumnsAndTasks({int pId}) async {
     if (await networkInfo.isConnected) {
-      dynamic _remoteTasks = await apiClient.getColumnsAndTasks(pId: pId);
+      List<dynamic> _remoteTasks = await apiClient.getColumnsAndTasks(pId: pId);
 
       if (_remoteTasks != []) {
         // cache task list ???

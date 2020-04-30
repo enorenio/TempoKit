@@ -48,8 +48,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     if (event is GetColumnsAndTasksEvent) {
       try {
-        dynamic columnsAndTasks =
+        List<dynamic> columnsAndTasks =
             await repository.getColumnsAndTasks(pId: project.pId);
+
+        columnsAndTasks =
+            (await Future.wait(columnsAndTasks.map((columnAndTasks) async {
+          c.Column column = columnAndTasks['column'];
+          List<Task> tasks = columnAndTasks['tasks'];
+          dynamic comments = await Future.wait(tasks.map((task) async {
+            int _numberOfComments =
+                (await repository.getAllComments(taskId: task.taskId)).length;
+            return {
+              'task_id': task.taskId,
+              'number_of_comments': _numberOfComments,
+            };
+          }).toList());
+          return {
+            'column': column,
+            'tasks': tasks,
+            'comments': comments,
+          };
+        }))).toList();
 
         yield ColumnsAndTasksState(columnsAndTasks: columnsAndTasks);
       } on NetworkException catch (exception) {
