@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:tempokit/view/widgets/gray_card.dart';
-
-import '../../model/comment.dart';
-import '../../model/comment.dart';
 import '../../model/comment.dart';
 import '../../model/task.dart';
 import '../../util/bloc/home/home_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/task.dart';
-import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/widgets/loading_widget.dart';
-import 'package:tempokit/view/widgets/temp_widget.dart';
-import '../../util/bloc/home/home_bloc.dart';
 import 'loading_widget.dart';
 
 class TaskView extends StatefulWidget {
@@ -108,6 +101,74 @@ class _TaskViewState extends State<TaskView> {
                   ? widget.task.description
                   : "No Description.",
               style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            //Add tags here
+            Container(
+              height: 40,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  Container(
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    ),
+                    child: Center(child: Text("Tag")),
+                  ),
+                  Container(
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    ),
+                    child: Center(child: Text("Tag")),
+                  ),
+                  Container(
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    ),
+                    child: Center(child: Text("Tag")),
+                  ),
+                  Container(
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    ),
+                    child: Center(child: Text("Tag")),
+                  ),
+                  Container(
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    ),
+                    child: Center(child: Text("Tag")),
+                  ),
+                  Container(
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    ),
+                    child: Center(child: Text("Tag")),
+                  ),
+                  Container(
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    ),
+                    child: Center(child: Text("Tag")),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 20,
