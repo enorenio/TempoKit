@@ -20,6 +20,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc({this.repository}) : assert(repository != null);
 
+  Future<List<dynamic>> processData(List<dynamic> data) async {
+    return (await Future.wait(data.map((columnAndTasks) async {
+      c.Column column = columnAndTasks['column'];
+      List<Task> tasks = columnAndTasks['tasks'];
+      dynamic comments = await Future.wait(tasks.map((task) async {
+        int _numberOfComments =
+            (await repository.getAllComments(taskId: task.taskId)).length;
+        return {
+          'task_id': task.taskId,
+          'number_of_comments': _numberOfComments,
+        };
+      }).toList());
+      return {
+        'column': column,
+        'tasks': tasks,
+        'comments': comments,
+      };
+    })))
+        .toList();
+  }
+
   @override
   HomeState get initialState => Loading();
 
@@ -51,24 +72,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         List<dynamic> columnsAndTasks =
             await repository.getColumnsAndTasks(pId: project.pId);
 
-        columnsAndTasks =
-            (await Future.wait(columnsAndTasks.map((columnAndTasks) async {
-          c.Column column = columnAndTasks['column'];
-          List<Task> tasks = columnAndTasks['tasks'];
-          dynamic comments = await Future.wait(tasks.map((task) async {
-            int _numberOfComments =
-                (await repository.getAllComments(taskId: task.taskId)).length;
-            return {
-              'task_id': task.taskId,
-              'number_of_comments': _numberOfComments,
-            };
-          }).toList());
-          return {
-            'column': column,
-            'tasks': tasks,
-            'comments': comments,
-          };
-        }))).toList();
+        columnsAndTasks = await processData(columnsAndTasks);
 
         yield ColumnsAndTasksState(columnsAndTasks: columnsAndTasks);
       } on NetworkException catch (exception) {
@@ -118,6 +122,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         dynamic columnsAndTasks =
             await repository.getColumnsAndTasks(pId: project.pId);
+
+        columnsAndTasks = await processData(columnsAndTasks);
+
         yield ColumnsAndTasksState(columnsAndTasks: columnsAndTasks);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
@@ -132,6 +139,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
         dynamic columnsAndTasks =
             await repository.getColumnsAndTasks(pId: project.pId);
+
+        columnsAndTasks = await processData(columnsAndTasks);
+
         yield ColumnsAndTasksState(columnsAndTasks: columnsAndTasks);
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
