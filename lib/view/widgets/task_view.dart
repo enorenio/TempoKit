@@ -1,6 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:tempokit/view/widgets/gray_card.dart';
 
+import '../../model/comment.dart';
+import '../../model/comment.dart';
+import '../../model/comment.dart';
 import '../../model/task.dart';
+import '../../util/bloc/home/home_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/model/task.dart';
+import 'package:tempokit/util/errors.dart';
+import 'package:tempokit/view/widgets/loading_widget.dart';
+import 'package:tempokit/view/widgets/temp_widget.dart';
+import '../../util/bloc/home/home_bloc.dart';
+import 'loading_widget.dart';
 
 class TaskView extends StatefulWidget {
   final Task task;
@@ -11,7 +23,10 @@ class TaskView extends StatefulWidget {
 }
 
 class _TaskViewState extends State<TaskView> {
-  final _commentController = new TextEditingController();
+  initState() {
+    super.initState();
+    BlocProvider.of<HomeBloc>(context).add(GetCommentsEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,32 +117,78 @@ class _TaskViewState extends State<TaskView> {
               style: TextStyle(
                   color: Color.fromRGBO(231, 60, 112, 1), fontSize: 25),
             ),
+            BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
+              if (state is Loading) {
+                print('$this loading');
+                return loadingWidget;
+              } else if (state is CommentsState) {
+                if (state.comments.length > 0) {
+                  return commentsListView(
+                      context: context, comments: state.comments);
+                } else {
+                  List<Comment> comments = new List(1);
+                  comments[0] = new Comment(text: "No comments");
+                  return commentsListView(context: context, comments: comments);
+                }
+              }
+              return Container(height: 10);
+            }),
             SizedBox(
               height: 20,
             ),
-            Text(
-              "No comments",
-              style: TextStyle(fontSize: 20),
-            ),
             SizedBox(
               height: 20,
-            ),
-            TextFormField(
-              controller: _commentController,
-              cursorColor: Color(0xFF3C4858),
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              decoration: InputDecoration(
-                  hintText: 'Leave a comment...',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: () {
-                      print("Sent: " + _commentController.text);
-                    },
-                  )),
             ),
           ],
         ),
       ),
     );
   }
+
+  Container commentsListView({BuildContext context, List<Comment> comments}) {
+    final _commentController = new TextEditingController();
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      child: Column(
+        children: <Widget>[
+          Column(
+            children: [
+              ...(comments
+                  .map((comment) => ListTile(
+                        title: Text(comment.text),
+                      ))
+                  .toList()),
+              TextFormField(
+                controller: _commentController,
+                cursorColor: Color(0xFF3C4858),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                decoration: InputDecoration(
+                    hintText: 'Leave a comment...',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.send),
+                      onPressed: () {
+                        BlocProvider.of<HomeBloc>(context).add(
+                          CreateCommentEvent(
+                              comment: new Comment(
+                                text: _commentController.text,
+                              ),
+                              taskId: widget.task.taskId),
+                        );
+                      },
+                    )),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  ListTile tile(BuildContext context, Comment comment) => ListTile(
+        title: Text(comment.text,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+            )),
+      );
 }
