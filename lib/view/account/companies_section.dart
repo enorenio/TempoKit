@@ -100,10 +100,12 @@ class AddCompanyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ButtonTheme(
+    return Center( 
+      child:
+    ButtonTheme(
       minWidth: 150,
-      child: RaisedButton(
-        color: Color.fromRGBO(60, 60, 60, 1),
+      child: OutlineButton(
+        highlightedBorderColor: Theme.of(context).accentColor,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         onPressed: () {
@@ -117,6 +119,7 @@ class AddCompanyButton extends StatelessWidget {
               fontWeight: FontWeight.bold),
         ),
       ),
+    )
     );
   }
 }

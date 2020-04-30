@@ -35,14 +35,18 @@ class _AllTabState extends State<AllTab> {
               itemCount: state.projects.length,
               itemBuilder: (BuildContext context, int index) {
                 Project current = state.projects[index];
-                return ListTile(
+                return Card(
+                  color: Colors.transparent,
+                  margin: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+                  child: ListTile(
+                  leading: Icon(Icons.assignment,size: 40,color: Colors.amber[700],),
                   title: Text(current.name),
                   subtitle: Text(current.description),
                   onTap: () => _navigateToProject(
                     context: context,
                     project: current,
                   ),
-                );
+                ));
               });
         } else {
           return Center(
