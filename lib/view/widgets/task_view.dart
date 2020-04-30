@@ -111,62 +111,11 @@ class _TaskViewState extends State<TaskView> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
-                  Container(
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: Center(child: Text("Tag")),
-                  ),
-                  Container(
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: Center(child: Text("Tag")),
-                  ),
-                  Container(
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: Center(child: Text("Tag")),
-                  ),
-                  Container(
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: Center(child: Text("Tag")),
-                  ),
-                  Container(
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: Center(child: Text("Tag")),
-                  ),
-                  Container(
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: Center(child: Text("Tag")),
-                  ),
-                  Container(
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    child: Center(child: Text("Tag")),
-                  ),
+                  Chip(label: Text("Tag")),
+                  Chip(label: Text("UI")),
+                  Chip(label: Text("Monetization")),
+                  Chip(label: Text("Design")),
+    
                 ],
               ),
             ),
