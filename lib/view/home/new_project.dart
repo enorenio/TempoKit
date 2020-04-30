@@ -6,6 +6,7 @@ import 'package:tempokit/util/bloc/home/home_bloc.dart';
 class NewProject extends StatelessWidget {
   final _projectNameController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final _newProjectFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,6 +15,7 @@ class NewProject extends StatelessWidget {
             child: Stack(
           children: <Widget>[
             Form(
+              key: _newProjectFormKey,
               child: Column(
                 children: <Widget>[
                   Container(
@@ -38,9 +40,11 @@ class NewProject extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     margin: EdgeInsets.symmetric(vertical: 15.0),
                     child: TextFormField(
-                      // validator: (value) {},
+                      validator: (value) {
+                        return value.isEmpty ? 'Please description!' : null;
+                      },
                       controller: _descriptionController,
-                      //onSaved: (value) => _formData['email'] = value,
+       
                       cursorColor: Color(0xFF3C4858),
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -60,8 +64,7 @@ class NewProject extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0)),
                           onPressed: () {
-                            if (true) {
-                              //TODO: change true to ...validate()
+                            if (_newProjectFormKey.currentState.validate()) {
                               BlocProvider.of<HomeBloc>(context).add(
                                 CreateProjectEvent(
                                   project: Project(
