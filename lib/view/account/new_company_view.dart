@@ -10,7 +10,8 @@ class NewCompanyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView(
+      child: Container(
         height: 230,
         child: SafeArea(
           minimum: const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -34,7 +35,7 @@ class NewCompanyView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 15,
                 ),
                 TextFormField(
                   controller: memberEmailController,
@@ -45,12 +46,13 @@ class NewCompanyView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 15,
                 ),
                 ButtonTheme(
                   minWidth: 150,
-                  child: RaisedButton(
-                    color: Color.fromRGBO(60, 60, 60, 1),
+                  child: OutlineButton(
+                    //color: Color.fromRGBO(60, 60, 60, 1),
+                    highlightedBorderColor: Theme.of(context).accentColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0)),
                     onPressed: () {
@@ -76,6 +78,7 @@ class NewCompanyView extends StatelessWidget {
               ],
             ),
           ),
-        ));
+        ))
+        );
   }
 }

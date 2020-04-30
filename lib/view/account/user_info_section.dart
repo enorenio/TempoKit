@@ -43,10 +43,17 @@ class _UserInfoSectionState extends State<UserInfoSection> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: 30.0),
+            margin: EdgeInsets.only(bottom: 10.0),
             child: Text(
               widget.userState.user.fullName,
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 30.0),
+            child: Text(
+              widget.userState.user.workType+' Guru',
+              style: TextStyle(fontSize: 16.0,),
             ),
           ),
         ],

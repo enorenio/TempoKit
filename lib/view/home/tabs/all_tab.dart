@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/project.dart';
 import 'package:tempokit/util/errors.dart';
-import 'package:tempokit/view/home/project_page.dart';
+import 'package:tempokit/view/home/project/project_page.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'package:tempokit/view/widgets/loading_widget.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
@@ -35,14 +35,18 @@ class _AllTabState extends State<AllTab> {
               itemCount: state.projects.length,
               itemBuilder: (BuildContext context, int index) {
                 Project current = state.projects[index];
-                return ListTile(
+                return Card(
+                  color: Colors.transparent,
+                  margin: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
+                  child: ListTile(
+                  leading: Icon(Icons.assignment,size: 40,color: Colors.amber[700],),
                   title: Text(current.name),
                   subtitle: Text(current.description),
                   onTap: () => _navigateToProject(
                     context: context,
                     project: current,
                   ),
-                );
+                ));
               });
         } else {
           return Center(
@@ -55,7 +59,8 @@ class _AllTabState extends State<AllTab> {
   }
 
   void _navigateToProject({BuildContext context, Project project}) async {
-    BlocProvider.of<HomeBloc>(context).add(SelectProjectEvent(project: project));
+    BlocProvider.of<HomeBloc>(context)
+        .add(SelectProjectEvent(project: project));
     Navigator.push(
         context,
         MaterialPageRoute(

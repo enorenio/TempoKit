@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tempokit/model/project.dart';
 import 'package:tempokit/util/errors.dart';
-import 'package:tempokit/view/home/project_page.dart';
+import 'package:tempokit/view/home/project/project_page.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'package:tempokit/view/widgets/loading_widget.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';

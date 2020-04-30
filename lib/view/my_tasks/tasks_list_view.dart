@@ -41,7 +41,8 @@ class _TasksListViewState extends State<TasksListView> {
   }
 
   ListView tasksListView({BuildContext context, List<Task> tasks}) {
-    return ListView.builder(
+    return ListView.separated(
+        separatorBuilder: (context,index)=>Divider(),
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           return tile(context, tasks[index]);
@@ -49,6 +50,7 @@ class _TasksListViewState extends State<TasksListView> {
   }
 
   ListTile tile(BuildContext context, Task task) => ListTile(
+        leading: Icon(Icons.assignment_turned_in,color: Colors.greenAccent,),
         title: Text(task.name,
             style: TextStyle(
               fontWeight: FontWeight.w500,
