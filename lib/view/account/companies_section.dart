@@ -26,7 +26,7 @@ class _CompaniesSectionState extends State<CompaniesSection> {
         if (state is CompaniesState) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: [
               myTitle('Organizations'),
               ConstrainedBox(
                 constraints: BoxConstraints(
@@ -53,6 +53,7 @@ class CompanyList extends StatelessWidget {
     return ListView.builder(
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
+        physics: BouncingScrollPhysics(),
         itemCount: state.companies.length,
         itemBuilder: (context, index) {
           Company current = state.companies[index];
