@@ -75,6 +75,18 @@ class _AllTabState extends State<AllTab> {
                         context: context,
                         project: current,
                       ),
+                      onLongPress: (){
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          backgroundColor: Colors.transparent,
+                          content:  
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              color: Colors.white,
+                              onPressed: (){print('delete');},
+                              ),                         
+                          //delete logic
+                        ));
+                      },
                     ));
               });
         } else {
