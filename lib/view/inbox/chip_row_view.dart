@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tempokit/view/inbox/inbox_page.dart';
+import 'package:tempokit/util/bloc/inbox/inbox_bloc.dart';
 
 class ChipRow extends StatefulWidget {
+  final InboxPageState state;
+  const ChipRow(this.state);
+
   @override
-  _ChipRowState createState() => _ChipRowState();
+
+  ChipRowState createState() => ChipRowState();
 }
 
-class _ChipRowState extends State<ChipRow> {
+class ChipRowState extends State<ChipRow> {
   int _value = 0;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +26,29 @@ class _ChipRowState extends State<ChipRow> {
         setState(() {
           _value = selected ? index : null;
         });
+        if(_value==0){
+          widget.state.setState((){
+            BlocProvider.of<InboxBloc>(context).add(((GetMyTasksEvent())));
+          });
+        } 
+        else if(_value==1){
+          widget.state.setState((){
+            BlocProvider.of<InboxBloc>(context).add(((GetMyTasksEvent())));
+          });
+        } 
+        else if(_value==2){
+          widget.state.setState((){
+            BlocProvider.of<InboxBloc>(context).add(((GetMyTasksEvent())));
+          });
+        } 
+        else if(_value==3){
+          widget.state.setState((){
+                  BlocProvider.of<InboxBloc>(context).add(((GetByMeTasksEvent())));
+
+          });
+        } 
       };
+      
     }
 
     return ListView(

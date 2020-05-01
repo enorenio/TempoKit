@@ -9,14 +9,31 @@ import 'package:tempokit/util/errors.dart';
 import 'chip_row_view.dart';
 import 'new_comment_view.dart';
 
+import 'dart:math';
+
+  List<Color> colors = [
+    Colors.pinkAccent,
+    Colors.deepOrangeAccent[700],
+    Colors.blueAccent,
+    Colors.redAccent,
+    Colors.purpleAccent,
+    Colors.greenAccent,
+    Colors.indigoAccent,
+    Colors.tealAccent,
+    Colors.deepPurpleAccent,
+    Colors.yellowAccent,
+  ];
 class InboxPage extends StatefulWidget {
   const InboxPage({Key key}) : super(key: key);
-
   @override
   InboxPageState createState() => InboxPageState();
-}
+
+  //setState(Map map) {}
+   
+  }
 
 class InboxPageState extends State<InboxPage> {
+
   @override
   initState() {
     super.initState();
@@ -40,7 +57,7 @@ class InboxPageState extends State<InboxPage> {
               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
               child: Container(
                 height: 32.0,
-                child: ChipRow(),
+                child: ChipRow(this),
               ),
             ),
             Expanded(
@@ -58,22 +75,35 @@ class InboxPageState extends State<InboxPage> {
                           children: <Widget>[
                             taskTitle(task.name),
                             Divider(),
-                            task.dueDate == null
-                                ? taskText('You have task due ${task.dueDate}')
-                                : null, //TODO: display something?
+                            Row(
+                              children: <Widget>[
+                              Icon(Icons.arrow_forward_ios, size: 60,color: colors[Random().nextInt(colors.length)]),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                 taskText(task.description),
+                                   task.dueDate == null
+                                  ? taskText('Due to ${task.dueDate}')
+                                  : null, //TODO: display something?  
+                              ], 
+                              ),
+                            ], ),
+                           
                             Divider(),
+                            SizedBox(height: 10),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
                                 ButtonTheme(
                                   minWidth: 110,
-                                  child: RaisedButton(
+                                  child: OutlineButton(
+                                    highlightedBorderColor: Theme.of(context).accentColor,
                                     color: Color.fromRGBO(60, 60, 60, 1),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),
                                     onPressed: () {
-                                      //showNewCompanyView();
+                                      leaveTask(task.taskId);
                                     },
                                     child: Text(
                                       'Leave',
@@ -86,7 +116,8 @@ class InboxPageState extends State<InboxPage> {
                                 ),
                                 ButtonTheme(
                                   minWidth: 110,
-                                  child: RaisedButton(
+                                  child: OutlineButton(
+                                    highlightedBorderColor: Theme.of(context).accentColor,
                                     color: Color.fromRGBO(60, 60, 60, 1),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -117,6 +148,7 @@ class InboxPageState extends State<InboxPage> {
       return Center(
         child: Text('No notifications available'),
       );
+      
     });
   }
 
@@ -129,6 +161,13 @@ class InboxPageState extends State<InboxPage> {
     BlocProvider.of<InboxBloc>(context).add(
         CreateCommentEvent(comment: Comment(text: comment), taskId: taskId));
   }
+
+  leaveTask(taskId){
+   print('Task was left');
+   
+}
+
+
 }
 
 
@@ -136,8 +175,9 @@ taskText(text) {
   return Container(
     margin: EdgeInsets.only(left: 10.0, bottom: 10.0, top: 10.0),
     child: Text(
+
       text,
-      style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600),
+      style: TextStyle(fontSize: 16.0,),
     ),
   );
 }
