@@ -23,13 +23,13 @@ class NewCommentView extends StatelessWidget {
                 ),
                 TextFormField(
                   validator: (value) {
-                    return value.isEmpty ? 'Please enter company name!' : null;
+                    return value.isEmpty ? 'Please enter comment!' : null;
                   },
                   controller: commentController,
                   cursorColor: Color(0xFF3C4858),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   decoration: InputDecoration(
-                    hintText: 'Column name...',
+                    hintText: 'Your comment...',
                   ),
                 ),
                 SizedBox(
@@ -48,7 +48,7 @@ class NewCommentView extends StatelessWidget {
                       }
                     },
                     child: Text(
-                      'Create',
+                      'Add',
                       style: TextStyle(
                           color: Colors.amber[800],
                           fontSize: 14.0,

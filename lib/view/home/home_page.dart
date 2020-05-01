@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
           appBar: new PreferredSize(
             preferredSize: Size.fromHeight(kToolbarHeight),
             child: new Container(
+              margin: EdgeInsets.only(bottom:10),
               height: 50.0,
               child: new TabBar(
                 tabs: [

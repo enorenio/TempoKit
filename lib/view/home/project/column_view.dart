@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:tempokit/model/column.dart' as c;
@@ -8,7 +9,7 @@ import 'package:tempokit/view/widgets/gray_card.dart';
 
 class ColumnView extends StatefulWidget {
   final dynamic columnAndTasks;
-
+  TapGestureRecognizer deleteRecognizer;
   ColumnView({this.columnAndTasks});
   _ColumnViewState createState() => _ColumnViewState();
 }
@@ -19,26 +20,28 @@ class _ColumnViewState extends State<ColumnView> {
     c.Column currentColumn = widget.columnAndTasks['column'];
     List<Task> currentTasks = widget.columnAndTasks['tasks'];
     List<dynamic> currentComments = widget.columnAndTasks['comments'];
-
+    
     return Container(
       margin: EdgeInsets.only(top: 10),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
+      
+         
+         child: Column(
           children: <Widget>[
-            Container(
+              Container(
               alignment: Alignment.centerLeft,
               margin: EdgeInsets.only(bottom: 10.0),
               child: Text(
                 currentColumn.name,
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w600),
               ),
             ),
             Column(
               children: [
                 GrayCard(
                   child: ListTile(
-                    title: Icon(Icons.add),
+                    title: Icon(Icons.add,),
                     onTap: () => showNewRequestView(column: currentColumn),
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 16.0,
@@ -54,11 +57,23 @@ class _ColumnViewState extends State<ColumnView> {
                     vertical: 4.0,
                   ),
                 ),
-                ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height * .637,
-                    ),
-                    child: TaskListView(tasks: currentTasks, comments: currentComments)),
+              GestureDetector(
+                 onLongPress:(){ 
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.transparent,
+                    content: IconButton(
+                              icon: Icon(Icons.delete),
+                              color: Colors.white,
+                              onPressed: (){print('delete');},
+                              ), 
+                    //delete logic
+                     ));},
+                   child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * .637,
+                      ),
+                      child: TaskListView(tasks: currentTasks, comments: currentComments)),
+              ),
               ],
             ),
             // TaskListView(tasks:currentTasks),

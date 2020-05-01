@@ -41,6 +41,7 @@ class _AccountState extends State<AccountPage> {
       if (userState is Authenticated) {
         return Scaffold(
           body: SafeArea(
+            child: Center(
             child: SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 25.0),
@@ -69,6 +70,7 @@ class _AccountState extends State<AccountPage> {
                 ),
               ),
             ),
+           ),
           ),
         );
       }

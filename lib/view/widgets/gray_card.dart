@@ -24,7 +24,7 @@ class GrayCard extends StatelessWidget {
                 ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
-              color: Color.fromRGBO(60, 60, 60, 1),
+              color: Color.fromRGBO(0, 0, 0, 0.3),
               boxShadow: [
                 BoxShadow(
                   color: Color.fromRGBO(13, 51, 32, 0.1),
