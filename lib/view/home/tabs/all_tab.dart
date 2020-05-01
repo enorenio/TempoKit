@@ -77,7 +77,7 @@ class _AllTabState extends State<AllTab> {
                       ),
                       onLongPress: (){
                         Scaffold.of(context).showSnackBar(SnackBar(
-                          backgroundColor: Colors.transparent,
+                          backgroundColor: Colors.accents[0],
                           content:  
                             IconButton(
                               icon: Icon(Icons.delete),

@@ -32,9 +32,21 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       }
     }
 
+    if (event is GetByMeTasksEvent) {
+      try {
+        List<Task> byMeTasks = await repository.getByMeTasks();
+        yield TasksState(tasks: byMeTasks);
+      } on NetworkException catch (exception) {
+        yield NetworkError(internalError: exception);
+      } on ServerException catch (exception) {
+        yield ServerError(internalError: exception);
+      }
+    }
+
     if (event is CreateCommentEvent) {
       try {
-        await repository.createComment(text: event.comment.text, taskId: event.taskId);
+        await repository.createComment(
+            text: event.comment.text, taskId: event.taskId);
 
         List<Comment> comments =
             await repository.getAllComments(taskId: event.taskId);

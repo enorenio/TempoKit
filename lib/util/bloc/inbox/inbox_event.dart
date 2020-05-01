@@ -6,6 +6,8 @@ abstract class InboxEvent {
 
 class GetMyTasksEvent extends InboxEvent {}
 
+class GetByMeTasksEvent extends InboxEvent {}
+
 class CreateCommentEvent extends InboxEvent {
   final Comment comment;
   final int taskId;
