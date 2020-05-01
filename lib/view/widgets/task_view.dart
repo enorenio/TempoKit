@@ -25,6 +25,12 @@ class _TaskViewState extends State<TaskView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
+        leading: BackButton(
+          onPressed: () {
+            BlocProvider.of<HomeBloc>(context).add(GetColumnsAndTasksEvent());
+            return Navigator.pop(context);
+          },
+        ),
         title: Text("Task Info"),
       ),
       body: SafeArea(
@@ -114,7 +120,6 @@ class _TaskViewState extends State<TaskView> {
                   Chip(label: Text("UI")),
                   Chip(label: Text("Monetization")),
                   Chip(label: Text("Design")),
-    
                 ],
               ),
             ),
