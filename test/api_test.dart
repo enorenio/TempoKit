@@ -3,6 +3,11 @@ import 'dart:math';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:tempokit/model/comment.dart';
+import 'package:tempokit/model/company.dart';
+import 'package:tempokit/model/project.dart';
+import 'package:tempokit/model/column.dart' as c;
+import 'package:tempokit/model/tag.dart';
 
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
@@ -27,6 +32,20 @@ void main() {
   final IV _iv = IV.fromLength(16);
   final Encrypter _encrypter = Encrypter(AES(_key));
 
+  final User gUser = User(
+    uEmail: 'test${Random().nextInt(1 << 16)}@gmail.com',
+    fullName: 'Test Test',
+    password: '12345',
+    workType: 'Tester',
+  );
+
+  Company gCompany;
+  Project gProject;
+  c.Column gColumn;
+  Task gTask;
+  Comment gComment;
+  Tag gTag;
+
   setUp(() {
     mockApiClient = ApiClient();
     mockNetworkInfo = MockNetworkInfo();
@@ -42,7 +61,7 @@ void main() {
   group('encrypt', () {
     test('should encrypt password', () {
       // act
-      String password = _encrypter.encrypt('12345', iv: _iv).base64;
+      String password = _encrypter.encrypt(gUser.password, iv: _iv).base64;
       // assert
       print(password);
       expect(password, password);
@@ -51,17 +70,11 @@ void main() {
 
   group('auth', () {
     test('should perform [POST] /signup', () async {
-      // arrange
-      final randomUser = User(
-        uEmail: 'test${Random().nextInt(1 << 16)}@gmail.com',
-        fullName: 'Test Test',
-        password: '12345',
-        workType: 'Tester',
-      );
       // act
       final result = await repository.register(
-        user: randomUser,
+        user: gUser,
       );
+      gUser.password = '12345';
       // assert
       print(result);
       expect(result, result);
@@ -69,8 +82,8 @@ void main() {
     test('should perform [POST] /signin', () async {
       // act
       final result = await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
+        uEmail: gUser.uEmail,
+        password: gUser.password,
       );
       // assert
       print(result);
@@ -78,29 +91,102 @@ void main() {
     });
   });
 
-  group('column', () {
+  group('company', () {
+    test('should perform [POST]', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.createCompany(
+          name: 'Test${Random().nextInt(1 << 16)}');
+      gCompany = result;
+      //assert
+      print(result);
+      expect(result, result);
+    });
     test('should perform [GET]', () async {
       // act
       await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
+        uEmail: gUser.uEmail,
+        password: gUser.password,
       );
-      final result = await repository.getColumns(pId: 4);
+      final result = await repository.getAllCompanies();
+      // assert
+      print(result);
+      expect(result, result);
+    });
+  });
+
+  group('project', () {
+    test('should perform [POST]', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.createProject(
+          compId: gCompany.compId,
+          description: 'Test',
+          name: 'Testing Project');
+      // assert
+      gProject = result;
+      print(result);
+      expect(result, result);
+    });
+    test('should perform [GET]', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.getProjects(compId: gCompany.compId);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+    test('should perform [POST] favourite', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      await repository.makeFavouriteProject(
+        project: gProject,
+        makeFavourite: true,
+      );
+      // assert
+      // print(result);
+      expect(1, 1);
+    });
+    test('should perform [PUT]', () {});
+    test('should perform [DELETE]', () {});
+  });
+
+  group('column', () {
+    test('should perform [POST]', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.createColumn(
+        name: 'Column${Random().nextInt(1 << 16)}',
+        pId: gProject.pId,
+      );
+      gColumn = result;
       // assert
       print(result);
       expect(result, result);
     });
 
-    test('should perform [POST]', () async {
+    test('should perform [GET]', () async {
       // act
       await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
+        uEmail: gUser.uEmail,
+        password: gUser.password,
       );
-      final result = await repository.createColumn(
-        name: 'Column${Random().nextInt(1 << 16)}',
-        pId: 4,
-      );
+      final result = await repository.getColumns(pId: gProject.pId);
       // assert
       print(result);
       expect(result, result);
@@ -111,86 +197,33 @@ void main() {
     test('should perform [DELETE]', () async {});
   });
 
-  group('company', () {
-    test('should perform [GET]', () async {
-      // act
-      await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
-      );
-      final result = await repository.getAllCompanies();
-      // assert
-      print(result);
-      expect(result, result);
-    });
-    test('should perform [POST]', () async {
-      // act
-      await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
-      );
-      final result = await repository.createCompany(
-          name: 'Test${Random().nextInt(1 << 16)}');
-      //assert
-      print(result);
-      expect(result, result);
-    });
-  });
-
-  group('project', () {
-    test('should perform [GET]', () async {
-      // act
-      await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
-      );
-      final result = await repository.getProjects(compId: 2);
-      // assert
-      print(result);
-      expect(result, result);
-    });
-    test('should perform [POST]', () async {
-      // act
-      await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
-      );
-      final result = await repository.createProject(
-          compId: 1, description: 'Test', name: 'Testing Project');
-      // assert
-      print(result);
-      expect(result, result);
-    });
-    test('should perform [PUT]', () {});
-    test('should perform [DELETE]', () {});
-  });
-
   group('task', () {
-    test('should perform [GET]', () async {
-      // act
-      await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
-      );
-      final result = await repository.getColumnsAndTasks(pId: 4);
-      // assert
-      print(result);
-      expect(result, result);
-    });
     test('should perform [POST]', () async {
       // act
       await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
+        uEmail: gUser.uEmail,
+        password: gUser.password,
       );
       final result = await repository.createTask(
         task: Task(
           name: 'Task${Random().nextInt(1 << 16)}',
           description: 'Description',
           dueDate: '2020-05-05',
-          colId: 8,
+          colId: gColumn.colId,
         ),
       );
+      gTask = result;
+      // assert
+      print(result);
+      expect(result, result);
+    });
+    test('should perform [GET]', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.getColumnsAndTasks(pId: gProject.pId);
       // assert
       print(result);
       expect(result, result);
@@ -198,13 +231,25 @@ void main() {
     test('should perform [PUT]', () {});
     test('should perform [DELETE]', () {});
 
-    test('should perform [GET] mytasks', () async {
+    test('should perform [GET] myTasks', () async {
       // act
       await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
+        uEmail: gUser.uEmail,
+        password: gUser.password,
       );
       final result = await repository.getMyTasks();
+      // assert
+      print(result);
+      expect(result, result);
+    });
+
+    test('should perform [GET] byMeTasks', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.getByMeTasks();
       // assert
       print(result);
       expect(result, result);
@@ -213,18 +258,15 @@ void main() {
     test('should perform [POST] assign', () async {
       // act
       await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
+        uEmail: gUser.uEmail,
+        password: gUser.password,
       );
       final result = await repository.assignTask(
-          task: Task(
-            taskId: 5
-          ),
-          assignees: [
-            User(
-              uEmail: 'morshnev.aleksey@gmail.com',
-            ),
-          ]);
+        task: gTask,
+        assignees: [
+          gUser,
+        ],
+      );
       // assert
       print(result);
       expect(result, result);
@@ -232,26 +274,27 @@ void main() {
   });
 
   group('comments', () {
-    test('should perform [GET]', () async {
+    test('should perform [POST]', () async {
       // act
       await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
+        uEmail: gUser.uEmail,
+        password: gUser.password,
       );
-      final result = await repository.getAllComments(taskId: 4);
+      final result = await repository.createComment(
+          text: 'Comment${Random().nextInt(1 << 16)}', taskId: gTask.taskId);
+      gComment = result;
       // assert
       print(result);
       expect(result, result);
     });
 
-    test('should perform [POST]', () async {
+    test('should perform [GET]', () async {
       // act
       await repository.logIn(
-        uEmail: 'morshnev.aleksey@gmail.com',
-        password: '12345',
+        uEmail: gUser.uEmail,
+        password: gUser.password,
       );
-      final result = await repository.createComment(
-          text: 'Comment${Random().nextInt(1 << 16)}', taskId: 4);
+      final result = await repository.getAllComments(taskId: gTask.taskId);
       // assert
       print(result);
       expect(result, result);
@@ -260,5 +303,54 @@ void main() {
     test('should perform [PUT]', () {});
 
     test('should perform [DELETE]', () {});
+  });
+
+  group('tags', () {
+    test('should perform [POST]', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.createTag(
+        project: gProject,
+        tag: Tag(
+          name: 'Tag${Random().nextInt(1 << 16)}',
+          color: '388E3C',
+        ),
+      );
+      gTag = result;
+      // assert
+      print(result);
+      expect(result, result);
+    });
+
+    test('should perform [GET]', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.getAllTags(project: gProject);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+
+    test('should perform [PUT]', () {});
+
+    test('should perform [DELETE]', () {});
+
+    test('should perform [POST] assign', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      await repository.assignTag(task: gTask, tags: [gTag]);
+      // assert
+      // print(result);
+      expect(1, 1);
+    });
   });
 }

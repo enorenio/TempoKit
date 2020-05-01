@@ -178,6 +178,27 @@ class ApiClient {
     return _project;
   }
 
+  Future<void> makeFavouriteProject(
+      {Project project, bool makeFavourite}) async {
+    Uri url = Uri.https(baseUrl, '/api/project/favorite');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+      'Content-Type': 'application/json',
+    };
+
+    Map _bodyMap = {'p_id': project.pId, 'favorite': makeFavourite ? 1 : 0};
+
+    String _json = JsonEncoder().convert(_bodyMap);
+
+    await _send(
+      method.post,
+      url,
+      headers: headers,
+      body: _json,
+    );
+  }
+
   dynamic editProject() async {}
 
   dynamic deleteProject() async {}
@@ -261,6 +282,31 @@ class ApiClient {
 
     return _answer.map<Task>((item) => Task.fromJson(item)).toList();
   }
+
+  Future<List<Task>> getByMeTasks() async {
+    Uri url = Uri.https(baseUrl, 'api/task/byme');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    List<dynamic> _answer = await _send(
+      method.get,
+      url,
+      headers: headers,
+    );
+
+    // List<dynamic> _ret = _answer.map((item) {
+    //   Task _task = Task.fromJson(item);
+    //   return {
+
+    //   };
+    // }).toList();
+
+    return _answer.map((item) => Task.fromJson(item)).toList();
+  }
+
+  Future<List<Task>> getMentionedTasks() async {}
 
   Future<bool> assignTask({Task task, List<User> assignees}) async {
     Uri url = Uri.https(baseUrl, 'api/task/assign');
@@ -373,13 +419,76 @@ class ApiClient {
 
   //! Tag ------------------------------------------------------------------------------------------------------------
 
-  dynamic getAllTags() async {}
+  Future<List<Tag>> getAllTags({Project project}) async {
+    Map<String, String> queryParams = {'p_id': project.pId.toString()};
 
-  dynamic createTag() async {}
+    Uri url = Uri.https(baseUrl, 'api/tag', queryParams);
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+    };
+
+    List<dynamic> _answer = await _send(
+      method.get,
+      url,
+      headers: headers,
+    );
+
+    return _answer.map<Tag>((item) => Tag.fromJson(item)).toList();
+  }
+
+  Future<Tag> createTag({Project project, Tag tag}) async {
+    Uri url = Uri.https(baseUrl, 'api/tag');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+      'Content-Type': 'application/json',
+    };
+
+    Map _bodyMap = {
+      'name': tag.name,
+      'color': tag.color,
+      'p_id': project.pId,
+    };
+
+    String _json = JsonEncoder().convert(_bodyMap);
+
+    dynamic _answer = await _send(
+      method.post,
+      url,
+      headers: headers,
+      body: _json,
+    );
+
+    return Tag.fromJson(_answer);
+  }
 
   dynamic editTag() async {}
 
   dynamic deleteTag() async {}
+
+  Future<void> assignTag({Task task, List<Tag> tags}) async {
+    Uri url = Uri.https(baseUrl, 'api/tag/assign');
+
+    Map<String, String> headers = {
+      'x-api-key': token,
+      'Content-Type': 'application/json',
+    };
+
+    Map _bodyMap = {
+      'task_id': task.taskId,
+      'tags': (tags.map((tag) => tag.tagId)).toList(),
+    };
+
+    String _json = JsonEncoder().convert(_bodyMap);
+
+    await _send(
+      method.post,
+      url,
+      headers: headers,
+      body: _json,
+    );
+  }
 
   //! Comment ------------------------------------------------------------------------------------------------------------
 

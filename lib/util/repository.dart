@@ -136,6 +136,16 @@ class Repository {
     }
   }
 
+  Future<void> makeFavouriteProject(
+      {Project project, bool makeFavourite}) async {
+    if (await networkInfo.isConnected) {
+      await apiClient.makeFavouriteProject(
+          project: project, makeFavourite: makeFavourite);
+    } else {
+      throw NetworkException();
+    }
+  }
+
   dynamic editProject() async {}
 
   dynamic deleteProject() async {}
@@ -173,6 +183,17 @@ class Repository {
   Future<List<Task>> getMyTasks() async {
     if (await networkInfo.isConnected) {
       List<Task> _answer = await apiClient.getMyTasks();
+
+      return _answer;
+    } else {
+      throw NetworkException();
+    }
+  }
+
+  Future<List<Task>> getByMeTasks() async {
+    if (await networkInfo.isConnected) {
+      List<Task> _answer = await apiClient.getByMeTasks();
+
       return _answer;
     } else {
       throw NetworkException();
@@ -181,7 +202,8 @@ class Repository {
 
   Future<bool> assignTask({Task task, List<User> assignees}) async {
     if (await networkInfo.isConnected) {
-      bool _answer = await apiClient.assignTask(task: task, assignees: assignees);
+      bool _answer =
+          await apiClient.assignTask(task: task, assignees: assignees);
 
       return _answer;
     } else {
@@ -243,13 +265,37 @@ class Repository {
 
   //! Tag ------------------------------------------------------------------------------------------------------------
 
-  dynamic getAllTags() async {}
+  Future<List<Tag>> getAllTags({Project project}) async {
+    if (await networkInfo.isConnected) {
+      List<Tag> tags = await apiClient.getAllTags(project: project);
 
-  dynamic createTag() async {}
+      return tags;
+    } else {
+      throw NetworkException();
+    }
+  }
+
+  Future<Tag> createTag({Project project, Tag tag}) async {
+    if (await networkInfo.isConnected) {
+      Tag answer = await apiClient.createTag(project: project, tag: tag);
+
+      return answer;
+    } else {
+      throw NetworkException();
+    }
+  }
 
   dynamic editTag() async {}
 
   dynamic deleteTag() async {}
+
+  Future<void> assignTag({Task task, List<Tag> tags}) async {
+    if (await networkInfo.isConnected) {
+      await apiClient.assignTag(task: task, tags: tags);
+    } else {
+      throw NetworkException();
+    }
+  }
 
   //! Comment ------------------------------------------------------------------------------------------------------------
 
