@@ -16,10 +16,12 @@ class ColumnsAndTasksState extends HomeState {
   ColumnsAndTasksState({this.columnsAndTasks});
 }
 
-class CommentsState extends HomeState {
+class TaskViewInfoState extends HomeState {
   final List<Comment> comments;
+  final List<User> users;
+  final List<Tag> tags;
 
-  CommentsState({this.comments});
+  TaskViewInfoState({this.users, this.tags, this.comments});
 }
 
 class Loading extends HomeState {}

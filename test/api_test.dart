@@ -273,6 +273,32 @@ void main() {
     });
   });
 
+  group('users', () {
+    test('should perform [GET] by compId', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.getUsers(compId: gCompany.compId);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+
+    test('should perform [GET] by taskId', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.getUsers(taskId: gTask.taskId);
+      // assert
+      print(result);
+      expect(result, result);
+    });
+  });
+
   group('comments', () {
     test('should perform [POST]', () async {
       // act
@@ -325,7 +351,7 @@ void main() {
       expect(result, result);
     });
 
-    test('should perform [GET]', () async {
+    test('should perform [GET] by compId', () async {
       // act
       await repository.logIn(
         uEmail: gUser.uEmail,
@@ -351,6 +377,18 @@ void main() {
       // assert
       // print(result);
       expect(1, 1);
+    });
+
+    test('should perform [GET] by taskId', () async {
+      // act
+      await repository.logIn(
+        uEmail: gUser.uEmail,
+        password: gUser.password,
+      );
+      final result = await repository.getAllTags(task: gTask);
+      // assert
+      print(result);
+      expect(result, result);
     });
   });
 }

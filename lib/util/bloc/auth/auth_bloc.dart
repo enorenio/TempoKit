@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:tempokit/model/column.dart' as c;
 import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/project.dart';
+import 'package:tempokit/model/tag.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/model/user.dart';
 import 'package:tempokit/util/errors.dart';
@@ -21,7 +22,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   double _progress = 0;
   double get progress {
-    return _progress += 1 / 14;
+    return _progress += 1 / 21;
   }
 
   set progress(double value) => _progress = value;
@@ -126,6 +127,54 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     yield ProgressLoading(progress: progress);
 
     await repository.assignTask(task: task3, assignees: [user]);
+
+    yield ProgressLoading(progress: progress);
+
+    Tag tag1 = await repository.createTag(
+        project: project,
+        tag: Tag(
+          name: 'UI',
+          color: '388E3C',
+        ));
+
+    yield ProgressLoading(progress: progress);
+
+    Tag tag2 = await repository.createTag(
+        project: project,
+        tag: Tag(
+          name: 'Design',
+          color: '1976D2',
+        ));
+
+    yield ProgressLoading(progress: progress);
+
+    Tag tag3 = await repository.createTag(
+        project: project,
+        tag: Tag(
+          name: 'Monetization',
+          color: '512DA8',
+        ));
+
+    yield ProgressLoading(progress: progress);
+
+    Tag tag4 = await repository.createTag(
+        project: project,
+        tag: Tag(
+          name: 'Bug',
+          color: 'FF5252',
+        ));
+
+    yield ProgressLoading(progress: progress);
+
+    await repository.assignTag(task: task1, tags: [tag2, tag3]);
+
+    yield ProgressLoading(progress: progress);
+
+    await repository.assignTag(task: task2, tags: [tag1, tag2]);
+
+    yield ProgressLoading(progress: progress);
+
+    await repository.assignTag(task: task3, tags: [tag4]);
 
     yield ProgressLoading(progress: progress);
 

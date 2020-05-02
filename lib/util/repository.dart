@@ -93,9 +93,9 @@ class Repository {
 
   //! User ------------------------------------------------------------------------------------------------------------
 
-  Future<List<User>> getUsers({int compId}) async {
+  Future<List<User>> getUsers({int compId, int taskId}) async {
     if (await networkInfo.isConnected) {
-      List<User> _answer = await apiClient.getUsers(compId: compId);
+      List<User> _answer = await apiClient.getUsers(compId: compId, taskId: taskId);
 
       return _answer;
     } else {
@@ -265,9 +265,9 @@ class Repository {
 
   //! Tag ------------------------------------------------------------------------------------------------------------
 
-  Future<List<Tag>> getAllTags({Project project}) async {
+  Future<List<Tag>> getAllTags({Project project, Task task}) async {
     if (await networkInfo.isConnected) {
-      List<Tag> tags = await apiClient.getAllTags(project: project);
+      List<Tag> tags = await apiClient.getAllTags(project: project, task: task);
 
       return tags;
     } else {

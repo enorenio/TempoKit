@@ -5,7 +5,9 @@ import 'package:tempokit/model/comment.dart';
 import 'package:tempokit/model/company.dart';
 import 'package:tempokit/model/project.dart';
 import 'package:tempokit/model/column.dart' as c;
+import 'package:tempokit/model/tag.dart';
 import 'package:tempokit/model/task.dart';
+import 'package:tempokit/model/user.dart';
 
 import 'package:tempokit/util/errors.dart';
 
@@ -39,6 +41,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       };
     })))
         .toList();
+  }
+
+  Future<Map<String, dynamic>> taskViewData({Task task}) async {
+    List<Comment> _comments =
+        await repository.getAllComments(taskId: task.taskId);
+    List<User> _users = await repository.getUsers(taskId: task.taskId);
+    List<Tag> _tags = await repository.getAllTags(task: task);
+    print(_users);
+    return {
+      'comments': _comments,
+      'users': _users,
+      'tags': _tags,
+    };
   }
 
   @override
@@ -82,12 +97,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     }
 
-    if (event is GetCommentsEvent) {
+    if (event is GetTaskViewInfoEvent) {
       try {
-        List<Comment> _comments =
-            await repository.getAllComments(taskId: event.taskId);
+        Map<String, dynamic> data = await taskViewData(task: event.task);
 
-        yield CommentsState(comments: _comments);
+        yield TaskViewInfoState(
+          users: data['users'],
+          comments: data['comments'],
+          tags: data['tags'],
+        );
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {
@@ -153,11 +171,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is CreateCommentEvent) {
       try {
         await repository.createComment(
-            text: event.comment.text, taskId: event.taskId);
+            text: event.comment.text, taskId: event.task.taskId);
 
-        List<Comment> comments =
-            await repository.getAllComments(taskId: event.taskId);
-        yield CommentsState(comments: comments);
+        Map<String, dynamic> data = await taskViewData(task: event.task);
+
+        yield TaskViewInfoState(
+          users: data['users'],
+          comments: data['comments'],
+          tags: data['tags'],
+        );
       } on NetworkException catch (exception) {
         yield NetworkError(internalError: exception);
       } on ServerException catch (exception) {

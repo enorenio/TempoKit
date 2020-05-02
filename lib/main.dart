@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'TempoKit',
         theme: themeData,
+        debugShowCheckedModeBanner: false,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) => ExtendedNavigator<GlobalRouter>(
             router: GlobalRouter(),

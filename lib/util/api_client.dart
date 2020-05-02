@@ -110,8 +110,11 @@ class ApiClient {
 
   //! User ---------------------------------------------------------------------------------------------------------------
 
-  Future<List<User>> getUsers({int compId}) async {
-    Map<String, String> queryParams = {'comp_id': compId.toString()};
+  Future<List<User>> getUsers({int compId, int taskId}) async {
+    Map<String, String> queryParams = Map();
+
+    if (compId != null) queryParams['comp_id'] = compId.toString();
+    if (taskId != null) queryParams['task_id'] = taskId.toString();
 
     Uri url = Uri.https(baseUrl, 'api/user', queryParams);
 
@@ -419,8 +422,10 @@ class ApiClient {
 
   //! Tag ------------------------------------------------------------------------------------------------------------
 
-  Future<List<Tag>> getAllTags({Project project}) async {
-    Map<String, String> queryParams = {'p_id': project.pId.toString()};
+  Future<List<Tag>> getAllTags({Project project, Task task}) async {
+    Map<String, String> queryParams = Map();
+    if (project != null) queryParams['p_id'] = project.pId.toString();
+    if (task != null) queryParams['task_id'] = task.taskId.toString();
 
     Uri url = Uri.https(baseUrl, 'api/tag', queryParams);
 
