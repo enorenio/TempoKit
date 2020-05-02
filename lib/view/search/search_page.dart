@@ -2,13 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 import 'package:tempokit/util/errors.dart';
 
 import 'package:tempokit/view/widgets/loading_widget.dart';
 
-List<String> list = ['1','2','3','4','5'];
-
+List<String> list = [
+  'Task',
+  'Promotion',
+  'Ads',
+  'Valorant',
+  'League of Legends'
+];
+List<String> description = [
+  'Your tasks are here',
+  'No promotion sorry',
+  'Full screen banners for 10 min',
+  'Dont know what is it',
+  'Teemo mainer'
+];
 
 class SearchPage extends StatefulWidget {
   SearchPage({Key key, this.title}) : super(key: key);
@@ -28,8 +39,8 @@ class SearchPageState extends State<SearchPage> {
         margin: EdgeInsets.only(left: 10, top: 40, right: 10),
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10.0),
+            Container(
+              height: 50,
               child: TextField(
                 onChanged: (value) {
                   print(value);
@@ -42,24 +53,23 @@ class SearchPageState extends State<SearchPage> {
                     //hintText: "Search",
                     prefixIcon: Icon(Icons.search),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30.0)))),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    suffixIcon: IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          inputController.clear();
+                        })),
               ),
             ),
-            Divider(),
             Expanded(
-              child: ListView.builder(
+              child: ListView.separated(
+                separatorBuilder: (context, index) => Divider(
+                  color: Colors.white,
+                ),
                 shrinkWrap: true,
                 itemCount: 5,
                 itemBuilder: (context, index) {
-                  return Card(
-                    color: Color.fromRGBO(60, 60, 60, 1),
-                    margin: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
-                    child: ListTile(
-                    leading: Icon(Icons.assignment,size: 40,color: Colors.amber[800],),
-                    title: Text(list[index]),
-                    subtitle: Text(list[index]),
-                    onTap: () {}
-                ));
+                  return searchCard(list[index], description[index]);
                 },
               ),
             ),
@@ -68,6 +78,44 @@ class SearchPageState extends State<SearchPage> {
       ),
     );
   }
-  
-}
 
+  // ListTile searchCard(String title, String desc) => ListTile(
+  //     contentPadding: EdgeInsets.all(0),
+  //     leading: Icon(
+  //       Icons.check_circle_outline,
+  //       size: 40,
+  //       color: Colors.amber[800],
+  //     ),
+  //     title: Text(title),
+  //     subtitle: Text(desc),
+  //     onTap: () {
+  //       print("Maladec");
+  //     });
+
+  Container searchCard(String title, String desc) => Container(
+        height: 50,
+        child: InkWell(
+          child: Row(
+            children: <Widget>[
+              SizedBox(
+                width: 10,
+              ),
+              Icon(
+                Icons.check_circle_outline,
+                size: 35,
+                color: Colors.amber[800],
+              ),
+              SizedBox(
+                width: 15,
+              ),
+              Column(
+                  children: <Widget>[Text(title), Text(desc)],
+                  crossAxisAlignment: CrossAxisAlignment.start)
+            ],
+          ),
+          onTap: (){
+            print("AAA");
+          },
+        ),
+      );
+}
