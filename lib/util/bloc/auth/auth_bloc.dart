@@ -63,6 +63,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         name: 'Instagram promotions',
         description: 'Buy ads in instagram',
         colId: todo.colId,
+        dueDate: '2020-05-04'
       ),
     );
 
@@ -73,6 +74,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         name: 'Facebook promotions',
         description: 'Buy ads in facebook',
         colId: todo.colId,
+        dueDate: '2020-05-08'
       ),
     );
 
@@ -83,6 +85,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         name: 'Ads design',
         description: 'Design a banner ad',
         colId: doing.colId,
+        dueDate: '2020-05-23'
       ),
     );
 
@@ -93,6 +96,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         name: 'Finish the project README',
         description: 'Add the version of framework',
         colId: doing.colId,
+        dueDate: '2020-06-09'
       ),
     );
 
@@ -103,6 +107,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         name: 'Pay money to designer',
         description: 'Use visa card to pay designer',
         colId: done.colId,
+        dueDate: '2020-06-24'
       ),
     );
 
@@ -113,6 +118,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         name: 'Add license to project',
         description: 'Choose MIT or GPL-3.0',
         colId: done.colId,
+        dueDate: '2020-07-01'
       ),
     );
 

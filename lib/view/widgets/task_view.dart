@@ -6,7 +6,6 @@ import 'package:tempokit/model/tag.dart';
 import 'package:tempokit/model/task.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
 import 'package:tempokit/view/widgets/gray_card.dart';
-import 'package:tempokit/view/widgets/loading_widget.dart';
 
 class TaskView extends StatefulWidget {
   final Task task;
@@ -26,6 +25,18 @@ class _TaskViewState extends State<TaskView> {
         .add(GetTaskViewInfoEvent(task: widget.task));
   }
 
+  String _parseDate(String date) {
+    // print(date);
+    var temp = date.split('T');
+    // print(temp);
+    String temp1 = temp[0].replaceAll('-', '/');
+    // print(temp1);
+    String temp2 = temp1.split('/').reversed.join(' / ');
+    // print(temp2);
+
+    return temp2;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(builder: (context, state) {
@@ -39,7 +50,7 @@ class _TaskViewState extends State<TaskView> {
                 return Navigator.pop(context);
               },
             ),
-            title: Text("Task Info"),
+            title: Text("Task"),
           ),
           body: GestureDetector(
             behavior: HitTestBehavior.opaque,
@@ -90,16 +101,27 @@ class _TaskViewState extends State<TaskView> {
                                             fontSize: 14.0,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      Text(
-                                        'Username',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                      state.users.length > 0
+                                          ? Text(
+                                              state.users[0].fullName,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            )
+                                          : Text(
+                                              'No one',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                     ],
                                   )),
                             ),
+                            SizedBox(width: 8),
                             ButtonTheme(
                               minWidth: 150,
                               child: FlatButton.icon(
@@ -108,13 +130,22 @@ class _TaskViewState extends State<TaskView> {
                                     borderRadius: BorderRadius.circular(30.0)),
                                 onPressed: () {},
                                 padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                label: Text(
-                                  'Due Date',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
+                                label: widget.task.dueDate != null &&
+                                        widget.task.dueDate != ''
+                                    ? Text(
+                                        _parseDate(widget.task.dueDate),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : Text(
+                                        'Due Date',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                               ),
                             ),
                           ],
