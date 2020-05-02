@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tempokit/model/task.dart';
+import 'package:tempokit/view/widgets/delete_button.dart';
 import 'package:tempokit/view/widgets/gray_card.dart';
 import 'package:tempokit/view/widgets/task_view.dart';
 
@@ -45,6 +46,13 @@ class TaskTile extends StatelessWidget {
               : null,
           trailing: _trailingComment(context),
           onTap: () => _openTask(context),
+          onLongPress:() {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return DeleteButton(task: task);
+                    });
+              },
           contentPadding: EdgeInsets.symmetric(
             horizontal: 16.0,
             vertical: 0.0,

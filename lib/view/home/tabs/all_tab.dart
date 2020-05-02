@@ -6,6 +6,7 @@ import 'package:tempokit/model/project.dart';
 import 'package:tempokit/util/errors.dart';
 import 'package:tempokit/view/home/project/project_page.dart';
 import 'package:tempokit/util/bloc/home/home_bloc.dart';
+import 'package:tempokit/view/widgets/delete_button.dart';
 import 'package:tempokit/view/widgets/loading_widget.dart';
 import 'package:tempokit/view/widgets/temp_widget.dart';
 
@@ -75,17 +76,12 @@ class _AllTabState extends State<AllTab> {
                         context: context,
                         project: current,
                       ),
-                      onLongPress: (){
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          backgroundColor: Colors.accents[0],
-                          content:  
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              color: Colors.white,
-                              onPressed: (){print('delete');},
-                              ),                         
-                          //delete logic
-                        ));
+                      onLongPress: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return DeleteButton(project: current);
+                            });
                       },
                     ));
               });
