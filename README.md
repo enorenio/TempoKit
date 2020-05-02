@@ -83,11 +83,13 @@ npm i
 In order for server to work, you should provide your system with these environment variables as the server depend on them:
 
 ```json
-"NODE_ENV": "development",
-"PORT": 3000,
-"BASE_URL": "http://localhost:3000"
-"SECRET": "provide your secret key"
-"LOGGING": true
+{
+  "NODE_ENV": "development",
+  "PORT": 3000,
+  "BASE_URL": "http://localhost:3000",
+  "SECRET": "provide your secret key",
+  "LOGGING": true
+}
 ```
 
 Start your server with this command:
